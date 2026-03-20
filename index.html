@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geschäftsreise Sicherheitskarte</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f8f6;
+      --bg2: #ffffff;
+      --text: #2c2c2a;
+      --text2: #5f5e5a;
+      --text3: #888780;
+      --border: rgba(0,0,0,0.12);
+      --border2: rgba(0,0,0,0.22);
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a18;
+        --bg2: #242422;
+        --text: #e8e6e0;
+        --text2: #9c9a92;
+        --text3: #666460;
+        --border: rgba(255,255,255,0.1);
+        --border2: rgba(255,255,255,0.2);
+        --shadow: 0 2px 12px rgba(0,0,0,0.4);
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    #status-pill {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border2);
+      color: var(--text2);
+      background: var(--bg2);
+    }
+
+    #status-pill.loading { color: var(--text3); }
+    #status-pill.live    { border-color: #3B6D11; color: #3B6D11; }
+    #status-pill.error   { border-color: #A32D2D; color: #A32D2D; }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .nahost-note {
+      font-size: 11px;
+      background: #FAEEDA;
+      color: #633806;
+      border-radius: 6px;
+      padding: 4px 10px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .nahost-note { background: #412402; color: #FAC775; }
+    }
+
+    #map-wrap {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    #map svg { display: block; }
+
+    #popup {
+      display: none;
+      position: absolute;
+      z-index: 10;
+      width: 295px;
+      background: var(--bg2);
+      border: 0.5px solid var(--border2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    #popup-title { font-weight: 500; font-size: 15px; margin-bottom: 5px; }
+
+    #popup-badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 9px;
+      border-radius: 6px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .ps { margin-bottom: 9px; }
+
+    .pl {
+      font-size: 11px;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 3px;
+    }
+
+    .pv { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+    #popup-link {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #185FA5;
+      text-decoration: none;
+      border-bottom: 0.5px solid #85B7EB;
+    }
+
+    #close-btn {
+      float: right;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text2);
+      line-height: 1;
+      background: none;
+      border: none;
+    }
+
+    footer {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text3);
+    }
+
+    footer a { color: var(--text3); }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Geschäftsreise – Sicherheitskarte</h1>
+  <span id="status-pill" class="loading">Lädt...</span>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#27500A"></div>Kein besonderes Risiko</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FAC775"></div>Regionale Einschränkungen</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#E8621A"></div>Teilreisewarnung</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#E24B4A"></div>Reisewarnung</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#B4B2A9"></div>Keine Daten</div>
+</div>
+
+<div class="nahost-note">⚠ Nahost: Seit 28.02.2026 Reisewarnungen für 13 Länder der Region</div>
+
+<div id="map-wrap">
+  <div id="map"></div>
+  <div id="popup">
+    <button id="close-btn" onclick="closePopup()">&#x2715;</button>
+    <div id="popup-title"></div>
+    <div id="popup-badge"></div>
+    <div class="ps"><div class="pl">Sicherheit – Reisewarnung (Ausw. Amt)</div><div class="pv" id="pp-sec"></div></div>
+    <div class="ps"><div class="pl">Geschäftsreise-Empfehlung</div><div class="pv" id="pp-biz"></div></div>
+    <div class="ps"><div class="pl">Einreise & Dokumente</div><div class="pv" id="pp-entry"></div></div>
+    <a id="popup-link" href="#" target="_blank" rel="noopener">Aktueller Hinweis beim Ausw. Amt &#8599;</a>
+  </div>
+</div>
+
+<footer>
+  Quelle: <a href="https://www.auswaertiges-amt.de" target="_blank">Auswärtiges Amt</a> &middot;
+  Warnstufen: täglich 06:00 &amp; 12:00 UTC &middot;
+  Texte: wöchentlich montags &middot;
+  Vor jeder Reise offiziell prüfen.
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+
+
+const C   = { 0:'#27500A', 1:'#FAC775', 2:'#E8621A', 3:'#E24B4A' };
+const BB  = { 0:'#EAF3DE', 1:'#FAEEDA', 2:'#FAECE7', 3:'#FCEBEB' };
+const BC  = { 0:'#27500A', 1:'#633806', 2:'#712B13', 3:'#501313' };
+const LBL = {
+  0: 'Kein besonderes Reiserisiko',
+  1: 'Regionale Einschränkungen / erhöhte Vorsicht',
+  2: 'Teilreisewarnung',
+  3: 'Reisewarnung'
+};
+const BIZ = {
+  0: 'Geschäftsreisen problemlos möglich. Übliche Sicherheitsvorkehrungen einhalten.',
+  1: 'Geschäftsreisen möglich. Bestimmte Regionen beachten. Reiseroute im Voraus planen, Lage täglich prüfen.',
+  2: 'Reise grundsätzlich möglich, erhöhte Vorsicht erforderlich. Intern genehmigen lassen, Notfallkontakte hinterlegen.',
+  3: 'Vom Auswärtigen Amt wird von Reisen abgeraten. Nur wenn zwingend notwendig – vollständigen Sicherheitsplan und Evakuierungsplan vorbereiten.'
+};
+
+// Statische Detaildaten
+// Format: [Warnstufe (0-3), Sicherheitstext, Einreisetext, URL-Suffix]
+// Format: [Warnstufe, Sicherheitstext, Einreisetext, URL-Suffix]
+// 0=kein Risiko, 1=regionale Einschränkungen, 2=Teilreisewarnung, 3=Reisewarnung
+const DETAILS = {
+  AF:[3,'Vor Reisen nach Afghanistan wird gewarnt. Extreme Sicherheitsrisiken durch Terrorismus und willkürliche Verhaftungen.','Einreise nicht empfohlen. Kein konsularischer Schutz.','afghanistandeutscher-452552'],
+  AE:[3,'Vor Reisen in die VAE wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Flughäfen Dubai/Abu Dhabi eingeschränkt.','Flugbetrieb stark reduziert. Fluggesellschaft vor Reise kontaktieren.','vereinigtearabischeemiratesicherheit-202332'],
+  BH:[3,'Vor Reisen nach Bahrain wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Luftraumsperrungen möglich.','Einreise nicht empfohlen. Flugbetrieb eingeschränkt.','bahreinsicherheit-203790'],
+  BY:[3,'Vor Reisen nach Belarus wird gewarnt. Risiko willkürlicher Festnahmen. Deutsche werden zur Ausreise aufgefordert.','Visum erforderlich. Einreise mit erheblichen Risiken.','weissrusslandsicherheit-202730'],
+  HT:[3,'Vor Reisen nach Haiti wird gewarnt. Bürgerkriegsähnliche Zustände durch Bandengewalt.','Einreise nicht empfohlen. Kein konsularischer Schutz.','haitisicherheit-206032'],
+  IR:[3,'Vor Reisen nach Iran wird gewarnt. Seit 28.02.2026 Luftschläge durch Israel/USA. Deutsche werden zur Ausreise aufgefordert. Botschaftspersonal temporär verlegt.','Ausreise dringend empfohlen. Konsularische Hilfe nicht gewährleistet.','iransicherheit-202396'],
+  IQ:[3,'Vor Reisen nach Irak wird gewarnt. Botschaftspersonal temporär verlegt. Ausreise wird empfohlen. Lage durch Iran-Konflikt eskaliert.','Ausreise empfohlen. Keine konsularische Hilfe vor Ort.','iraksicherheit-202738'],
+  IL:[3,'Vor Reisen nach Israel wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Iran beschießt Ziele in Israel. Hohes Risiko im gesamten Land.','Flughafen Ben Gurion eingeschränkt. Kein Visum für Deutsche (90 Tage).','israelsicherheit-203814'],
+  JO:[3,'Vor Reisen nach Jordanien wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Luftraumsperrungen, Demonstrationen in Amman.','Flugbetrieb reduziert. Visum bei Einreise möglich.','jordaniensicherheit-218008'],
+  QA:[3,'Vor Reisen nach Katar wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Flughafen Doha eingeschränkt.','Flugbetrieb reduziert. Kein Visum für Deutsche (30 Tage).','katarsicherheit-202302'],
+  KW:[3,'Vor Reisen nach Kuwait wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Luftraumsperrungen möglich.','Einreise nicht empfohlen. Flugbetrieb eingeschränkt.','kuwaitsicherheit-204130'],
+  LB:[3,'Vor Reisen in den Libanon wird gewarnt. Lage durch Iran-Konflikt verschärft. Israelische Bodentruppen aktiv.','Einreise nicht empfohlen. Flugbetrieb stark eingeschränkt.','libanonsicherheit-203516'],
+  LY:[3,'Vor Reisen nach Libyen wird gewarnt. Erhebliche Sicherheitsrisiken durch bewaffnete Gruppen und andauernde Konflikte.','Einreise nicht empfohlen. Visum erforderlich.','libyensicherheit-204046'],
+  ML:[3,'Vor Reisen nach Mali wird gewarnt. Weite Teile von Terrorismus und Entführungen betroffen.','Einreise nicht empfohlen. Visum erforderlich.','malisicherheit-202046'],
+  MM:[3,'Vor Reisen nach Myanmar wird gewarnt. Seit Militärputsch 2021 Bürgerkrieg. Gefahr willkürlicher Festnahmen.','Visum erforderlich (eVisa). Einreise mit erheblichen Risiken.','myanmarsicherheit-201578'],
+  NE:[3,'Vor Reisen nach Niger wird gewarnt. Seit Militärputsch 2023 instabile Lage. Erhebliche Terrorismusrisiken.','Visum erforderlich. Einreise nicht empfohlen.','nigersicherheit-214900'],
+  OM:[3,'Vor Reisen nach Oman wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Flughafen Muscat eingeschränkt.','Flugbetrieb reduziert. Kein Visum für Deutsche (30 Tage).','omansicherheit-204160'],
+  PS:[3,'Vor Reisen in die Palästinensischen Gebiete wird gewarnt. Kampfhandlungen in Gaza. Durch Iran-Konflikt weiter verschärft.','Einreise extrem eingeschränkt. Kein konsularischer Schutz.','palaestinensischegebietesicherheit-203674'],
+  SA:[3,'Von Reisen nach Saudi-Arabien wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Sicherheitslage extrem angespannt.','Einreise nicht empfohlen. Flugbetrieb eingeschränkt. Businessvisum erforderlich.','saudiarabiensicherheit-202298'],
+  SO:[3,'Vor Reisen nach Somalia wird gewarnt. Extreme Risiken durch Terrorismus (Al-Shabaab), Kriminalität und Entführungen.','Einreise nicht empfohlen. Kein konsularischer Schutz.','somaliasicherheit-205664'],
+  SD:[3,'Vor Reisen nach Sudan wird gewarnt. Seit April 2023 Bürgerkrieg. Bewaffnete Konflikte und humanitäre Notlage.','Einreise nicht empfohlen. Botschaft geschlossen.','sudansicherheit-202556'],
+  SS:[3,'Vor Reisen nach Südsudan wird gewarnt. Anhaltender Bürgerkrieg mit extremen Sicherheitsrisiken.','Einreise nicht empfohlen. Visum erforderlich.','https://www.auswaertiges-amt.de/de/reiseundsicherheit/suedsudansicherheit/244250'],
+  SY:[3,'Vor Reisen nach Syrien wird gewarnt. Nach Machtwechsel 2024 weiterhin unübersichtlich. Durch Iran-Konflikt weiter verschärft.','Einreise nicht empfohlen. Kein konsularischer Schutz.','syriensicherheit-204278'],
+  UA:[3,'Vor Reisen in die Ukraine wird gewarnt. Russland führt seit 02.2022 Angriffskrieg. Raketenangriffe im gesamten Land.','Einreise nicht empfohlen. Für Männer 18–60 gilt ukrainisches Ausreiseverbot.','ukrainesicherheit-201946'],
+  YE:[3,'Vor Reisen nach Jemen wird gewarnt. Aktiver bewaffneter Konflikt. Durch Iran-Konflikt weiter eskaliert.','Einreise nicht möglich/empfohlen. Botschaft geschlossen.','jemensicherheit-201452'],
+  CF:[3,'Vor Reisen in die Zentralafrikanische Republik wird gewarnt. Anhaltende bewaffnete Konflikte.','Visum erforderlich. Einreise nicht empfohlen.','zentralafrikanischerepubliksicherheit-226380'],
+  RU:[2,'Von nicht notwendigen Reisen nach Russland wird gewarnt. Krieg gegen Ukraine. Willkürliche Festnahmen möglich.','Visum + Einladungsschreiben erforderlich. Direkte Flugverbindungen eingestellt.','russlandsicherheit-204816'],
+  BF:[2,'Von Reisen in bestimmte Regionen Burkina Fasos wird abgeraten (Teilreisewarnung). Weite Teile von Terrorismus betroffen.','Visum erforderlich.','burkinafasosicherheit-212336'],
+  PK:[2,'Von Reisen in bestimmte Regionen Pakistans wird abgeraten (Teilreisewarnung). Erhebliche Terrorismusrisiken in Grenzregionen zu Afghanistan.','Visum erforderlich (eVisa möglich).','pakistansicherheit-204974'],
+  ET:[2,'Von Reisen in bestimmte Regionen Äthiopiens wird abgeraten (Teilreisewarnung). Konflikte in Tigray und Amhara.','Kein Visum (Online-Visum vor Reise).','aethiopiensicherheit-206712'],
+  NG:[2,'Von Reisen in bestimmte Regionen Nigerias wird abgeraten (Teilreisewarnung). Nordosten durch Boko Haram betroffen.','Visum erforderlich. Vorab beim Konsulat beantragen.','nigeriasicherheit-204874'],
+  CD:[2,'Von Reisen in weite Teile der Dem. Rep. Kongo wird abgeraten (Teilreisewarnung). Im Osten anhaltende Konflikte.','Visum erforderlich.','kongodemokratischerepubliksicherheit-201338'],
+  TD:[2,'Von nicht notwendigen Reisen nach Tschad wird abgeraten (Teilreisewarnung). Politische Instabilität und Terrorismus.','Visum erforderlich.','tschadsicherheit-202514'],
+  KP:[2,'Von Reisen nach Nordkorea wird abgeraten. Regime isoliert das Land. Willkürliche Verhaftungen möglich.','Einreise praktisch nicht möglich für Deutsche.','nordkoreasicherheit-202716'],
+  MX:[2,'Von Reisen in bestimmte Regionen Mexikos wird abgeraten (Teilreisewarnung). Guerrero, Sinaloa, Tamaulipas besonders betroffen.','Kein Visum für Deutsche (180 Tage).','mexikosicherheit-201086'],
+  CO:[2,'Von Reisen in bestimmte Regionen Kolumbiens wird abgeraten (Teilreisewarnung). Grenzregionen zu Venezuela/Ecuador betroffen.','Kein Visum für Deutsche (90 Tage).','kolumbiensicherheit-201524'],
+  TH:[2,'Von Reisen in das Grenzgebiet zu Kambodscha und die südlichen Provinzen wird gewarnt (Teilreisewarnung). Bangkok und touristische Zentren gelten als sicher.','Kein Visum für Deutsche (30 Tage, verlängerbar).','thailandsicherheit-201558'],
+  PH:[2,'Von Reisen in bestimmte Regionen der Philippinen wird abgeraten (Teilreisewarnung). Mindanao und Sulusee betroffen.','Kein Visum für Deutsche (30 Tage).','philippinensicherheit-201316'],
+  CM:[2,'Von Reisen in bestimmte Regionen Kameruns wird abgeraten (Teilreisewarnung). Anglophone Regionen und Norden betroffen.','Visum erforderlich.','kamerunsicherheit-201998'],
+  KE:[2,'Von Reisen in bestimmte Regionen Kenias wird abgeraten (Teilreisewarnung). Grenzregionen zu Somalia/Äthiopien betroffen.','Kein Visum für Deutsche (eTA online, 30 Tage).','keniasicherheit-201328'],
+  VE:[2,'Von nicht notwendigen Reisen nach Venezuela wird abgeraten (Teilreisewarnung). Erhebliche Kriminalität und politische Instabilität.','Kein Visum für Deutsche (90 Tage). Direktflüge eingeschränkt.','venezuelasicherheit-201248'],
+  GE:[2,'Von Reisen in Südossetien und Abchasien wird dringend abgeraten (Teilreisewarnung).','Kein Visum für Deutsche (90 Tage).','georgiensicherheit-201472'],
+  AZ:[2,'Von Reisen in Grenzregionen zu Armenien wird abgeraten (Teilreisewarnung).','Visum erforderlich (eVisa online).','aserbaidschansicherheit-201860'],
+  TJ:[2,'Von nicht notwendigen Reisen nach Tadschikistan wird abgeraten (Teilreisewarnung). Grenzregionen zu Afghanistan gefährlich.','Visum erforderlich (eVisa möglich).','tadschikistansicherheit-204894'],
+  BD:[2,'Von Reisen in die Chittagong Hill Tracts wird abgeraten (Teilreisewarnung). Politische Unruhen in Städten.','Visum erforderlich (Visa on Arrival oder eVisa).','bangladeschsicherheit-203904'],
+  LK:[2,'Von Reisen in den Norden Sri Lankas wird abgeraten (Teilreisewarnung).','Kein Visum für Deutsche (ETA online, 30 Tage).','srilankagsicherheit-204880'],
+  MR:[2,'Von Reisen nach Mauretanien wird abgeraten (Teilreisewarnung). Terrorismusrisiko in Sahara und Grenzregionen.','Visum erforderlich.','mauretaniensicherheit-204434'],
+  MZ:[2,'Von Reisen in bestimmte Regionen Mosambiks wird abgeraten (Teilreisewarnung). Cabo Delgado von Terrorismus betroffen.','Visum erforderlich (eVisa möglich).','mosambiksicherheit-221782'],
+  AO:[2,'Von nicht notwendigen Reisen in Teile Angolas wird abgeraten (Teilreisewarnung). Provinz Cabinda betroffen.','Visum erforderlich.','angolasicherheit-203372'],
+  UG:[2,'Von Reisen in bestimmte Regionen Ugandas wird abgeraten (Teilreisewarnung). Grenzregionen zu DR Kongo betroffen.','Visum erforderlich (eVisa online).','ugandagrundsicherheit-220988'],
+  TZ:[2,'Von Reisen in bestimmte Regionen Tansanias wird abgeraten (Teilreisewarnung). Grenzregionen zu DR Kongo betroffen.','Visum erforderlich (eVisa online).','tansaniasicherheit-202804'],
+  JP:[2,'Für Japan gilt eine Teilreisewarnung. Direktverbindungen über Golfstaaten-Drehkreuze stark eingeschränkt. Japan selbst gilt als sehr sicheres Reiseziel.','Kein Visum für Deutsche (90 Tage). Alternative Flugrouten prüfen.','japansicherheit-213032'],
+  GH:[2,'Von Reisen in bestimmte Regionen Ghanas wird abgeraten (Teilreisewarnung). Grenzregionen zu Burkina Faso betroffen.','Visum erforderlich.','ghanasicherheit-203372'],
+  KH:[2,'Von Reisen in das Grenzgebiet zu Thailand wird abgeraten (Teilreisewarnung). Phnom Penh und Angkor Wat gelten als sicher.','Visum erforderlich (eVisa oder Visa on Arrival).','kambodschasicherheit-220008'],
+  TR:[1,'Für die Türkei bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Syrien und Irak wird abgeraten. Istanbul gilt als sicher.','Kein Visum für Deutsche (90 Tage).','tuerkeisicherheit-201962'],
+  EG:[1,'Für Ägypten bestehen regionale Einschränkungen. Nordsinai und Grenzgebiet zu Israel betroffen. Kairo und Badeorte bereisbar.','Kein Visum für Deutsche (Visa on Arrival oder eVisa, 30 Tage).','aegyptensicherheit-202142'],
+  TN:[1,'Für Tunesien bestehen regionale Einschränkungen. Grenzregionen zu Libyen/Algerien und Saharagebiete betroffen.','Kein Visum für Deutsche (90 Tage).','tunesiensicherheit-201432'],
+  MA:[1,'Für Marokko bestehen regionale Einschränkungen. Von Reisen in Grenzgebiete zur Westsahara wird abgeraten.','Kein Visum für Deutsche (90 Tage).','marokkosicherheit-203978'],
+  IN:[1,'Für Indien bestehen regionale Einschränkungen. Von Reisen nach Jammu & Kaschmir wird abgeraten. Großstädte gelten als sicher.','eVisa für Geschäftsreisen (30 Tage, online). Reisepass mind. 6 Monate gültig.','indiensicherheit-201534'],
+  CN:[1,'Für China bestehen regionale Einschränkungen. Von Reisen nach Tibet und Xinjiang wird abgeraten. Exit-Bans für westliche Staatsangehörige sind möglich.','Seit 2024 visumfreie Einreise für Deutsche (30 Tage). Für längere Aufenthalte oder wiederholte Geschäftsreisen Businessvisum (M) empfohlen.','chinasicherheit-200928'],
+  BR:[1,'Für Brasilien bestehen regionale Einschränkungen. In Favelas erhebliche Kriminalitätsrisiken. Geschäftsviertel eingeschränkt sicher.','Kein Visum für Deutsche (90 Tage).','brasiliensicherheit-201480'],
+  ZA:[1,'Für Südafrika bestehen regionale Einschränkungen. Erhebliche Kriminalitätsrisiken in Großstädten.','Kein Visum für Deutsche (90 Tage). Reisepass mind. 30 Tage über Ausreise gültig.','suedafrikasicherheit-201254'],
+  ID:[1,'Für Indonesien bestehen regionale Einschränkungen. Von Reisen nach Papua wird abgeraten. Bali und Jakarta gelten als sicher.','Visa on Arrival (30 Tage) oder eVisa. Reisepass mind. 6 Monate gültig.','indonesiensicherheit-201072'],
+  MY:[1,'Für Malaysia bestehen regionale Einschränkungen. Von Reisen in östliche Küstengebiete Sabahs wird abgeraten.','Kein Visum für Deutsche (90 Tage).','malaysiasicherheit-201760'],
+  NP:[1,'Für Nepal bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Tibet wird abgeraten. Kathmandu gilt als sicher.','Visum erforderlich (Visa on Arrival oder eVisa).','nepalsicherheit-201826'],
+  PG:[1,'Für Papua-Neuguinea bestehen regionale Einschränkungen. Erhebliche Kriminalitätsrisiken im gesamten Land.','Visum erforderlich.','https://www.auswaertiges-amt.de/de/service/laender/papuaneuguinea-node/papuaneuguineasicherheit/220698'],
+  EC:[1,'Für Ecuador bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Kolumbien wird abgeraten.','Kein Visum für Deutsche (90 Tage).','ecuadorsicherheit-201434'],
+  GT:[1,'Für Guatemala bestehen regionale Einschränkungen. Von Reisen in bestimmte ländliche Regionen wird abgeraten.','Kein Visum für Deutsche (90 Tage).','guatemalasicherheit-206020'],
+  HN:[1,'Für Honduras bestehen regionale Einschränkungen. Erhebliche Kriminalitätsrisiken.','Kein Visum für Deutsche (90 Tage).','hondurassicherheit-201140'],
+  SV:[1,'Für El Salvador bestehen regionale Einschränkungen. Trotz verbesserter Sicherheitslage bestehen Risiken in bestimmten Regionen.','Kein Visum für Deutsche (90 Tage).','elsalvadorsicherheit-221864'],
+  NI:[1,'Für Nicaragua bestehen regionale Einschränkungen. Politische Repression. Von Reisen in Grenzregionen zu Honduras wird abgeraten.','Kein Visum für Deutsche (90 Tage).','nicaraguasicherheit-201170'],
+  CU:[1,'Für Kuba bestehen regionale Einschränkungen. Erhebliche wirtschaftliche Krise mit Versorgungsengpässen.','Touristenkarte (Turistarjeta) erforderlich.','kubasicherheit-201662'],
+  CI:[1,'Für die Elfenbeinküste bestehen regionale Einschränkungen. Von Reisen in den Norden und Westen wird abgeraten.','Visum erforderlich.','elfenbeinkuestesicherheit-201828'],
+  LR:[1,'Für Liberia bestehen regionale Einschränkungen. Erhöhte Kriminalitätsrisiken und instabile politische Lage.','Visum erforderlich.','liberiasicherheit-204082'],
+  SL:[1,'Für Sierra Leone bestehen regionale Einschränkungen. Erhöhte Kriminalitätsrisiken, insbesondere in Freetown.','Visum erforderlich.','sierraleonesicherheit-203500'],
+  GN:[1,'Für Guinea bestehen regionale Einschränkungen. Seit Militärputsch 2021 politische Instabilität.','Visum erforderlich.','guineasicherheit-201916'],
+  TG:[1,'Für Togo bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Burkina Faso wird abgeraten.','Visum erforderlich oder Visa on Arrival.','togosicherheit-204436'],
+  BJ:[1,'Für Benin bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Burkina Faso/Niger wird abgeraten.','Visum erforderlich (eVisa online).','beninsicherheit-201638'],
+  ZW:[1,'Für Simbabwe bestehen regionale Einschränkungen. Politische Instabilität und hohe Kriminalität.','Visum erforderlich (eVisa oder Visa on Arrival).','simbabwesicherheit-205396'],
+  ZM:[1,'Für Sambia bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu DR Kongo wird abgeraten.','Visum erforderlich (eVisa oder Visa on Arrival).','sambiasicherheit-208606'],
+  MW:[1,'Für Malawi bestehen regionale Einschränkungen. Erhöhte Kriminalitätsrisiken in Städten.','Visum erforderlich (Visa on Arrival möglich).','malawisicherheit-205680'],
+  ER:[1,'Für Eritrea bestehen regionale Einschränkungen. Autoritäres Regime. Von Reisen in Grenzregionen zu Äthiopien wird abgeraten.','Visum erforderlich.','eritreasicherheit-204760'],
+  DJ:[1,'Für Dschibuti bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Eritrea und Somalia wird abgeraten.','Visum erforderlich (eVisa möglich).','dschibutil-sicherheit-204430'],
+  AM:[1,'Für Armenien bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Aserbaidschan wird abgeraten.','Kein Visum für Deutsche (90 Tage).','armeniensicherheit-201826'],
+  KG:[1,'Für Kirgisistan bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Tadschikistan wird abgeraten.','Kein Visum für Deutsche (30 Tage).','kirgisistansicherheit-205492'],
+  MD:[1,'Für Moldau bestehen regionale Einschränkungen. Von Reisen in die Region Transnistrien wird abgeraten.','Kein Visum für Deutsche (90 Tage).','moldausicherheit-201880'],
+  BI:[1,'Für Burundi bestehen regionale Einschränkungen. Politische Instabilität und erhöhte Kriminalität.','Visum erforderlich.','burundisicherheit-205548'],
+  RW:[1,'Für Ruanda bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zur DR Kongo wird abgeraten. Kigali gilt als sicher.','Visum erforderlich (eVisa online).','ruandasicherheit-204998'],
+  GW:[1,'Für Guinea-Bissau bestehen regionale Einschränkungen. Politische Instabilität.','Visum erforderlich.','guineabissausicherheit-220332'],
+  DE:[0,'Kein besonderes Reiserisiko. Deutschland ist ein sicheres Reiseziel.','Kein Visum für EU-Bürger.','deutschlandsicherheit-201836'],
+  FR:[0,'Kein besonderes Reiserisiko. Erhöhte Wachsamkeit bei öffentlichen Veranstaltungen empfohlen.','Kein Visum für EU-Bürger. Personalausweis ausreichend.','frankreichsicherheit-201462'],
+  GB:[0,'Kein besonderes Reiserisiko. Erhöhtes Terrorrisiko in Großstädten. London gilt als sicher.','Kein Visum für Deutsche (6 Monate). Reisepass erforderlich.','grossbritanniensicherheit-204760'],
+  US:[0,'Kein besonderes Reiserisiko. Sicherheitslage allgemein stabil.','ESTA erforderlich (online, mind. 72h vor Reise). Reisepass.','usasicherheit-201382'],
+  CA:[0,'Kein besonderes Reiserisiko. Kanada gilt als sehr sicheres Reiseziel.','ETA erforderlich (online). Kein Visum für Deutsche.','kanadasicherheit-204076'],
+  KR:[0,'Kein besonderes Reiserisiko. Südkorea gilt als sicheres Reiseziel.','Kein Visum für Deutsche (90 Tage).','koreasicherheit-201582'],
+  AU:[0,'Kein besonderes Reiserisiko. Australien gilt als sicheres Reiseziel.','eVisitor oder ETA erforderlich (online).','australiensicherheit-206056'],
+  NZ:[0,'Kein besonderes Reiserisiko. Neuseeland gilt als sehr sicheres Reiseziel.','NZeTA erforderlich (online).','neuseelangsicherheit-203534'],
+  SG:[0,'Kein besonderes Reiserisiko. Singapur gilt als eines der sichersten Reiseziele weltweit.','Kein Visum für Deutsche (30 Tage).','singapursicherheit-206244'],
+  VN:[0,'Kein besonderes Reiserisiko. Vietnam gilt als relativ sicheres Reiseziel.','Kein Visum für Deutsche (45 Tage). eVisa empfohlen.','vietnamsicherheit-201306'],
+  AR:[0,'Kein besonderes Reiserisiko. Argentinien gilt als relativ sicheres Reiseziel.','Kein Visum für Deutsche (90 Tage).','argentiniensicherheit-201440'],
+};
+
+// Fallback-Warnstufen für Länder ohne Live-Daten und ohne DETAILS-Eintrag
+const FALLBACK_LVL = {
+  IT:0,ES:0,NL:0,BE:0,CH:0,AT:0,PL:0,SE:0,NO:0,FI:0,DK:0,PT:0,IE:0,GR:0,
+  CZ:0,SK:0,HU:0,RO:0,BG:0,HR:0,SI:0,EE:0,LV:0,LT:0,LU:0,MT:0,CY:0,IS:0,
+  AL:0,RS:0,ME:0,BA:0,MK:0,
+  CL:0,PE:0,UY:0,BO:0,PY:0,CR:0,PA:0,DO:0,JM:0,TT:0,
+  NA:0,BW:0,LS:0,SZ:0,MU:0,CG:0,GA:0,SR:0,GY:0,KM:0,SN:0,
+  KZ:0,MN:0,UZ:0,LA:0,MG:1,
+};
+
+const NUM_TO_ISO2 = {
+  4:'AF',8:'AL',12:'DZ',24:'AO',32:'AR',36:'AU',40:'AT',50:'BD',56:'BE',
+  64:'BT',68:'BO',72:'BW',76:'BR',100:'BG',104:'MM',108:'BI',112:'BY',
+  116:'KH',120:'CM',124:'CA',140:'CF',144:'LK',148:'TD',152:'CL',156:'CN',
+  170:'CO',174:'KM',178:'CG',180:'CD',188:'CR',191:'HR',192:'CU',196:'CY',
+  203:'CZ',204:'BJ',208:'DK',214:'DO',218:'EC',818:'EG',222:'SV',231:'ET',
+  232:'ER',233:'EE',246:'FI',250:'FR',262:'DJ',266:'GA',268:'GE',275:'PS',
+  276:'DE',288:'GH',300:'GR',320:'GT',324:'GN',328:'GY',332:'HT',340:'HN',
+  348:'HU',352:'IS',356:'IN',360:'ID',364:'IR',368:'IQ',372:'IE',376:'IL',
+  380:'IT',384:'CI',388:'JM',392:'JP',398:'KZ',400:'JO',404:'KE',408:'KP',
+  410:'KR',414:'KW',417:'KG',418:'LA',422:'LB',426:'LS',428:'LV',430:'LR',
+  434:'LY',438:'LI',440:'LT',442:'LU',450:'MG',454:'MW',458:'MY',462:'MV',
+  466:'ML',470:'MT',478:'MR',480:'MU',484:'MX',496:'MN',498:'MD',499:'ME',
+  504:'MA',508:'MZ',512:'OM',516:'NA',524:'NP',528:'NL',554:'NZ',558:'NI',
+  562:'NE',566:'NG',578:'NO',586:'PK',591:'PA',598:'PG',600:'PY',604:'PE',
+  608:'PH',616:'PL',620:'PT',624:'GW',634:'QA',642:'RO',643:'RU',646:'RW',
+  682:'SA',686:'SN',688:'RS',694:'SL',703:'SK',704:'VN',705:'SI',706:'SO',
+  710:'ZA',716:'ZW',724:'ES',728:'SS',729:'SD',740:'SR',748:'SZ',752:'SE',
+  756:'CH',760:'SY',762:'TJ',764:'TH',768:'TG',780:'TT',784:'AE',788:'TN',
+  792:'TR',800:'UG',804:'UA',807:'MK',826:'GB',834:'TZ',840:'US',854:'BF',
+  858:'UY',860:'UZ',862:'VE',887:'YE',894:'ZM',31:'AZ',48:'BH',51:'AM',70:'BA',
+};
+
+const COUNTRY_NAMES = {
+  AF:'Afghanistan',AL:'Albanien',DZ:'Algerien',AO:'Angola',AR:'Argentinien',
+  AU:'Australien',AT:'Österreich',BD:'Bangladesch',BY:'Belarus',BE:'Belgien',
+  BJ:'Benin',BO:'Bolivien',BA:'Bosnien-Herzegowina',BW:'Botswana',BR:'Brasilien',
+  BF:'Burkina Faso',BG:'Bulgarien',MM:'Myanmar',KH:'Kambodscha',CM:'Kamerun',
+  CA:'Kanada',CF:'Zentrafrikanische Rep.',TD:'Tschad',CL:'Chile',CN:'China',
+  CO:'Kolumbien',CG:'Kongo',CD:'Dem. Rep. Kongo',CR:'Costa Rica',HR:'Kroatien',
+  CU:'Kuba',CY:'Zypern',CZ:'Tschechien',DK:'Dänemark',DO:'Dominikanische Rep.',
+  EC:'Ecuador',EG:'Ägypten',SV:'El Salvador',ET:'Äthiopien',FI:'Finnland',
+  FR:'Frankreich',DE:'Deutschland',GH:'Ghana',GR:'Griechenland',GT:'Guatemala',
+  HT:'Haiti',HN:'Honduras',HU:'Ungarn',IN:'Indien',ID:'Indonesien',IR:'Iran',
+  IQ:'Irak',IE:'Irland',IL:'Israel',IT:'Italien',CI:'Elfenbeinküste',JP:'Japan',
+  JO:'Jordanien',KE:'Kenia',KP:'Nordkorea',KR:'Südkorea',KW:'Kuwait',LA:'Laos',
+  LB:'Libanon',LR:'Liberia',LY:'Libyen',MG:'Madagaskar',MW:'Malawi',MY:'Malaysia',
+  ML:'Mali',MX:'Mexiko',MN:'Mongolei',MA:'Marokko',MZ:'Mosambik',NA:'Namibia',
+  NP:'Nepal',NL:'Niederlande',NZ:'Neuseeland',NI:'Nicaragua',NE:'Niger',NG:'Nigeria',
+  NO:'Norwegen',OM:'Oman',PK:'Pakistan',PA:'Panama',PG:'Papua-Neuguinea',PY:'Paraguay',
+  PE:'Peru',PH:'Philippinen',PL:'Polen',PT:'Portugal',QA:'Katar',RO:'Rumänien',
+  RU:'Russland',RW:'Ruanda',SA:'Saudi-Arabien',SN:'Senegal',SL:'Sierra Leone',
+  SK:'Slowakei',SI:'Slowenien',SO:'Somalia',ZA:'Südafrika',ES:'Spanien',LK:'Sri Lanka',
+  SD:'Sudan',SS:'Südsudan',SE:'Schweden',CH:'Schweiz',SY:'Syrien',TJ:'Tadschikistan',
+  TH:'Thailand',TN:'Tunesien',TR:'Türkei',UG:'Uganda',UA:'Ukraine',
+  AE:'Vereinigte Arab. Emirate',GB:'Großbritannien',TZ:'Tansania',US:'USA',
+  UY:'Uruguay',UZ:'Usbekistan',VE:'Venezuela',VN:'Vietnam',YE:'Jemen',ZM:'Sambia',
+  ZW:'Simbabwe',AZ:'Aserbaidschan',KZ:'Kasachstan',MD:'Moldau',MK:'Nordmazedonien',
+  RS:'Serbien',ME:'Montenegro',KG:'Kirgisistan',PS:'Palästin. Gebiete',ER:'Eritrea',
+  DJ:'Dschibuti',MU:'Mauritius',MR:'Mauretanien',TG:'Togo',GE:'Georgien',
+  AM:'Armenien',GN:'Guinea',BH:'Bahrain',BI:'Burundi',SR:'Suriname',GY:'Guyana',
+  LS:'Lesotho',SZ:'Eswatini',KM:'Komoren',MT:'Malta',IS:'Island',EE:'Estland',
+  LV:'Lettland',LT:'Litauen',LU:'Luxemburg',GW:'Guinea-Bissau',
+};
+
+const DEFAULT_TEXT = {
+  0: ['Kein besonderes Reiserisiko. Übliche Sicherheitsvorkehrungen beachten.', 'Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  1: ['Regionale Einschränkungen bestehen. Aktuelle Hinweise des Auswärtigen Amts prüfen.', 'Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  2: ['Teilreisewarnung. Von Reisen in bestimmte Regionen wird abgeraten. Aktuelle Hinweise prüfen.', 'Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  3: ['Vor Reisen in dieses Land wird gewarnt. Aktuelle Hinweise des Auswärtigen Amts unbedingt beachten.', 'Einreise nicht empfohlen.'],
+};
+
+// Live-Daten vom eigenen Server
+let liveData = {};
+let liveTexts = {};
+
+async function loadWarnings() {
+  const pill = document.getElementById('status-pill');
+  try {
+    const res = await fetch('/api/warnings');
+    const json = await res.json();
+    liveData = json.data || {};
+    const count = Object.keys(liveData).length;
+    const date = json.lastUpdated ? new Date(json.lastUpdated).toLocaleString('de-DE') : '–';
+    pill.textContent = `Live · ${count} Länder · ${date}`;
+    pill.className = 'live';
+    if (svgPaths) svgPaths.attr('fill', d => getColor(getIso2(d.id)));
+  } catch (e) {
+    pill.textContent = 'Fallback-Daten aktiv';
+    pill.className = 'error';
+  }
+}
+
+async function loadTexts() {
+  try {
+    const res = await fetch('/api/texts');
+    const json = await res.json();
+    liveTexts = json.data || {};
+    console.log(`Texte geladen: ${Object.keys(liveTexts).length} Länder`);
+  } catch (e) {
+    console.warn('Text-API nicht erreichbar, nutze statische Texte');
+  }
+}
+
+function getIso2(id) { return NUM_TO_ISO2[String(id)] || NUM_TO_ISO2[parseInt(id)]; }
+
+function getLevel(iso2) {
+  if (!iso2) return -1;
+  if (liveData[iso2] !== undefined) return liveData[iso2].level;
+  if (DETAILS[iso2] !== undefined) return DETAILS[iso2][0];
+  if (FALLBACK_LVL[iso2] !== undefined) return FALLBACK_LVL[iso2];
+  return -1;
+}
+
+function getColor(iso2) {
+  const l = getLevel(iso2);
+  return l === -1 ? '#B4B2A9' : C[l];
+}
+
+// Stabile AA Länderseiten – immer aktuell, nie veraltete Nummern
+const AA_NODE = 'https://www.auswaertiges-amt.de/de/service/laender/';
+const AA_FALLBACK = 'https://www.auswaertiges-amt.de/de/reiseundsicherheit/10-2-8reisewarnungen';
+
+// ISO2 → AA country-node slug – vollständig verifiziert März 2026
+const AA_SLUGS = {
+  AF:'afghanistan-node',   AE:'vereinigtearabischeemirate-node',
+  AL:'albanien-node',      DZ:'algerien-node',      AO:'angola-node',
+  AR:'argentinien-node',   AM:'armenien-node',       AU:'australien-node',
+  AT:'oesterreich-node',   AZ:'aserbaidschan-node',  BH:'bahrain-node',
+  BD:'bangladesch-node',   BY:'belarus-node',         BE:'belgien-node',
+  BJ:'benin-node',         BO:'bolivien-node',       BA:'bosnienundherzegowina-node',
+  BW:'botsuana-node',      BR:'brasilien-node',      BF:'burkinafaso-node',
+  BG:'bulgarien-node',     BI:'burundi-node',        MM:'myanmar-node',
+  KH:'kambodscha-node',    CM:'kamerun-node',        CA:'kanada-node',
+  CF:'zentralafrikanischerepublik-node',              TD:'tschad-node',
+  CL:'chile-node',         CN:'china-node',          CO:'kolumbien-node',
+  CG:'kongorepublik-node', CD:'kongodemokratischerepublik-node',
+  CR:'costarica-node',     HR:'kroatien-node',       CU:'kuba-node',
+  CY:'zypern-node',        CZ:'tschechien-node',     DK:'daenemark-node',
+  DO:'dominikanischerepublik-node',                   EC:'ecuador-node',
+  EG:'aegypten-node',      SV:'elsalvador-node',     ET:'aethiopien-node',
+  FI:'finnland-node',      FR:'frankreich-node',     DE:'deutschland-node',
+  GH:'ghana-node',         GR:'griechenland-node',   GT:'guatemala-node',
+  GN:'guinea-node',        GW:'guineabissau-node',   GY:'guyana-node',
+  HT:'haiti-node',         HN:'honduras-node',       HU:'ungarn-node',
+  IN:'indien-node',        ID:'indonesien-node',     IR:'iran-node',
+  IQ:'irak-node',          IE:'irland-node',         IL:'israel-node',
+  IT:'italien-node',       CI:'cotedivoire-node',    JP:'japan-node',
+  JO:'jordanien-node',     KE:'kenia-node',
+  KP:'koreademokratischevolksrepublik-node',          KR:'korearepublik-node',
+  KW:'kuwait-node',        KG:'kirgisistan-node',    KZ:'kasachstan-node',
+  LA:'laos-node',          LB:'libanon-node',        LR:'liberia-node',
+  LY:'libyen-node',        MG:'madagaskar-node',     MW:'malawi-node',
+  MY:'malaysia-node',      ML:'mali-node',           MX:'mexiko-node',
+  MN:'mongolei-node',      MA:'marokko-node',        MD:'moldau-node',
+  ME:'montenegro-node',    MZ:'mosambik-node',       MR:'mauretanien-node',
+  MU:'mauritius-node',     NA:'namibia-node',        NP:'nepal-node',
+  NL:'niederlande-node',   NZ:'neuseeland-node',     NI:'nicaragua-node',
+  NE:'niger-node',         NG:'nigeria-node',        NO:'norwegen-node',
+  MK:'nordmazedonien-node',OM:'oman-node',           PK:'pakistan-node',
+  PA:'panama-node',        PG:'papuaneuguinea-node', PY:'paraguay-node',
+  PE:'peru-node',          PH:'philippinen-node',    PL:'polen-node',
+  PT:'portugal-node',      PS:'palaestinensischegebiete-node',
+  QA:'katar-node',         RO:'rumaenien-node',
+  RU:'russischefoederation-node',                    RW:'ruanda-node',
+  SA:'saudiarabien-node',  SN:'senegal-node',        RS:'serbien-node',
+  SL:'sierraleone-node',   SK:'slowakei-node',       SI:'slowenien-node',
+  SO:'somalia-node',       ZA:'suedafrika-node',     ES:'spanien-node',
+  LK:'srilanka-node',      SD:'sudan-node',          SS:'suedsudan-node',
+  SE:'schweden-node',      CH:'schweiz-node',        SY:'syrien-node',
+  TJ:'tadschikistan-node', TH:'thailand-node',       TG:'togo-node',
+  TN:'tunesien-node',      TR:'tuerkei-node',        UG:'uganda-node',
+  UA:'ukraine-node',       GB:'grossbritannien-node',TZ:'tansania-node',
+  US:'usa-node',           UY:'uruguay-node',        UZ:'usbekistan-node',
+  VE:'venezuela-node',     VN:'vietnam-node',        YE:'jemen-node',
+  ZM:'sambia-node',        ZW:'simbabwe-node',
+  DJ:'dschibuti-node',     ER:'eritrea-node',        GE:'georgien-node',
+  SR:'suriname-node',      LS:'lesotho-node',
+};
+
+function buildLink(iso2) {
+  const slug = AA_SLUGS[iso2];
+  if (slug) return AA_NODE + slug;
+  return AA_FALLBACK;
+}
+
+function getInfo(iso2) {
+  const lvl = getLevel(iso2);
+  // Priorität 1: Live-Texte vom Server (wöchentlich via KI generiert)
+  if (liveTexts[iso2]) return { sec: liveTexts[iso2].security, entry: liveTexts[iso2].entry };
+  // Priorität 2: Statische DETAILS-Tabelle
+  if (DETAILS[iso2]) return { sec: DETAILS[iso2][1], entry: DETAILS[iso2][2] };
+  // Priorität 3: Standardtext je Warnstufe
+  const d = DEFAULT_TEXT[lvl >= 0 ? lvl : 0];
+  return { sec: d[0], entry: d[1] };
+}
+
+function showPopup(evt, iso2) {
+  const lvl = getLevel(iso2);
+  const name = COUNTRY_NAMES[iso2] || iso2;
+  const info = getInfo(iso2);
+
+  document.getElementById('popup-title').textContent = name;
+
+  const badge = document.getElementById('popup-badge');
+  badge.textContent = lvl >= 0 ? LBL[lvl] : 'Keine Daten';
+  badge.style.background = lvl >= 0 ? BB[lvl] : '#F1EFE8';
+  badge.style.color = lvl >= 0 ? BC[lvl] : '#5F5E5A';
+
+  document.getElementById('pp-sec').textContent = info.sec;
+  document.getElementById('pp-biz').textContent = lvl >= 0 ? BIZ[lvl] : 'Bitte Auswärtiges Amt direkt prüfen.';
+  document.getElementById('pp-entry').textContent = info.entry;
+  document.getElementById('popup-link').href = buildLink(iso2);
+
+  const wrap = document.getElementById('map-wrap');
+  const wr = wrap.getBoundingClientRect();
+  const pop = document.getElementById('popup');
+  pop.style.display = 'block';
+
+  let x = evt.clientX - wr.left + 14;
+  let y = evt.clientY - wr.top + 14;
+  const pw = pop.offsetWidth || 295;
+  const ph = pop.offsetHeight || 300;
+  if (x + pw > wrap.offsetWidth - 4) x = Math.max(4, evt.clientX - wr.left - pw - 14);
+  if (y + ph > wrap.offsetHeight + 50) y = Math.max(4, y - ph - 20);
+  pop.style.left = x + 'px';
+  pop.style.top = y + 'px';
+}
+
+function closePopup() {
+  document.getElementById('popup').style.display = 'none';
+  if (svgPaths && activeD) {
+    svgPaths.filter(d => d === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5);
+    activeD = null;
+  }
+}
+
+// ── Karte ─────────────────────────────────────────────────────────────────────
+let svgPaths, activeD;
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const stroke0 = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)';
+const mapBg   = isDark ? '#1a253a' : '#cde0f0';
+
+const svg = d3.select('#map').append('svg')
+  .attr('viewBox', '0 0 960 500')
+  .attr('width', '100%')
+  .style('background', mapBg)
+  .style('display', 'block');
+
+const proj = d3.geoNaturalEarth1().scale(153).translate([480, 250]);
+const pathGen = d3.geoPath(proj);
+
+d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
+  const features = topojson.feature(world, world.objects.countries).features;
+
+  svgPaths = svg.selectAll('path').data(features).join('path')
+    .attr('d', pathGen)
+    .attr('fill', d => getColor(getIso2(d.id)))
+    .attr('stroke', stroke0)
+    .attr('stroke-width', 0.5)
+    .style('cursor', 'pointer')
+    .on('click', function(evt, d) {
+      const iso2 = getIso2(d.id);
+      if (!iso2) return;
+      if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5);
+      activeD = d;
+      d3.select(this).attr('stroke', '#fff').attr('stroke-width', 2);
+      showPopup(evt, iso2);
+    });
+
+  // Live-Daten laden
+  loadWarnings();
+  loadTexts();
+});
+</script>
+</body>
+</html>
