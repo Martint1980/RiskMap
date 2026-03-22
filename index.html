@@ -522,11 +522,15 @@
     }
 
     #popup-aa-note {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--text3);
-      line-height: 1.5;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--c1);
+      line-height: 1.55;
       margin-bottom: 10px;
+      padding: 8px 10px;
+      background: var(--b1);
+      border-left: 3px solid var(--c1);
+      border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
     }
 
     #popup-link {
@@ -840,7 +844,7 @@ const FALLBACK_LVL = {
   CZ:0,SK:0,HU:0,RO:0,BG:0,HR:0,SI:0,EE:0,LV:0,LT:0,LU:0,MT:0,CY:0,IS:0,
   AL:0,RS:0,ME:0,BA:0,MK:0,CL:0,PE:0,UY:0,BO:0,PY:0,CR:0,PA:0,DO:0,JM:0,TT:0,
   NA:0,BW:0,LS:0,SZ:0,MU:0,CG:0,GA:0,SR:0,GY:0,KM:0,SN:0,KZ:0,MN:0,UZ:0,LA:0,MG:1,
-  MO:0,TL:1,EH:1,SB:0,VU:0,WS:0,TO:0,NR:0,PW:0,
+  MO:0,TL:1,EH:1,SB:0,VU:0,WS:0,TO:0,NR:0,PW:0,BT:0,
   BS:0,BZ:1,BN:1,GQ:1,FK:0,FJ:0,GM:1,GL:0,NC:0,PR:0,
   CV:0,DM:0,GD:0,KN:0,LC:0,VC:0,ST:0,SC:0,
 };
@@ -876,7 +880,7 @@ const NUM_TO_ISO2 = {
 const COUNTRY_NAMES = {
   AF:'Afghanistan',AL:'Albanien',DZ:'Algerien',AO:'Angola',AR:'Argentinien',
   AU:'Australien',AT:'Österreich',BD:'Bangladesch',BY:'Belarus',BE:'Belgien',
-  BJ:'Benin',BO:'Bolivien',BA:'Bosnien-Herzegowina',BW:'Botswana',BR:'Brasilien',
+  BJ:'Benin',BT:'Bhutan',BO:'Bolivien',BA:'Bosnien-Herzegowina',BW:'Botswana',BR:'Brasilien',
   BF:'Burkina Faso',BG:'Bulgarien',MM:'Myanmar',KH:'Kambodscha',CM:'Kamerun',
   CA:'Kanada',CF:'Zentralafrikan. Rep.',TD:'Tschad',CL:'Chile',CN:'China',
   CO:'Kolumbien',CG:'Kongo',CD:'Dem. Rep. Kongo',CR:'Costa Rica',HR:'Kroatien',
@@ -1262,18 +1266,26 @@ function focusCountry(iso2) {
 }
 
 // ── D3 Map ────────────────────────────────────────────────────────────────────
-const stroke0 = isDark ? 'rgba(8,12,22,0.9)' : 'rgba(255,255,255,0.8)';
-const mapBg   = isDark ? '#08111E' : '#A8C4DE';
+const stroke0 = isDark ? 'rgba(4,8,18,0.92)' : 'rgba(255,255,255,0.82)';
+const mapBgTop    = isDark ? '#060E1C' : '#96B8D4';
+const mapBgBottom = isDark ? '#030810' : '#7AA0C0';
 
 const svg = d3.select('#map').append('svg')
   .attr('viewBox', '0 0 960 500')
   .attr('width', '100%')
   .style('display', 'block');
 
-svg.append('rect').attr('width', 960).attr('height', 500).attr('fill', mapBg);
-
-// SVG patterns: diagonal green/yellow stripes for level 1, one per angle
 const defs = svg.append('defs');
+
+// Ocean gradient
+const oceanGrad = defs.append('linearGradient')
+  .attr('id', 'ocean-grad')
+  .attr('x1', '0%').attr('y1', '0%')
+  .attr('x2', '0%').attr('y2', '100%');
+oceanGrad.append('stop').attr('offset', '0%').attr('stop-color', mapBgTop);
+oceanGrad.append('stop').attr('offset', '100%').attr('stop-color', mapBgBottom);
+
+svg.append('rect').attr('width', 960).attr('height', 500).attr('fill', 'url(#ocean-grad)');
 STRIPE_ANGLES.forEach(angle => {
   const pat = defs.append('pattern')
     .attr('id', `stripe-lvl1-${angle}`)
