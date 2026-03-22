@@ -146,8 +146,8 @@ async function fetchWarnings() {
 
   for (const item of entries) {
     if (!item || typeof item !== 'object') continue;
-    const iso2 = item.iso2CountryCode;
-    if (!iso2) continue;
+    const iso2 = item.iso2CountryCode || item.countryCode;
+    if (!iso2 || iso2.length !== 2) continue;
     result[iso2] = {
       level: item.warning ? 3 : item.partialWarning ? 2 : 0,
       warning: item.warning || false,
