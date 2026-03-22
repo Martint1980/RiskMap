@@ -4,72 +4,108 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Geschäftsreise – Sicherheitskarte</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #f5f5f3;
-      --surface:  #ffffff;
-      --surface2: #f9f9f7;
-      --border:   rgba(0,0,0,0.08);
-      --border2:  rgba(0,0,0,0.16);
-      --text:     #111110;
-      --text2:    #6b6b66;
-      --text3:    #a0a09a;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
-      --c0: #2a5c0a; --c1: #b07d00; --c2: #b84a0a; --c3: #b52828;
-      --b0: #eef6e6; --b1: #fdf5dc; --b2: #fceee6; --b3: #fdeaea;
-      --bc0:#1e4407; --bc1:#7a5500; --bc2:#7a2d08; --bc3:#7a1a1a;
+      /* Dark theme (default) */
+      --bg:        #07101e;
+      --bg2:       #0c1828;
+      --surface:   #111f33;
+      --surface2:  #162440;
+      --border:    rgba(100,160,255,0.1);
+      --border2:   rgba(100,160,255,0.18);
+      --text:      #dde8f5;
+      --text2:     #7a9ab8;
+      --text3:     #3d5a78;
+      --accent:    #c8a44a;
+      --accent2:   rgba(200,164,74,0.12);
+
+      --c0: #1db954;  /* safe - vivid green */
+      --c1: #d4930a;  /* caution - amber */
+      --c2: #e05c1a;  /* partial - orange */
+      --c3: #d63031;  /* warning - red */
+      --b0: rgba(29,185,84,0.1);
+      --b1: rgba(212,147,10,0.1);
+      --b2: rgba(224,92,26,0.1);
+      --b3: rgba(214,48,49,0.1);
+      --bc0:#1db954; --bc1:#d4930a; --bc2:#e05c1a; --bc3:#d63031;
+
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+      --font-body:    'IBM Plex Sans', system-ui, sans-serif;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --shadow-pop: 0 0 0 1px rgba(100,160,255,0.12), 0 20px 60px rgba(0,0,0,0.6), 0 8px 20px rgba(0,0,0,0.4);
     }
 
-    @media (prefers-color-scheme: dark) {
+    @media (prefers-color-scheme: light) {
       :root {
-        --bg:       #111110;
-        --surface:  #1c1c1a;
-        --surface2: #222220;
-        --border:   rgba(255,255,255,0.08);
-        --border2:  rgba(255,255,255,0.16);
-        --text:     #edede8;
-        --text2:    #8a8a82;
-        --text3:    #555550;
-        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-        --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
-        --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
-        --c0: #4a9c1a; --c1: #d4a017; --c2: #d4601a; --c3: #d43a3a;
-        --b0: #182910; --b1: #281e08; --b2: #2a160a; --b3: #280a0a;
-        --bc0:#7dcc44; --bc1:#f0c040; --bc2:#f08040; --bc3:#f05050;
+        --bg:       #f0f2f5;
+        --bg2:      #e8ecf2;
+        --surface:  #ffffff;
+        --surface2: #f5f7fa;
+        --border:   rgba(0,40,100,0.1);
+        --border2:  rgba(0,40,100,0.18);
+        --text:     #0d1f35;
+        --text2:    #4a6580;
+        --text3:    #9ab0c8;
+        --accent:   #9a7420;
+        --accent2:  rgba(154,116,32,0.08);
+        --c0:#166534; --c1:#92400e; --c2:#9a3412; --c3:#991b1b;
+        --b0:rgba(22,101,52,0.08); --b1:rgba(146,64,14,0.08);
+        --b2:rgba(154,52,18,0.08); --b3:rgba(153,27,27,0.08);
+        --bc0:#166534; --bc1:#92400e; --bc2:#9a3412; --bc3:#991b1b;
+        --shadow-pop: 0 0 0 1px rgba(0,40,100,0.1), 0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.08);
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
     }
 
-    html { font-size: 15px; }
+    /* ── Base ─────────────────────────────────────────────────────── */
+    html { font-size: 14px; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+      font-family: var(--font-body);
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 16px;
-      line-height: 1.5;
+      padding: 14px 16px 12px;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Focus ────────────────────────────────────────────────────── */
+    /* Subtle grid texture on bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(100,160,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100,160,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    * { position: relative; z-index: 1; }
+
     :focus-visible {
-      outline: 2px solid #185FA5;
+      outline: 2px solid var(--accent);
       outline-offset: 2px;
       border-radius: var(--radius-sm);
     }
 
-    /* ── Header ────────────────────────────────────────────────────── */
+    /* ── Header ───────────────────────────────────────────────────── */
     header {
       display: flex;
       align-items: center;
@@ -77,99 +113,107 @@
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
     }
 
-    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
 
     h1 {
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      text-wrap: balance;
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--text);
     }
 
-    /* ── Status pill ────────────────────────────────────────────────── */
+    h1 span {
+      color: var(--text3);
+      font-weight: 400;
+    }
+
+    /* ── Status pill ──────────────────────────────────────────────── */
     #status-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      padding: 3px 10px;
+      border-radius: 3px;
+      border: 1px solid var(--border2);
+      color: var(--text3);
+      background: var(--bg2);
+      white-space: nowrap;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      font-size: 11.5px;
-      font-weight: 500;
-      padding: 3px 10px;
-      border-radius: 99px;
-      border: 1px solid var(--border2);
-      color: var(--text2);
-      background: var(--surface);
-      white-space: nowrap;
-      transition: color .2s, border-color .2s;
+      gap: 6px;
+      transition: color .3s, border-color .3s;
     }
-    #status-pill::before {
-      content: '';
-      width: 6px; height: 6px;
+    .status-dot {
+      width: 5px; height: 5px;
       border-radius: 50%;
       background: var(--text3);
       flex-shrink: 0;
-      transition: background .2s;
     }
-    #status-pill.live::before   { background: #22c55e; }
-    #status-pill.live           { color: var(--text2); border-color: rgba(34,197,94,0.3); }
-    #status-pill.error::before  { background: #f97316; }
-    #status-pill.error          { color: var(--text2); border-color: rgba(249,115,22,0.3); }
+    #status-pill.live .status-dot {
+      background: var(--c0);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    #status-pill.live   { color: var(--text2); border-color: rgba(29,185,84,0.25); }
+    #status-pill.error .status-dot { background: var(--c1); }
+    #status-pill.error  { color: var(--text2); border-color: rgba(212,147,10,0.25); }
 
-    /* ── Header right ───────────────────────────────────────────────── */
-    .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.7); }
+    }
 
-    /* ── Search ────────────────────────────────────────────────────── */
+    /* ── Header right ─────────────────────────────────────────────── */
+    .header-right { display: flex; align-items: center; gap: 8px; }
+
+    /* ── Search ───────────────────────────────────────────────────── */
     .search-wrap { position: relative; }
-
     .search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 
-    .search-icon {
-      position: absolute;
-      left: 9px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--text3);
-      pointer-events: none;
-      font-size: 13px;
-    }
-
     #search-input {
-      font-size: 13px;
-      font-family: inherit;
-      padding: 5px 28px 5px 30px;
-      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      padding: 5px 28px 5px 10px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border2);
-      background: var(--surface);
+      background: var(--bg2);
       color: var(--text);
-      width: 190px;
-      transition: border-color .15s, box-shadow .15s;
+      width: 200px;
+      transition: border-color .15s, box-shadow .15s, background .15s;
     }
     #search-input::placeholder { color: var(--text3); }
     #search-input:focus {
       outline: none;
-      border-color: #185FA5;
-      box-shadow: 0 0 0 3px rgba(24,95,165,0.12);
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--accent2);
     }
 
-    .search-shortcut {
+    .search-kbd {
       position: absolute;
       right: 8px; top: 50%;
       transform: translateY(-50%);
-      font-size: 10px;
+      font-family: var(--font-mono);
+      font-size: 9px;
       color: var(--text3);
-      background: var(--bg);
       border: 1px solid var(--border2);
-      border-radius: 4px;
+      border-radius: 3px;
       padding: 1px 4px;
       pointer-events: none;
+      line-height: 1.4;
     }
-    .search-shortcut.hidden { display: none; }
+    .search-kbd.hidden { display: none; }
 
     #search-clear {
       position: absolute;
       right: 7px; top: 50%;
       transform: translateY(-50%);
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text3);
       cursor: pointer;
       display: none;
@@ -177,135 +221,152 @@
       justify-content: center;
       background: var(--surface2);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      width: 18px; height: 18px;
+      border-radius: 3px;
+      width: 16px; height: 16px;
       padding: 0;
-      transition: color .15s;
+      font-family: var(--font-mono);
+      transition: color .12s;
     }
     #search-clear:hover { color: var(--text); }
 
     #search-dropdown {
       display: none;
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% + 4px);
       left: 0;
-      width: 240px;
+      width: 260px;
       background: var(--surface);
       border: 1px solid var(--border2);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-pop);
       z-index: 200;
-      max-height: 260px;
+      max-height: 280px;
       overflow-y: auto;
       padding: 4px;
     }
     .sd-item {
-      padding: 7px 10px;
+      padding: 6px 10px;
       cursor: pointer;
-      font-size: 13px;
       display: flex;
       align-items: center;
       gap: 8px;
       border-radius: var(--radius-sm);
-      transition: background .1s;
+      transition: background .08s;
     }
     .sd-item:hover, .sd-item:focus { background: var(--surface2); outline: none; }
-    .sd-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
-    .sd-level { margin-left: auto; font-size: 10px; color: var(--text3); }
-    .sd-empty { padding: 12px 10px; font-size: 13px; color: var(--text3); text-align: center; }
+    .sd-name { font-size: 13px; font-family: var(--font-display); font-weight: 500; flex: 1; }
+    .sd-dot { width: 6px; height: 6px; border-radius: 1px; flex-shrink: 0; }
+    .sd-lvl { font-family: var(--font-mono); font-size: 9px; color: var(--text3); }
+    .sd-empty { padding: 14px 10px; font-size: 12px; color: var(--text3); text-align: center; font-family: var(--font-mono); }
 
-    /* ── Stats bar ──────────────────────────────────────────────────── */
+    /* ── Stats bar ────────────────────────────────────────────────── */
     #stats-bar {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
       margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-right: 4px;
     }
 
     .stat-btn {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.03em;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 500;
-      font-family: inherit;
+      gap: 6px;
       color: var(--text2);
-      background: var(--surface);
+      background: var(--bg2);
       border: 1px solid var(--border2);
-      border-radius: 99px;
-      padding: 4px 11px 4px 8px;
+      border-radius: 3px;
+      padding: 3px 10px 3px 7px;
       cursor: pointer;
       transition: background .12s, border-color .12s, color .12s, box-shadow .12s;
       white-space: nowrap;
     }
-    .stat-btn:hover { background: var(--surface2); border-color: var(--border2); }
+    .stat-btn:hover {
+      background: var(--surface2);
+      border-color: var(--border2);
+      color: var(--text);
+    }
     .stat-btn.active {
-      background: var(--text);
-      color: var(--surface);
-      border-color: var(--text);
+      border-color: currentColor;
+      background: var(--accent2);
+      box-shadow: inset 0 0 0 1px currentColor;
     }
-    .stat-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
-    .stat-count {
-      font-size: 11px;
-      font-weight: 600;
-      color: inherit;
-      opacity: 0.7;
-    }
+    .stat-btn[data-level="3"].active { color: var(--c3); }
+    .stat-btn[data-level="2"].active { color: var(--c2); }
+    .stat-btn[data-level="1"].active { color: var(--c1); }
+    .stat-btn[data-level="0"].active { color: var(--c0); }
 
-    /* ── Alert banner ───────────────────────────────────────────────── */
+    .stat-dot { width: 6px; height: 6px; border-radius: 1px; flex-shrink: 0; }
+    .stat-count { opacity: 0.6; }
+
+    /* ── Alert ────────────────────────────────────────────────────── */
     .alert-banner {
-      font-size: 12px;
-      background: var(--b1);
-      color: var(--bc1);
-      border: 1px solid rgba(176,125,0,0.2);
-      border-radius: var(--radius-md);
-      padding: 6px 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.03em;
+      color: var(--c1);
+      border-left: 2px solid var(--c1);
+      padding: 4px 10px;
       margin-bottom: 10px;
+      background: var(--b1);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
     }
 
-    /* ── Map ────────────────────────────────────────────────────────── */
+    /* ── Map ──────────────────────────────────────────────────────── */
     #map-wrap {
       position: relative;
       border-radius: var(--radius-lg);
       overflow: hidden;
       border: 1px solid var(--border2);
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 0 0 1px var(--border), inset 0 0 80px rgba(0,0,0,0.2);
     }
-    #map svg { display: block; cursor: grab; user-select: none; }
-    #map svg:active { cursor: grabbing; }
+    #map svg { display: block; cursor: crosshair; user-select: none; }
+    #map svg.panning { cursor: grabbing; }
 
-    /* ── Zoom controls ──────────────────────────────────────────────── */
+    /* ── Zoom controls ────────────────────────────────────────────── */
     #zoom-controls {
       position: absolute;
       bottom: 12px;
       right: 12px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
       z-index: 5;
-    }
-    .zoom-btn {
-      width: 30px; height: 30px;
-      background: var(--surface);
       border: 1px solid var(--border2);
       border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .zoom-btn {
+      width: 28px; height: 28px;
+      background: var(--surface);
+      border: none;
+      border-bottom: 1px solid var(--border);
       cursor: pointer;
-      font-size: 17px;
-      font-family: inherit;
+      font-family: var(--font-mono);
+      font-size: 16px;
       display: flex; align-items: center; justify-content: center;
       color: var(--text2);
-      box-shadow: var(--shadow-sm);
       transition: background .1s, color .1s;
       line-height: 1;
     }
+    .zoom-btn:last-child { border-bottom: none; }
     .zoom-btn:hover { background: var(--surface2); color: var(--text); }
-    #zoom-in { border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
-    #zoom-out { border-radius: 0 0 var(--radius-sm) var(--radius-sm); border-top: none; }
 
-    /* ── Tooltip ────────────────────────────────────────────────────── */
+    /* ── Tooltip ──────────────────────────────────────────────────── */
     #map-tooltip {
       display: none;
       position: absolute;
@@ -313,129 +374,148 @@
       background: var(--surface);
       border: 1px solid var(--border2);
       border-radius: var(--radius-sm);
-      padding: 5px 10px;
-      font-size: 12px;
-      font-weight: 500;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.03em;
       color: var(--text);
       pointer-events: none;
       white-space: nowrap;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
 
-    /* ── Popup ──────────────────────────────────────────────────────── */
+    /* ── Popup / Dossier ──────────────────────────────────────────── */
     #popup {
       display: none;
       position: absolute;
       z-index: 10;
-      width: 296px;
+      width: 290px;
       background: var(--surface);
       border: 1px solid var(--border2);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-pop);
       overflow: hidden;
+      transform-origin: top left;
+      animation: popup-in 0.18s cubic-bezier(0.2, 0, 0.2, 1) both;
     }
-    #popup-color-bar {
-      height: 3px;
-      width: 100%;
+    @keyframes popup-in {
+      from { opacity: 0; transform: scale(0.94) translateY(6px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
     }
-    #popup-body {
-      padding: 14px 16px 16px;
-    }
+
+    #popup-risk-bar { height: 3px; width: 100%; }
+
+    #popup-body { padding: 14px 16px 16px; }
+
     #popup-header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     #popup-title {
+      font-family: var(--font-display);
       font-weight: 600;
-      font-size: 15px;
+      font-size: 22px;
       letter-spacing: -0.01em;
-      line-height: 1.3;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      line-height: 1.1;
+      color: var(--text);
     }
     #popup-close {
       cursor: pointer;
-      font-size: 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
       color: var(--text3);
-      background: var(--surface2);
+      background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      width: 22px; height: 22px;
+      width: 20px; height: 20px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      transition: color .1s, background .1s;
-      font-family: inherit;
+      margin-top: 3px;
+      transition: color .1s, border-color .1s;
     }
-    #popup-close:hover { color: var(--text); background: var(--bg); }
+    #popup-close:hover { color: var(--text); border-color: var(--border2); }
+
     #popup-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      padding: 3px 9px;
-      border-radius: 99px;
-      font-weight: 500;
-      margin-bottom: 12px;
-    }
-    .prow { margin-bottom: 10px; }
-    .prow:last-of-type { margin-bottom: 0; }
-    .plabel {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text3);
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      letter-spacing: 0.07em;
-      margin-bottom: 2px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      margin-bottom: 14px;
+      border: 1px solid transparent;
+    }
+
+    .prow { margin-bottom: 11px; }
+    .prow:last-of-type { margin-bottom: 0; }
+
+    .plabel {
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 3px;
     }
     .pval {
-      font-size: 12.5px;
-      color: var(--text);
-      line-height: 1.55;
+      font-size: 12px;
+      font-family: var(--font-body);
+      color: var(--text2);
+      line-height: 1.6;
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
     }
+
     #popup-divider {
       height: 1px;
       background: var(--border);
       margin: 12px 0;
     }
+
     #popup-link {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      font-weight: 500;
-      color: #185FA5;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: var(--accent);
       text-decoration: none;
       transition: opacity .15s;
     }
-    #popup-link:hover { opacity: 0.75; }
+    #popup-link:hover { opacity: 0.7; }
+    #popup-link svg { flex-shrink: 0; }
 
-    /* ── Footer ────────────────────────────────────────────────────── */
+    /* ── Footer ───────────────────────────────────────────────────── */
     footer {
       margin-top: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 4px;
     }
     .footer-text {
-      font-size: 11px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.03em;
       color: var(--text3);
     }
     .footer-text a { color: var(--text3); text-decoration: none; border-bottom: 1px solid var(--border2); }
     .footer-text a:hover { color: var(--text2); }
 
     #reset-zoom-btn {
-      font-size: 11px;
-      font-family: inherit;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.04em;
       color: var(--text3);
       background: none;
       border: none;
@@ -443,18 +523,19 @@
       padding: 0;
       text-decoration: underline;
       text-underline-offset: 2px;
+      transition: color .12s;
     }
     #reset-zoom-btn:hover { color: var(--text2); }
 
-    /* ── Live region ─────────────────────────────────────────────────── */
+    /* ── A11y live ────────────────────────────────────────────────── */
     #a11y-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 
-    /* ── Responsive ─────────────────────────────────────────────────── */
+    /* ── Responsive ───────────────────────────────────────────────── */
     @media (max-width: 600px) {
       body { padding: 10px; }
-      #search-input { width: 150px; }
-      #popup { width: calc(100vw - 24px); max-width: 320px; }
-      .stat-btn { font-size: 11px; padding: 3px 8px 3px 6px; }
+      #search-input { width: 155px; }
+      #popup { width: calc(100vw - 24px); max-width: 300px; }
+      .stat-label { display: none; }
     }
   </style>
 </head>
@@ -464,18 +545,20 @@
 
 <header>
   <div class="header-left">
-    <h1>Geschäftsreise&thinsp;–&thinsp;Sicherheitskarte</h1>
-    <span id="status-pill">Lädt…</span>
+    <h1>Geschäftsreise <span>/</span> Sicherheitskarte</h1>
+    <span id="status-pill">
+      <span class="status-dot" aria-hidden="true"></span>
+      Initialisiere…
+    </span>
   </div>
   <div class="header-right">
     <div class="search-wrap">
       <label class="search-label" for="search-input">Land suchen</label>
-      <span class="search-icon" aria-hidden="true">⌕</span>
       <input
         id="search-input"
         type="search"
         name="country-search"
-        placeholder="Land suchen…"
+        placeholder="LAND SUCHEN…"
         autocomplete="off"
         spellcheck="false"
         role="combobox"
@@ -484,7 +567,7 @@
         aria-haspopup="listbox"
         aria-autocomplete="list"
       />
-      <span class="search-shortcut" aria-hidden="true" id="search-shortcut">/</span>
+      <span class="search-kbd" id="search-kbd" aria-hidden="true">/</span>
       <button id="search-clear" aria-label="Suche zurücksetzen">✕</button>
       <div id="search-dropdown" role="listbox" aria-label="Ländervorschläge"></div>
     </div>
@@ -492,45 +575,39 @@
 </header>
 
 <div id="stats-bar" role="group" aria-label="Nach Warnstufe filtern">
+  <span class="stat-label" aria-hidden="true">FILTER</span>
   <button class="stat-btn" data-level="3" aria-pressed="false">
-    <span class="stat-dot" style="background:#c0302f" aria-hidden="true"></span>
-    Reisewarnung <span class="stat-count" id="cnt3">–</span>
+    <span class="stat-dot" style="background:var(--c3)" aria-hidden="true"></span>
+    REISEWARNUNG <span class="stat-count" id="cnt3">–</span>
   </button>
   <button class="stat-btn" data-level="2" aria-pressed="false">
-    <span class="stat-dot" style="background:#c9560a" aria-hidden="true"></span>
-    Teilreisewarnung <span class="stat-count" id="cnt2">–</span>
+    <span class="stat-dot" style="background:var(--c2)" aria-hidden="true"></span>
+    TEILWARNUNG <span class="stat-count" id="cnt2">–</span>
   </button>
   <button class="stat-btn" data-level="1" aria-pressed="false">
-    <span class="stat-dot" style="background:#c9970a" aria-hidden="true"></span>
-    Einschränkungen <span class="stat-count" id="cnt1">–</span>
+    <span class="stat-dot" style="background:var(--c1)" aria-hidden="true"></span>
+    EINSCHRÄNKUNG <span class="stat-count" id="cnt1">–</span>
   </button>
   <button class="stat-btn" data-level="0" aria-pressed="false">
-    <span class="stat-dot" style="background:#2a5c0a" aria-hidden="true"></span>
-    Kein Risiko <span class="stat-count" id="cnt0">–</span>
+    <span class="stat-dot" style="background:var(--c0)" aria-hidden="true"></span>
+    KEIN RISIKO <span class="stat-count" id="cnt0">–</span>
   </button>
 </div>
 
 <div class="alert-banner" role="note">
-  <span aria-hidden="true">⚠</span>
-  Nahost: Seit 28.02.2026 Reisewarnungen für 13 Länder der Region
+  <span aria-hidden="true">▲</span>
+  NAHOST: SEIT 28.02.2026 REISEWARNUNGEN FÜR 13 LÄNDER DER REGION
 </div>
 
 <div id="map-wrap">
   <div id="map" role="img" aria-label="Weltkarte mit Reisewarnstufen"></div>
   <div id="map-tooltip" role="tooltip"></div>
-
   <div id="zoom-controls">
     <button class="zoom-btn" id="zoom-in"  aria-label="Hineinzoomen">+</button>
     <button class="zoom-btn" id="zoom-out" aria-label="Herauszoomen">−</button>
   </div>
-
-  <div
-    id="popup"
-    role="dialog"
-    aria-modal="false"
-    aria-labelledby="popup-title"
-  >
-    <div id="popup-color-bar"></div>
+  <div id="popup" role="dialog" aria-modal="false" aria-labelledby="popup-title">
+    <div id="popup-risk-bar"></div>
     <div id="popup-body">
       <div id="popup-header">
         <div id="popup-title"></div>
@@ -538,12 +615,12 @@
       </div>
       <div id="popup-badge"></div>
       <div class="prow"><div class="plabel">Sicherheitslage</div><div class="pval" id="pp-sec"></div></div>
-      <div class="prow"><div class="plabel">Geschäftsreise-Empfehlung</div><div class="pval" id="pp-biz"></div></div>
+      <div class="prow"><div class="plabel">Geschäftsreise</div><div class="pval" id="pp-biz"></div></div>
       <div class="prow"><div class="plabel">Einreise &amp; Dokumente</div><div class="pval" id="pp-entry"></div></div>
       <div id="popup-divider"></div>
       <a id="popup-link" href="#" target="_blank" rel="noopener noreferrer">
-        Auswärtiges Amt
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M1.5 8.5L8.5 1.5M8.5 1.5H4M8.5 1.5V6"/></svg>
+        AUSWÄRTIGES AMT
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M1.5 8.5L8.5 1.5M8.5 1.5H4M8.5 1.5V6"/></svg>
       </a>
     </div>
   </div>
@@ -551,132 +628,134 @@
 
 <footer>
   <span class="footer-text">
-    Quelle: <a href="https://www.auswaertiges-amt.de" target="_blank" rel="noopener">Auswärtiges Amt</a>
-    &middot; Warnstufen: tägl. 06:00 &amp; 12:00&thinsp;UTC
-    &middot; Texte: wöchentlich
-    &middot; Vor jeder Reise offiziell prüfen.
+    <a href="https://www.auswaertiges-amt.de" target="_blank" rel="noopener">Auswärtiges Amt</a>
+    &nbsp;·&nbsp; Warnstufen: tägl. 06:00 &amp; 12:00 UTC
+    &nbsp;·&nbsp; Texte: wöchentlich
+    &nbsp;·&nbsp; Vor jeder Reise offiziell prüfen.
   </span>
-  <button id="reset-zoom-btn" onclick="resetZoom()">Zoom zurücksetzen</button>
+  <button id="reset-zoom-btn" onclick="resetZoom()">ZOOM RESET</button>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
 // ── Konstanten ────────────────────────────────────────────────────────────────
-// Datum der statischen Fallback-Daten (für Status-Anzeige bei Server-Ausfall)
 const DETAILS_UPDATED = 'März 2026';
 
-const C   = { 0:'#2a5c0a', 1:'#c9970a', 2:'#c9560a', 3:'#c0302f' };
-const BB  = { 0:'var(--b0)', 1:'var(--b1)', 2:'var(--b2)', 3:'var(--b3)' };
-const BC  = { 0:'var(--bc0)', 1:'var(--bc1)', 2:'var(--bc2)', 3:'var(--bc3)' };
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+
+// Risk colors (mirrored from CSS for D3)
+const C_DARK  = { 0:'#1db954', 1:'#d4930a', 2:'#e05c1a', 3:'#d63031' };
+const C_LIGHT = { 0:'#166534', 1:'#92400e', 2:'#9a3412', 3:'#991b1b' };
+const C = isDark ? C_DARK : C_LIGHT;
+
 const LBL = {
-  0: 'Kein besonderes Reiserisiko',
-  1: 'Regionale Einschränkungen / erhöhte Vorsicht',
-  2: 'Teilreisewarnung',
-  3: 'Reisewarnung',
+  0:'KEIN BESONDERES RISIKO',
+  1:'REGIONALE EINSCHRÄNKUNGEN',
+  2:'TEILREISEWARNUNG',
+  3:'REISEWARNUNG',
 };
 const BIZ = {
-  0: 'Geschäftsreisen problemlos möglich. Übliche Sicherheitsvorkehrungen einhalten.',
-  1: 'Geschäftsreisen möglich. Bestimmte Regionen beachten. Reiseroute im Voraus planen, Lage täglich prüfen.',
-  2: 'Reise grundsätzlich möglich, erhöhte Vorsicht erforderlich. Intern genehmigen lassen, Notfallkontakte hinterlegen.',
-  3: 'Vom Auswärtigen Amt wird von Reisen abgeraten. Nur wenn zwingend notwendig – vollständigen Sicherheitsplan und Evakuierungsplan vorbereiten.',
+  0:'Geschäftsreisen problemlos möglich. Übliche Sicherheitsvorkehrungen einhalten.',
+  1:'Geschäftsreisen möglich. Bestimmte Regionen beachten. Reiseroute planen, Lage täglich prüfen.',
+  2:'Reise grundsätzlich möglich, erhöhte Vorsicht. Intern genehmigen lassen, Notfallkontakte hinterlegen.',
+  3:'Vom Auswärtigen Amt wird von Reisen abgeraten. Nur wenn zwingend notwendig – Sicherheits- und Evakuierungsplan vorbereiten.',
 };
 
 // ── Statische Detaildaten ─────────────────────────────────────────────────────
-// Format: [Warnstufe (0–3), Sicherheitstext, Einreisetext, URL-Suffix]
 const DETAILS = {
   AF:[3,'Vor Reisen nach Afghanistan wird gewarnt. Extreme Sicherheitsrisiken durch Terrorismus und willkürliche Verhaftungen.','Einreise nicht empfohlen. Kein konsularischer Schutz.','afghanistandeutscher-452552'],
   AE:[3,'Vor Reisen in die VAE wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Flughäfen Dubai/Abu Dhabi eingeschränkt.','Flugbetrieb stark reduziert. Fluggesellschaft vor Reise kontaktieren.','vereinigtearabischeemiratesicherheit-202332'],
   BH:[3,'Vor Reisen nach Bahrain wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Luftraumsperrungen möglich.','Einreise nicht empfohlen. Flugbetrieb eingeschränkt.','bahreinsicherheit-203790'],
   BY:[3,'Vor Reisen nach Belarus wird gewarnt. Risiko willkürlicher Festnahmen. Deutsche werden zur Ausreise aufgefordert.','Visum erforderlich. Einreise mit erheblichen Risiken.','weissrusslandsicherheit-202730'],
   HT:[3,'Vor Reisen nach Haiti wird gewarnt. Bürgerkriegsähnliche Zustände durch Bandengewalt.','Einreise nicht empfohlen. Kein konsularischer Schutz.','haitisicherheit-206032'],
-  IR:[3,'Vor Reisen nach Iran wird gewarnt. Seit 28.02.2026 Luftschläge durch Israel/USA. Deutsche werden zur Ausreise aufgefordert. Botschaftspersonal temporär verlegt.','Ausreise dringend empfohlen. Konsularische Hilfe nicht gewährleistet.','iransicherheit-202396'],
-  IQ:[3,'Vor Reisen nach Irak wird gewarnt. Botschaftspersonal temporär verlegt. Ausreise wird empfohlen. Lage durch Iran-Konflikt eskaliert.','Ausreise empfohlen. Keine konsularische Hilfe vor Ort.','iraksicherheit-202738'],
-  IL:[3,'Vor Reisen nach Israel wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Iran beschießt Ziele in Israel. Hohes Risiko im gesamten Land.','Flughafen Ben Gurion eingeschränkt. Kein Visum für Deutsche (90 Tage).','israelsicherheit-203814'],
+  IR:[3,'Vor Reisen nach Iran wird gewarnt. Seit 28.02.2026 Luftschläge durch Israel/USA. Deutsche werden zur Ausreise aufgefordert.','Ausreise dringend empfohlen. Konsularische Hilfe nicht gewährleistet.','iransicherheit-202396'],
+  IQ:[3,'Vor Reisen nach Irak wird gewarnt. Botschaftspersonal temporär verlegt. Lage durch Iran-Konflikt eskaliert.','Ausreise empfohlen. Keine konsularische Hilfe vor Ort.','iraksicherheit-202738'],
+  IL:[3,'Vor Reisen nach Israel wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Hohes Risiko im gesamten Land.','Flughafen Ben Gurion eingeschränkt. Kein Visum für Deutsche (90 Tage).','israelsicherheit-203814'],
   JO:[3,'Vor Reisen nach Jordanien wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Luftraumsperrungen, Demonstrationen in Amman.','Flugbetrieb reduziert. Visum bei Einreise möglich.','jordaniensicherheit-218008'],
   QA:[3,'Vor Reisen nach Katar wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Flughafen Doha eingeschränkt.','Flugbetrieb reduziert. Kein Visum für Deutsche (30 Tage).','katarsicherheit-202302'],
   KW:[3,'Vor Reisen nach Kuwait wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Luftraumsperrungen möglich.','Einreise nicht empfohlen. Flugbetrieb eingeschränkt.','kuwaitsicherheit-204130'],
-  LB:[3,'Vor Reisen in den Libanon wird gewarnt. Lage durch Iran-Konflikt verschärft. Israelische Bodentruppen aktiv.','Einreise nicht empfohlen. Flugbetrieb stark eingeschränkt.','libanonsicherheit-203516'],
-  LY:[3,'Vor Reisen nach Libyen wird gewarnt. Erhebliche Sicherheitsrisiken durch bewaffnete Gruppen und andauernde Konflikte.','Einreise nicht empfohlen. Visum erforderlich.','libyensicherheit-204046'],
+  LB:[3,'Vor Reisen in den Libanon wird gewarnt. Lage durch Iran-Konflikt verschärft.','Einreise nicht empfohlen. Flugbetrieb stark eingeschränkt.','libanonsicherheit-203516'],
+  LY:[3,'Vor Reisen nach Libyen wird gewarnt. Erhebliche Sicherheitsrisiken durch bewaffnete Gruppen.','Einreise nicht empfohlen. Visum erforderlich.','libyensicherheit-204046'],
   ML:[3,'Vor Reisen nach Mali wird gewarnt. Weite Teile von Terrorismus und Entführungen betroffen.','Einreise nicht empfohlen. Visum erforderlich.','malisicherheit-202046'],
-  MM:[3,'Vor Reisen nach Myanmar wird gewarnt. Seit Militärputsch 2021 Bürgerkrieg. Gefahr willkürlicher Festnahmen.','Visum erforderlich (eVisa). Einreise mit erheblichen Risiken.','myanmarsicherheit-201578'],
-  NE:[3,'Vor Reisen nach Niger wird gewarnt. Seit Militärputsch 2023 instabile Lage. Erhebliche Terrorismusrisiken.','Visum erforderlich. Einreise nicht empfohlen.','nigersicherheit-214900'],
+  MM:[3,'Vor Reisen nach Myanmar wird gewarnt. Seit Militärputsch 2021 Bürgerkrieg.','Visum erforderlich (eVisa). Einreise mit erheblichen Risiken.','myanmarsicherheit-201578'],
+  NE:[3,'Vor Reisen nach Niger wird gewarnt. Seit Militärputsch 2023 instabile Lage.','Visum erforderlich. Einreise nicht empfohlen.','nigersicherheit-214900'],
   OM:[3,'Vor Reisen nach Oman wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Flughafen Muscat eingeschränkt.','Flugbetrieb reduziert. Kein Visum für Deutsche (30 Tage).','omansicherheit-204160'],
-  PS:[3,'Vor Reisen in die Palästinensischen Gebiete wird gewarnt. Kampfhandlungen in Gaza. Durch Iran-Konflikt weiter verschärft.','Einreise extrem eingeschränkt. Kein konsularischer Schutz.','palaestinensischegebietesicherheit-203674'],
-  SA:[3,'Von Reisen nach Saudi-Arabien wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Sicherheitslage extrem angespannt.','Einreise nicht empfohlen. Flugbetrieb eingeschränkt. Businessvisum erforderlich.','saudiarabiensicherheit-202298'],
-  SO:[3,'Vor Reisen nach Somalia wird gewarnt. Extreme Risiken durch Terrorismus (Al-Shabaab), Kriminalität und Entführungen.','Einreise nicht empfohlen. Kein konsularischer Schutz.','somaliasicherheit-205664'],
-  SD:[3,'Vor Reisen nach Sudan wird gewarnt. Seit April 2023 Bürgerkrieg. Bewaffnete Konflikte und humanitäre Notlage.','Einreise nicht empfohlen. Botschaft geschlossen.','sudansicherheit-202556'],
-  SS:[3,'Vor Reisen nach Südsudan wird gewarnt. Anhaltender Bürgerkrieg mit extremen Sicherheitsrisiken.','Einreise nicht empfohlen. Visum erforderlich.','https://www.auswaertiges-amt.de/de/reiseundsicherheit/suedsudansicherheit/244250'],
-  SY:[3,'Vor Reisen nach Syrien wird gewarnt. Nach Machtwechsel 2024 weiterhin unübersichtlich. Durch Iran-Konflikt weiter verschärft.','Einreise nicht empfohlen. Kein konsularischer Schutz.','syriensicherheit-204278'],
-  UA:[3,'Vor Reisen in die Ukraine wird gewarnt. Russland führt seit 02.2022 Angriffskrieg. Raketenangriffe im gesamten Land.','Einreise nicht empfohlen. Für Männer 18–60 gilt ukrainisches Ausreiseverbot.','ukrainesicherheit-201946'],
-  YE:[3,'Vor Reisen nach Jemen wird gewarnt. Aktiver bewaffneter Konflikt. Durch Iran-Konflikt weiter eskaliert.','Einreise nicht möglich/empfohlen. Botschaft geschlossen.','jemensicherheit-201452'],
+  PS:[3,'Vor Reisen in die Palästinensischen Gebiete wird gewarnt. Kampfhandlungen in Gaza.','Einreise extrem eingeschränkt. Kein konsularischer Schutz.','palaestinensischegebietesicherheit-203674'],
+  SA:[3,'Von Reisen nach Saudi-Arabien wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran.','Einreise nicht empfohlen. Businessvisum erforderlich.','saudiarabiensicherheit-202298'],
+  SO:[3,'Vor Reisen nach Somalia wird gewarnt. Extreme Risiken durch Terrorismus (Al-Shabaab).','Einreise nicht empfohlen. Kein konsularischer Schutz.','somaliasicherheit-205664'],
+  SD:[3,'Vor Reisen nach Sudan wird gewarnt. Seit April 2023 Bürgerkrieg.','Einreise nicht empfohlen. Botschaft geschlossen.','sudansicherheit-202556'],
+  SS:[3,'Vor Reisen nach Südsudan wird gewarnt. Anhaltender Bürgerkrieg.','Einreise nicht empfohlen. Visum erforderlich.','suedsudansicherheit-244250'],
+  SY:[3,'Vor Reisen nach Syrien wird gewarnt. Nach Machtwechsel 2024 weiterhin unübersichtlich.','Einreise nicht empfohlen. Kein konsularischer Schutz.','syriensicherheit-204278'],
+  UA:[3,'Vor Reisen in die Ukraine wird gewarnt. Russland führt seit 02.2022 Angriffskrieg.','Einreise nicht empfohlen. Für Männer 18–60 gilt ukrainisches Ausreiseverbot.','ukrainesicherheit-201946'],
+  YE:[3,'Vor Reisen nach Jemen wird gewarnt. Aktiver bewaffneter Konflikt.','Einreise nicht möglich/empfohlen. Botschaft geschlossen.','jemensicherheit-201452'],
   CF:[3,'Vor Reisen in die Zentralafrikanische Republik wird gewarnt. Anhaltende bewaffnete Konflikte.','Visum erforderlich. Einreise nicht empfohlen.','zentralafrikanischerepubliksicherheit-226380'],
   RU:[2,'Von nicht notwendigen Reisen nach Russland wird gewarnt. Krieg gegen Ukraine. Willkürliche Festnahmen möglich.','Visum + Einladungsschreiben erforderlich. Direkte Flugverbindungen eingestellt.','russlandsicherheit-204816'],
-  BF:[2,'Von Reisen in bestimmte Regionen Burkina Fasos wird abgeraten (Teilreisewarnung). Weite Teile von Terrorismus betroffen.','Visum erforderlich.','burkinafasosicherheit-212336'],
-  PK:[2,'Von Reisen in bestimmte Regionen Pakistans wird abgeraten (Teilreisewarnung). Erhebliche Terrorismusrisiken in Grenzregionen zu Afghanistan.','Visum erforderlich (eVisa möglich).','pakistansicherheit-204974'],
-  ET:[2,'Von Reisen in bestimmte Regionen Äthiopiens wird abgeraten (Teilreisewarnung). Konflikte in Tigray und Amhara.','Kein Visum (Online-Visum vor Reise).','aethiopiensicherheit-206712'],
-  NG:[2,'Von Reisen in bestimmte Regionen Nigerias wird abgeraten (Teilreisewarnung). Nordosten durch Boko Haram betroffen.','Visum erforderlich. Vorab beim Konsulat beantragen.','nigeriasicherheit-204874'],
-  CD:[2,'Von Reisen in weite Teile der Dem. Rep. Kongo wird abgeraten (Teilreisewarnung). Im Osten anhaltende Konflikte.','Visum erforderlich.','kongodemokratischerepubliksicherheit-201338'],
-  TD:[2,'Von nicht notwendigen Reisen nach Tschad wird abgeraten (Teilreisewarnung). Politische Instabilität und Terrorismus.','Visum erforderlich.','tschadsicherheit-202514'],
-  KP:[2,'Von Reisen nach Nordkorea wird abgeraten. Regime isoliert das Land. Willkürliche Verhaftungen möglich.','Einreise praktisch nicht möglich für Deutsche.','nordkoreasicherheit-202716'],
-  MX:[2,'Von Reisen in bestimmte Regionen Mexikos wird abgeraten (Teilreisewarnung). Guerrero, Sinaloa, Tamaulipas besonders betroffen.','Kein Visum für Deutsche (180 Tage).','mexikosicherheit-201086'],
-  CO:[2,'Von Reisen in bestimmte Regionen Kolumbiens wird abgeraten (Teilreisewarnung). Grenzregionen zu Venezuela/Ecuador betroffen.','Kein Visum für Deutsche (90 Tage).','kolumbiensicherheit-201524'],
-  TH:[2,'Von Reisen in das Grenzgebiet zu Kambodscha und die südlichen Provinzen wird gewarnt (Teilreisewarnung). Bangkok und touristische Zentren gelten als sicher.','Kein Visum für Deutsche (30 Tage, verlängerbar).','thailandsicherheit-201558'],
-  PH:[2,'Von Reisen in bestimmte Regionen der Philippinen wird abgeraten (Teilreisewarnung). Mindanao und Sulusee betroffen.','Kein Visum für Deutsche (30 Tage).','philippinensicherheit-201316'],
-  CM:[2,'Von Reisen in bestimmte Regionen Kameruns wird abgeraten (Teilreisewarnung). Anglophone Regionen und Norden betroffen.','Visum erforderlich.','kamerunsicherheit-201998'],
-  KE:[2,'Von Reisen in bestimmte Regionen Kenias wird abgeraten (Teilreisewarnung). Grenzregionen zu Somalia/Äthiopien betroffen.','Kein Visum für Deutsche (eTA online, 30 Tage).','keniasicherheit-201328'],
-  VE:[2,'Von nicht notwendigen Reisen nach Venezuela wird abgeraten (Teilreisewarnung). Erhebliche Kriminalität und politische Instabilität.','Kein Visum für Deutsche (90 Tage). Direktflüge eingeschränkt.','venezuelasicherheit-201248'],
-  GE:[2,'Von Reisen in Südossetien und Abchasien wird dringend abgeraten (Teilreisewarnung).','Kein Visum für Deutsche (90 Tage).','georgiensicherheit-201472'],
-  AZ:[2,'Von Reisen in Grenzregionen zu Armenien wird abgeraten (Teilreisewarnung).','Visum erforderlich (eVisa online).','aserbaidschansicherheit-201860'],
-  TJ:[2,'Von nicht notwendigen Reisen nach Tadschikistan wird abgeraten (Teilreisewarnung). Grenzregionen zu Afghanistan gefährlich.','Visum erforderlich (eVisa möglich).','tadschikistansicherheit-204894'],
-  BD:[2,'Von Reisen in die Chittagong Hill Tracts wird abgeraten (Teilreisewarnung). Politische Unruhen in Städten.','Visum erforderlich (Visa on Arrival oder eVisa).','bangladeschsicherheit-203904'],
-  LK:[2,'Von Reisen in den Norden Sri Lankas wird abgeraten (Teilreisewarnung).','Kein Visum für Deutsche (ETA online, 30 Tage).','srilankagsicherheit-204880'],
-  MR:[2,'Von Reisen nach Mauretanien wird abgeraten (Teilreisewarnung). Terrorismusrisiko in Sahara und Grenzregionen.','Visum erforderlich.','mauretaniensicherheit-204434'],
-  MZ:[2,'Von Reisen in bestimmte Regionen Mosambiks wird abgeraten (Teilreisewarnung). Cabo Delgado von Terrorismus betroffen.','Visum erforderlich (eVisa möglich).','mosambiksicherheit-221782'],
-  AO:[2,'Von nicht notwendigen Reisen in Teile Angolas wird abgeraten (Teilreisewarnung). Provinz Cabinda betroffen.','Visum erforderlich.','angolasicherheit-203372'],
-  UG:[2,'Von Reisen in bestimmte Regionen Ugandas wird abgeraten (Teilreisewarnung). Grenzregionen zu DR Kongo betroffen.','Visum erforderlich (eVisa online).','ugandagrundsicherheit-220988'],
-  TZ:[2,'Von Reisen in bestimmte Regionen Tansanias wird abgeraten (Teilreisewarnung). Grenzregionen zu DR Kongo betroffen.','Visum erforderlich (eVisa online).','tansaniasicherheit-202804'],
-  JP:[2,'Für Japan gilt eine Teilreisewarnung. Direktverbindungen über Golfstaaten-Drehkreuze stark eingeschränkt. Japan selbst gilt als sehr sicheres Reiseziel.','Kein Visum für Deutsche (90 Tage). Alternative Flugrouten prüfen.','japansicherheit-213032'],
-  GH:[2,'Von Reisen in bestimmte Regionen Ghanas wird abgeraten (Teilreisewarnung). Grenzregionen zu Burkina Faso betroffen.','Visum erforderlich.','ghanasicherheit-203372'],
-  KH:[2,'Von Reisen in das Grenzgebiet zu Thailand wird abgeraten (Teilreisewarnung). Phnom Penh und Angkor Wat gelten als sicher.','Visum erforderlich (eVisa oder Visa on Arrival).','kambodschasicherheit-220008'],
-  TR:[1,'Für die Türkei bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Syrien und Irak wird abgeraten. Istanbul gilt als sicher.','Kein Visum für Deutsche (90 Tage).','tuerkeisicherheit-201962'],
-  EG:[1,'Für Ägypten bestehen regionale Einschränkungen. Nordsinai und Grenzgebiet zu Israel betroffen. Kairo und Badeorte bereisbar.','Kein Visum für Deutsche (Visa on Arrival oder eVisa, 30 Tage).','aegyptensicherheit-202142'],
-  TN:[1,'Für Tunesien bestehen regionale Einschränkungen. Grenzregionen zu Libyen/Algerien und Saharagebiete betroffen.','Kein Visum für Deutsche (90 Tage).','tunesiensicherheit-201432'],
-  MA:[1,'Für Marokko bestehen regionale Einschränkungen. Von Reisen in Grenzgebiete zur Westsahara wird abgeraten.','Kein Visum für Deutsche (90 Tage).','marokkosicherheit-203978'],
-  IN:[1,'Für Indien bestehen regionale Einschränkungen. Von Reisen nach Jammu & Kaschmir wird abgeraten. Großstädte gelten als sicher.','eVisa für Geschäftsreisen (30 Tage, online). Reisepass mind. 6 Monate gültig.','indiensicherheit-201534'],
-  CN:[1,'Für China bestehen regionale Einschränkungen. Von Reisen nach Tibet und Xinjiang wird abgeraten. Exit-Bans für westliche Staatsangehörige sind möglich.','Seit 2024 visumfreie Einreise für Deutsche (30 Tage). Für längere Aufenthalte oder wiederholte Geschäftsreisen Businessvisum (M) empfohlen.','chinasicherheit-200928'],
-  BR:[1,'Für Brasilien bestehen regionale Einschränkungen. In Favelas erhebliche Kriminalitätsrisiken. Geschäftsviertel eingeschränkt sicher.','Kein Visum für Deutsche (90 Tage).','brasiliensicherheit-201480'],
+  BF:[2,'Von Reisen in bestimmte Regionen Burkina Fasos wird abgeraten. Weite Teile von Terrorismus betroffen.','Visum erforderlich.','burkinafasosicherheit-212336'],
+  PK:[2,'Von Reisen in bestimmte Regionen Pakistans wird abgeraten. Terrorismusrisiken in Grenzregionen.','Visum erforderlich (eVisa möglich).','pakistansicherheit-204974'],
+  ET:[2,'Von Reisen in bestimmte Regionen Äthiopiens wird abgeraten. Konflikte in Tigray und Amhara.','Kein Visum (Online-Visum vor Reise).','aethiopiensicherheit-206712'],
+  NG:[2,'Von Reisen in bestimmte Regionen Nigerias wird abgeraten. Nordosten durch Boko Haram betroffen.','Visum erforderlich. Vorab beim Konsulat beantragen.','nigeriasicherheit-204874'],
+  CD:[2,'Von Reisen in weite Teile der Dem. Rep. Kongo wird abgeraten. Im Osten anhaltende Konflikte.','Visum erforderlich.','kongodemokratischerepubliksicherheit-201338'],
+  TD:[2,'Von nicht notwendigen Reisen nach Tschad wird abgeraten. Politische Instabilität.','Visum erforderlich.','tschadsicherheit-202514'],
+  KP:[2,'Von Reisen nach Nordkorea wird abgeraten. Regime isoliert das Land.','Einreise praktisch nicht möglich für Deutsche.','nordkoreasicherheit-202716'],
+  MX:[2,'Von Reisen in bestimmte Regionen Mexikos wird abgeraten. Guerrero, Sinaloa, Tamaulipas besonders betroffen.','Kein Visum für Deutsche (180 Tage).','mexikosicherheit-201086'],
+  CO:[2,'Von Reisen in bestimmte Regionen Kolumbiens wird abgeraten. Grenzregionen zu Venezuela/Ecuador betroffen.','Kein Visum für Deutsche (90 Tage).','kolumbiensicherheit-201524'],
+  TH:[2,'Von Reisen in das Grenzgebiet zu Kambodscha und die südlichen Provinzen wird gewarnt. Bangkok gilt als sicher.','Kein Visum für Deutsche (30 Tage, verlängerbar).','thailandsicherheit-201558'],
+  PH:[2,'Von Reisen in bestimmte Regionen der Philippinen wird abgeraten. Mindanao und Sulusee betroffen.','Kein Visum für Deutsche (30 Tage).','philippinensicherheit-201316'],
+  CM:[2,'Von Reisen in bestimmte Regionen Kameruns wird abgeraten. Anglophone Regionen und Norden betroffen.','Visum erforderlich.','kamerunsicherheit-201998'],
+  KE:[2,'Von Reisen in bestimmte Regionen Kenias wird abgeraten. Grenzregionen zu Somalia/Äthiopien betroffen.','Kein Visum für Deutsche (eTA online, 30 Tage).','keniasicherheit-201328'],
+  VE:[2,'Von nicht notwendigen Reisen nach Venezuela wird abgeraten. Erhebliche Kriminalität.','Kein Visum für Deutsche (90 Tage). Direktflüge eingeschränkt.','venezuelasicherheit-201248'],
+  GE:[2,'Von Reisen in Südossetien und Abchasien wird dringend abgeraten.','Kein Visum für Deutsche (90 Tage).','georgiensicherheit-201472'],
+  AZ:[2,'Von Reisen in Grenzregionen zu Armenien wird abgeraten.','Visum erforderlich (eVisa online).','aserbaidschansicherheit-201860'],
+  TJ:[2,'Von nicht notwendigen Reisen nach Tadschikistan wird abgeraten. Grenzregionen zu Afghanistan gefährlich.','Visum erforderlich (eVisa möglich).','tadschikistansicherheit-204894'],
+  BD:[2,'Von Reisen in die Chittagong Hill Tracts wird abgeraten. Politische Unruhen in Städten.','Visum erforderlich (Visa on Arrival oder eVisa).','bangladeschsicherheit-203904'],
+  LK:[2,'Von Reisen in den Norden Sri Lankas wird abgeraten.','Kein Visum für Deutsche (ETA online, 30 Tage).','srilankagsicherheit-204880'],
+  MR:[2,'Von Reisen nach Mauretanien wird abgeraten. Terrorismusrisiko in Sahara.','Visum erforderlich.','mauretaniensicherheit-204434'],
+  MZ:[2,'Von Reisen in bestimmte Regionen Mosambiks wird abgeraten. Cabo Delgado betroffen.','Visum erforderlich (eVisa möglich).','mosambiksicherheit-221782'],
+  AO:[2,'Von nicht notwendigen Reisen in Teile Angolas wird abgeraten. Provinz Cabinda betroffen.','Visum erforderlich.','angolasicherheit-203372'],
+  UG:[2,'Von Reisen in bestimmte Regionen Ugandas wird abgeraten. Grenzregionen zu DR Kongo betroffen.','Visum erforderlich (eVisa online).','ugandagrundsicherheit-220988'],
+  TZ:[2,'Von Reisen in bestimmte Regionen Tansanias wird abgeraten. Grenzregionen zu DR Kongo betroffen.','Visum erforderlich (eVisa online).','tansaniasicherheit-202804'],
+  JP:[2,'Für Japan gilt eine Teilreisewarnung. Direktverbindungen über Golfstaaten stark eingeschränkt. Japan selbst ist sicher.','Kein Visum für Deutsche (90 Tage). Alternative Flugrouten prüfen.','japansicherheit-213032'],
+  GH:[2,'Von Reisen in bestimmte Regionen Ghanas wird abgeraten. Grenzregionen zu Burkina Faso betroffen.','Visum erforderlich.','ghanasicherheit-203372'],
+  KH:[2,'Von Reisen in das Grenzgebiet zu Thailand wird abgeraten. Phnom Penh gilt als sicher.','Visum erforderlich (eVisa oder Visa on Arrival).','kambodschasicherheit-220008'],
+  TR:[1,'Für die Türkei bestehen regionale Einschränkungen. Grenzregionen zu Syrien und Irak betroffen. Istanbul gilt als sicher.','Kein Visum für Deutsche (90 Tage).','tuerkeisicherheit-201962'],
+  EG:[1,'Für Ägypten bestehen regionale Einschränkungen. Nordsinai betroffen. Kairo und Badeorte bereisbar.','Kein Visum für Deutsche (Visa on Arrival oder eVisa, 30 Tage).','aegyptensicherheit-202142'],
+  TN:[1,'Für Tunesien bestehen regionale Einschränkungen. Grenzregionen zu Libyen/Algerien betroffen.','Kein Visum für Deutsche (90 Tage).','tunesiensicherheit-201432'],
+  MA:[1,'Für Marokko bestehen regionale Einschränkungen. Grenzgebiete zur Westsahara betroffen.','Kein Visum für Deutsche (90 Tage).','marokkosicherheit-203978'],
+  IN:[1,'Für Indien bestehen regionale Einschränkungen. Jammu & Kaschmir betroffen. Großstädte sicher.','eVisa für Geschäftsreisen (30 Tage, online). Reisepass mind. 6 Monate gültig.','indiensicherheit-201534'],
+  CN:[1,'Für China bestehen regionale Einschränkungen. Tibet und Xinjiang betroffen. Exit-Bans für westliche Staatsangehörige möglich.','Seit 2024 visumfreie Einreise für Deutsche (30 Tage). Businessvisum (M) für längere Aufenthalte empfohlen.','chinasicherheit-200928'],
+  BR:[1,'Für Brasilien bestehen regionale Einschränkungen. In Favelas erhebliche Kriminalitätsrisiken.','Kein Visum für Deutsche (90 Tage).','brasiliensicherheit-201480'],
   ZA:[1,'Für Südafrika bestehen regionale Einschränkungen. Erhebliche Kriminalitätsrisiken in Großstädten.','Kein Visum für Deutsche (90 Tage). Reisepass mind. 30 Tage über Ausreise gültig.','suedafrikasicherheit-201254'],
-  ID:[1,'Für Indonesien bestehen regionale Einschränkungen. Von Reisen nach Papua wird abgeraten. Bali und Jakarta gelten als sicher.','Visa on Arrival (30 Tage) oder eVisa. Reisepass mind. 6 Monate gültig.','indonesiensicherheit-201072'],
-  MY:[1,'Für Malaysia bestehen regionale Einschränkungen. Von Reisen in östliche Küstengebiete Sabahs wird abgeraten.','Kein Visum für Deutsche (90 Tage).','malaysiasicherheit-201760'],
-  NP:[1,'Für Nepal bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Tibet wird abgeraten. Kathmandu gilt als sicher.','Visum erforderlich (Visa on Arrival oder eVisa).','nepalsicherheit-201826'],
-  PG:[1,'Für Papua-Neuguinea bestehen regionale Einschränkungen. Erhebliche Kriminalitätsrisiken im gesamten Land.','Visum erforderlich.','https://www.auswaertiges-amt.de/de/service/laender/papuaneuguinea-node/papuaneuguineasicherheit/220698'],
-  EC:[1,'Für Ecuador bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Kolumbien wird abgeraten.','Kein Visum für Deutsche (90 Tage).','ecuadorsicherheit-201434'],
-  GT:[1,'Für Guatemala bestehen regionale Einschränkungen. Von Reisen in bestimmte ländliche Regionen wird abgeraten.','Kein Visum für Deutsche (90 Tage).','guatemalasicherheit-206020'],
+  ID:[1,'Für Indonesien bestehen regionale Einschränkungen. Papua betroffen. Bali und Jakarta sicher.','Visa on Arrival (30 Tage) oder eVisa. Reisepass mind. 6 Monate gültig.','indonesiensicherheit-201072'],
+  MY:[1,'Für Malaysia bestehen regionale Einschränkungen. Östliche Küstengebiete Sabahs betroffen.','Kein Visum für Deutsche (90 Tage).','malaysiasicherheit-201760'],
+  NP:[1,'Für Nepal bestehen regionale Einschränkungen. Grenzregionen zu Tibet betroffen. Kathmandu sicher.','Visum erforderlich (Visa on Arrival oder eVisa).','nepalsicherheit-201826'],
+  PG:[1,'Für Papua-Neuguinea bestehen regionale Einschränkungen. Erhebliche Kriminalitätsrisiken.','Visum erforderlich.','papuaneuguinea-node'],
+  EC:[1,'Für Ecuador bestehen regionale Einschränkungen. Grenzregionen zu Kolumbien betroffen.','Kein Visum für Deutsche (90 Tage).','ecuadorsicherheit-201434'],
+  GT:[1,'Für Guatemala bestehen regionale Einschränkungen. Bestimmte ländliche Regionen betroffen.','Kein Visum für Deutsche (90 Tage).','guatemalasicherheit-206020'],
   HN:[1,'Für Honduras bestehen regionale Einschränkungen. Erhebliche Kriminalitätsrisiken.','Kein Visum für Deutsche (90 Tage).','hondurassicherheit-201140'],
-  SV:[1,'Für El Salvador bestehen regionale Einschränkungen. Trotz verbesserter Sicherheitslage bestehen Risiken in bestimmten Regionen.','Kein Visum für Deutsche (90 Tage).','elsalvadorsicherheit-221864'],
-  NI:[1,'Für Nicaragua bestehen regionale Einschränkungen. Politische Repression. Von Reisen in Grenzregionen zu Honduras wird abgeraten.','Kein Visum für Deutsche (90 Tage).','nicaraguasicherheit-201170'],
-  CU:[1,'Für Kuba bestehen regionale Einschränkungen. Erhebliche wirtschaftliche Krise mit Versorgungsengpässen.','Touristenkarte (Turistarjeta) erforderlich.','kubasicherheit-201662'],
-  CI:[1,'Für die Elfenbeinküste bestehen regionale Einschränkungen. Von Reisen in den Norden und Westen wird abgeraten.','Visum erforderlich.','elfenbeinkuestesicherheit-201828'],
-  LR:[1,'Für Liberia bestehen regionale Einschränkungen. Erhöhte Kriminalitätsrisiken und instabile politische Lage.','Visum erforderlich.','liberiasicherheit-204082'],
-  SL:[1,'Für Sierra Leone bestehen regionale Einschränkungen. Erhöhte Kriminalitätsrisiken, insbesondere in Freetown.','Visum erforderlich.','sierraleonesicherheit-203500'],
+  SV:[1,'Für El Salvador bestehen regionale Einschränkungen. Trotz verbesserter Lage bestehen Risiken.','Kein Visum für Deutsche (90 Tage).','elsalvadorsicherheit-221864'],
+  NI:[1,'Für Nicaragua bestehen regionale Einschränkungen. Politische Repression.','Kein Visum für Deutsche (90 Tage).','nicaraguasicherheit-201170'],
+  CU:[1,'Für Kuba bestehen regionale Einschränkungen. Erhebliche wirtschaftliche Krise.','Touristenkarte (Turistarjeta) erforderlich.','kubasicherheit-201662'],
+  CI:[1,'Für die Elfenbeinküste bestehen regionale Einschränkungen. Norden und Westen betroffen.','Visum erforderlich.','elfenbeinkuestesicherheit-201828'],
+  LR:[1,'Für Liberia bestehen regionale Einschränkungen. Erhöhte Kriminalitätsrisiken.','Visum erforderlich.','liberiasicherheit-204082'],
+  SL:[1,'Für Sierra Leone bestehen regionale Einschränkungen. Erhöhte Kriminalitätsrisiken in Freetown.','Visum erforderlich.','sierraleonesicherheit-203500'],
   GN:[1,'Für Guinea bestehen regionale Einschränkungen. Seit Militärputsch 2021 politische Instabilität.','Visum erforderlich.','guineasicherheit-201916'],
-  TG:[1,'Für Togo bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Burkina Faso wird abgeraten.','Visum erforderlich oder Visa on Arrival.','togosicherheit-204436'],
-  BJ:[1,'Für Benin bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Burkina Faso/Niger wird abgeraten.','Visum erforderlich (eVisa online).','beninsicherheit-201638'],
+  TG:[1,'Für Togo bestehen regionale Einschränkungen. Grenzregionen zu Burkina Faso betroffen.','Visum erforderlich oder Visa on Arrival.','togosicherheit-204436'],
+  BJ:[1,'Für Benin bestehen regionale Einschränkungen. Grenzregionen zu Burkina Faso/Niger betroffen.','Visum erforderlich (eVisa online).','beninsicherheit-201638'],
   ZW:[1,'Für Simbabwe bestehen regionale Einschränkungen. Politische Instabilität und hohe Kriminalität.','Visum erforderlich (eVisa oder Visa on Arrival).','simbabwesicherheit-205396'],
-  ZM:[1,'Für Sambia bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu DR Kongo wird abgeraten.','Visum erforderlich (eVisa oder Visa on Arrival).','sambiasicherheit-208606'],
+  ZM:[1,'Für Sambia bestehen regionale Einschränkungen. Grenzregionen zu DR Kongo betroffen.','Visum erforderlich (eVisa oder Visa on Arrival).','sambiasicherheit-208606'],
   MW:[1,'Für Malawi bestehen regionale Einschränkungen. Erhöhte Kriminalitätsrisiken in Städten.','Visum erforderlich (Visa on Arrival möglich).','malawisicherheit-205680'],
-  ER:[1,'Für Eritrea bestehen regionale Einschränkungen. Autoritäres Regime. Von Reisen in Grenzregionen zu Äthiopien wird abgeraten.','Visum erforderlich.','eritreasicherheit-204760'],
-  DJ:[1,'Für Dschibuti bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Eritrea und Somalia wird abgeraten.','Visum erforderlich (eVisa möglich).','dschibutil-sicherheit-204430'],
-  AM:[1,'Für Armenien bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Aserbaidschan wird abgeraten.','Kein Visum für Deutsche (90 Tage).','armeniensicherheit-201826'],
-  KG:[1,'Für Kirgisistan bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zu Tadschikistan wird abgeraten.','Kein Visum für Deutsche (30 Tage).','kirgisistansicherheit-205492'],
-  MD:[1,'Für Moldau bestehen regionale Einschränkungen. Von Reisen in die Region Transnistrien wird abgeraten.','Kein Visum für Deutsche (90 Tage).','moldausicherheit-201880'],
-  BI:[1,'Für Burundi bestehen regionale Einschränkungen. Politische Instabilität und erhöhte Kriminalität.','Visum erforderlich.','burundisicherheit-205548'],
-  RW:[1,'Für Ruanda bestehen regionale Einschränkungen. Von Reisen in Grenzregionen zur DR Kongo wird abgeraten. Kigali gilt als sicher.','Visum erforderlich (eVisa online).','ruandasicherheit-204998'],
+  ER:[1,'Für Eritrea bestehen regionale Einschränkungen. Grenzregionen zu Äthiopien betroffen.','Visum erforderlich.','eritreasicherheit-204760'],
+  DJ:[1,'Für Dschibuti bestehen regionale Einschränkungen. Grenzregionen zu Eritrea und Somalia betroffen.','Visum erforderlich (eVisa möglich).','dschibutil-sicherheit-204430'],
+  AM:[1,'Für Armenien bestehen regionale Einschränkungen. Grenzregionen zu Aserbaidschan betroffen.','Kein Visum für Deutsche (90 Tage).','armeniensicherheit-201826'],
+  KG:[1,'Für Kirgisistan bestehen regionale Einschränkungen. Grenzregionen zu Tadschikistan betroffen.','Kein Visum für Deutsche (30 Tage).','kirgisistansicherheit-205492'],
+  MD:[1,'Für Moldau bestehen regionale Einschränkungen. Region Transnistrien betroffen.','Kein Visum für Deutsche (90 Tage).','moldausicherheit-201880'],
+  BI:[1,'Für Burundi bestehen regionale Einschränkungen. Politische Instabilität.','Visum erforderlich.','burundisicherheit-205548'],
+  RW:[1,'Für Ruanda bestehen regionale Einschränkungen. Grenzregionen zur DR Kongo betroffen. Kigali sicher.','Visum erforderlich (eVisa online).','ruandasicherheit-204998'],
   GW:[1,'Für Guinea-Bissau bestehen regionale Einschränkungen. Politische Instabilität.','Visum erforderlich.','guineabissausicherheit-220332'],
   DE:[0,'Kein besonderes Reiserisiko. Deutschland ist ein sicheres Reiseziel.','Kein Visum für EU-Bürger.','deutschlandsicherheit-201836'],
   FR:[0,'Kein besonderes Reiserisiko. Erhöhte Wachsamkeit bei öffentlichen Veranstaltungen empfohlen.','Kein Visum für EU-Bürger. Personalausweis ausreichend.','frankreichsicherheit-201462'],
-  GB:[0,'Kein besonderes Reiserisiko. Erhöhtes Terrorrisiko in Großstädten. London gilt als sicher.','Kein Visum für Deutsche (6 Monate). Reisepass erforderlich.','grossbritanniensicherheit-204760'],
+  GB:[0,'Kein besonderes Reiserisiko. London gilt als sicher.','Kein Visum für Deutsche (6 Monate). Reisepass erforderlich.','grossbritanniensicherheit-204760'],
   US:[0,'Kein besonderes Reiserisiko. Sicherheitslage allgemein stabil.','ESTA erforderlich (online, mind. 72h vor Reise). Reisepass.','usasicherheit-201382'],
   CA:[0,'Kein besonderes Reiserisiko. Kanada gilt als sehr sicheres Reiseziel.','ETA erforderlich (online). Kein Visum für Deutsche.','kanadasicherheit-204076'],
   KR:[0,'Kein besonderes Reiserisiko. Südkorea gilt als sicheres Reiseziel.','Kein Visum für Deutsche (90 Tage).','koreasicherheit-201582'],
@@ -690,10 +769,8 @@ const DETAILS = {
 const FALLBACK_LVL = {
   IT:0,ES:0,NL:0,BE:0,CH:0,AT:0,PL:0,SE:0,NO:0,FI:0,DK:0,PT:0,IE:0,GR:0,
   CZ:0,SK:0,HU:0,RO:0,BG:0,HR:0,SI:0,EE:0,LV:0,LT:0,LU:0,MT:0,CY:0,IS:0,
-  AL:0,RS:0,ME:0,BA:0,MK:0,
-  CL:0,PE:0,UY:0,BO:0,PY:0,CR:0,PA:0,DO:0,JM:0,TT:0,
-  NA:0,BW:0,LS:0,SZ:0,MU:0,CG:0,GA:0,SR:0,GY:0,KM:0,SN:0,
-  KZ:0,MN:0,UZ:0,LA:0,MG:1,
+  AL:0,RS:0,ME:0,BA:0,MK:0,CL:0,PE:0,UY:0,BO:0,PY:0,CR:0,PA:0,DO:0,JM:0,TT:0,
+  NA:0,BW:0,LS:0,SZ:0,MU:0,CG:0,GA:0,SR:0,GY:0,KM:0,SN:0,KZ:0,MN:0,UZ:0,LA:0,MG:1,
 };
 
 const NUM_TO_ISO2 = {
@@ -752,21 +829,27 @@ const COUNTRY_NAMES = {
 };
 
 const DEFAULT_TEXT = {
-  0: ['Kein besonderes Reiserisiko. Übliche Sicherheitsvorkehrungen beachten.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
-  1: ['Regionale Einschränkungen bestehen. Aktuelle Hinweise des Auswärtigen Amts prüfen.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
-  2: ['Teilreisewarnung. Von Reisen in bestimmte Regionen wird abgeraten.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
-  3: ['Vor Reisen in dieses Land wird gewarnt. Aktuelle Hinweise unbedingt beachten.','Einreise nicht empfohlen.'],
+  0:['Kein besonderes Reiserisiko. Übliche Sicherheitsvorkehrungen beachten.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  1:['Regionale Einschränkungen bestehen. Aktuelle Hinweise des Auswärtigen Amts prüfen.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  2:['Teilreisewarnung. Von Reisen in bestimmte Regionen wird abgeraten.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  3:['Vor Reisen in dieses Land wird gewarnt. Aktuelle Hinweise unbedingt beachten.','Einreise nicht empfohlen.'],
 };
 
-// ── Live-Daten ────────────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────────
 let liveData   = {};
 let liveTexts  = {};
 let activeFilter = null;
-const pill     = document.getElementById('status-pill');
-const liveEl   = document.getElementById('a11y-live');
+let svgPaths, activeD, zoom;
 
-function announce(msg) { liveEl.textContent = ''; requestAnimationFrame(() => { liveEl.textContent = msg; }); }
+const pill    = document.getElementById('status-pill');
+const liveEl  = document.getElementById('a11y-live');
 
+function announce(msg) {
+  liveEl.textContent = '';
+  requestAnimationFrame(() => { liveEl.textContent = msg; });
+}
+
+// ── Data loading ──────────────────────────────────────────────────────────────
 async function loadWarnings() {
   try {
     const res  = await fetch('/api/warnings');
@@ -774,15 +857,15 @@ async function loadWarnings() {
     liveData = json.data || {};
     const count = Object.keys(liveData).length;
     const date  = json.lastUpdated
-      ? new Date(json.lastUpdated).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' })
+      ? new Date(json.lastUpdated).toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'})
       : '–';
-    pill.textContent = `Live · ${count} Länder · ${date} UTC`;
-    pill.className   = 'live';
-    announce(`Warnstufen geladen: ${count} Länder, Stand ${date} UTC`);
+    pill.innerHTML = `<span class="status-dot" aria-hidden="true"></span>LIVE · ${count} LÄNDER · ${date} UTC`;
+    pill.className = 'live';
+    announce(`Live-Daten geladen: ${count} Länder, Stand ${date} UTC`);
     if (svgPaths) { svgPaths.attr('fill', d => getColor(getIso2(d.id))); updateStats(); }
   } catch {
-    pill.textContent = `Fallback-Daten (Stand: ${DETAILS_UPDATED})`;
-    pill.className   = 'error';
+    pill.innerHTML = `<span class="status-dot" aria-hidden="true"></span>FALLBACK · STAND ${DETAILS_UPDATED.toUpperCase()}`;
+    pill.className = 'error';
     announce(`Server nicht erreichbar – statische Daten vom ${DETAILS_UPDATED} aktiv`);
     updateStats();
   }
@@ -791,61 +874,58 @@ async function loadWarnings() {
 async function loadTexts() {
   try {
     const res  = await fetch('/api/texts');
-    const json = await res.json();
-    liveTexts  = json.data || {};
+    liveTexts  = (await res.json()).data || {};
   } catch { /* statische Texte als Fallback */ }
 }
 
-// ── Daten-Abfragen ────────────────────────────────────────────────────────────
-function getIso2(id)  { return NUM_TO_ISO2[String(id)] || NUM_TO_ISO2[parseInt(id)]; }
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function getIso2(id) { return NUM_TO_ISO2[String(id)] || NUM_TO_ISO2[parseInt(id)]; }
 
 function getLevel(iso2) {
   if (!iso2) return -1;
-  if (liveData[iso2]    !== undefined) return liveData[iso2].level;
-  if (DETAILS[iso2]     !== undefined) return DETAILS[iso2][0];
+  if (liveData[iso2]     !== undefined) return liveData[iso2].level;
+  if (DETAILS[iso2]      !== undefined) return DETAILS[iso2][0];
   if (FALLBACK_LVL[iso2] !== undefined) return FALLBACK_LVL[iso2];
   return -1;
 }
 
 function getColor(iso2) {
   const l = getLevel(iso2);
-  if (l === -1) return '#B0AEA6';
+  if (l === -1) return isDark ? '#1e2d42' : '#c8d4e0';
   if (activeFilter !== null && l !== activeFilter)
-    return isDark ? 'rgba(80,80,76,0.35)' : 'rgba(170,168,160,0.35)';
+    return isDark ? '#0f1a28' : '#d8e4ef';
   return C[l];
 }
 
 function getInfo(iso2) {
-  if (liveTexts[iso2])  return { sec: liveTexts[iso2].security, entry: liveTexts[iso2].entry };
-  if (DETAILS[iso2])    return { sec: DETAILS[iso2][1], entry: DETAILS[iso2][2] };
-  const l = getLevel(iso2);
-  const d = DEFAULT_TEXT[l >= 0 ? l : 0];
+  if (liveTexts[iso2]) return { sec: liveTexts[iso2].security, entry: liveTexts[iso2].entry };
+  if (DETAILS[iso2])   return { sec: DETAILS[iso2][1], entry: DETAILS[iso2][2] };
+  const d = DEFAULT_TEXT[Math.max(0, getLevel(iso2))];
   return { sec: d[0], entry: d[1] };
 }
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 function updateStats() {
-  const counts = {0:0, 1:0, 2:0, 3:0};
-  const all = new Set([...Object.keys(DETAILS), ...Object.keys(FALLBACK_LVL), ...Object.keys(liveData)]);
+  const counts = {0:0,1:0,2:0,3:0};
+  const all = new Set([...Object.keys(DETAILS),...Object.keys(FALLBACK_LVL),...Object.keys(liveData)]);
   all.forEach(iso => { const l = getLevel(iso); if (l >= 0) counts[l]++; });
   [0,1,2,3].forEach(l => {
     const el = document.getElementById('cnt' + l);
     if (el) el.textContent = counts[l];
   });
 }
-
-updateStats(); // sofort mit statischen Daten befüllen
+updateStats();
 
 document.querySelectorAll('.stat-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const lvl = parseInt(btn.dataset.level);
     if (activeFilter === lvl) {
       activeFilter = null;
-      btn.setAttribute('aria-pressed', 'false');
+      btn.setAttribute('aria-pressed','false');
     } else {
-      document.querySelectorAll('.stat-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
+      document.querySelectorAll('.stat-btn').forEach(b => b.setAttribute('aria-pressed','false'));
       activeFilter = lvl;
-      btn.setAttribute('aria-pressed', 'true');
+      btn.setAttribute('aria-pressed','true');
     }
     closePopup();
     if (svgPaths) svgPaths.attr('fill', d => getColor(getIso2(d.id)));
@@ -856,14 +936,11 @@ document.querySelectorAll('.stat-btn').forEach(btn => {
 const searchInput    = document.getElementById('search-input');
 const searchClear    = document.getElementById('search-clear');
 const searchDropdown = document.getElementById('search-dropdown');
-const searchShortcut = document.getElementById('search-shortcut');
+const searchKbd      = document.getElementById('search-kbd');
 
-// Tastaturkürzel: "/" öffnet Suche
 document.addEventListener('keydown', e => {
-  if (e.key === '/' && document.activeElement !== searchInput
-      && document.activeElement.tagName !== 'INPUT') {
-    e.preventDefault();
-    searchInput.focus();
+  if (e.key === '/' && document.activeElement !== searchInput && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault(); searchInput.focus();
   }
   if (e.key === 'Escape') {
     if (document.getElementById('popup').style.display !== 'none') { closePopup(); return; }
@@ -871,16 +948,13 @@ document.addEventListener('keydown', e => {
   }
 });
 
-searchInput.addEventListener('focus', () => { searchShortcut.classList.add('hidden'); });
-searchInput.addEventListener('blur',  () => {
-  if (!searchInput.value) searchShortcut.classList.remove('hidden');
-});
+searchInput.addEventListener('focus', () => searchKbd.classList.add('hidden'));
+searchInput.addEventListener('blur',  () => { if (!searchInput.value) searchKbd.classList.remove('hidden'); });
 
 searchInput.addEventListener('input', () => {
   const q = searchInput.value.trim().toLowerCase();
   searchClear.style.display = q ? 'flex' : 'none';
   searchInput.setAttribute('aria-expanded', q ? 'true' : 'false');
-
   if (!q) { searchDropdown.style.display = 'none'; return; }
 
   const matches = Object.entries(COUNTRY_NAMES)
@@ -889,16 +963,16 @@ searchInput.addEventListener('input', () => {
     .slice(0, 10);
 
   if (!matches.length) {
-    searchDropdown.innerHTML = '<div class="sd-empty">Kein Land gefunden</div>';
+    searchDropdown.innerHTML = '<div class="sd-empty">KEIN ERGEBNIS</div>';
   } else {
     searchDropdown.innerHTML = matches.map(([iso, name]) => {
       const l = getLevel(iso);
-      const col = l >= 0 ? C[l] : '#B0AEA6';
-      const lbl = l >= 0 ? LBL[l] : 'Keine Daten';
-      return `<div class="sd-item" data-iso="${iso}" role="option" tabindex="-1" aria-label="${name}: ${lbl}">
+      const col = l >= 0 ? C[l] : (isDark ? '#1e2d42' : '#c8d4e0');
+      const lbl = ['✓','!','!!','!!!'][l] ?? '?';
+      return `<div class="sd-item" data-iso="${iso}" role="option" tabindex="-1">
         <div class="sd-dot" style="background:${col}" aria-hidden="true"></div>
-        ${name}
-        <span class="sd-level">${['✓','!','!!','!!!'][l] || '?'}</span>
+        <span class="sd-name">${name}</span>
+        <span class="sd-lvl">${lbl}</span>
       </div>`;
     }).join('');
     searchDropdown.querySelectorAll('.sd-item').forEach(item => {
@@ -918,16 +992,16 @@ searchInput.addEventListener('keydown', e => {
 
 function selectCountry(iso2) {
   searchInput.value = COUNTRY_NAMES[iso2] || iso2;
-  searchInput.setAttribute('aria-expanded', 'false');
+  searchInput.setAttribute('aria-expanded','false');
   searchDropdown.style.display = 'none';
   focusCountry(iso2);
 }
 
 searchClear.addEventListener('click', () => {
   searchInput.value = '';
-  searchInput.setAttribute('aria-expanded', 'false');
+  searchInput.setAttribute('aria-expanded','false');
   searchClear.style.display = 'none';
-  searchShortcut.classList.remove('hidden');
+  searchKbd.classList.remove('hidden');
   searchDropdown.style.display = 'none';
   closePopup();
 });
@@ -935,14 +1009,13 @@ searchClear.addEventListener('click', () => {
 document.addEventListener('click', e => {
   if (!e.target.closest('.search-wrap')) {
     searchDropdown.style.display = 'none';
-    searchInput.setAttribute('aria-expanded', 'false');
+    searchInput.setAttribute('aria-expanded','false');
   }
 });
 
 // ── AA Links ──────────────────────────────────────────────────────────────────
 const AA_NODE     = 'https://www.auswaertiges-amt.de/de/service/laender/';
 const AA_FALLBACK = 'https://www.auswaertiges-amt.de/de/reiseundsicherheit/10-2-8reisewarnungen';
-
 const AA_SLUGS = {
   AF:'afghanistan-node',AE:'vereinigtearabischeemirate-node',AL:'albanien-node',
   DZ:'algerien-node',AO:'angola-node',AR:'argentinien-node',AM:'armenien-node',
@@ -984,25 +1057,23 @@ const AA_SLUGS = {
   YE:'jemen-node',ZM:'sambia-node',ZW:'simbabwe-node',DJ:'dschibuti-node',
   ER:'eritrea-node',GE:'georgien-node',SR:'suriname-node',LS:'lesotho-node',
 };
-
-function buildLink(iso2) {
-  return AA_SLUGS[iso2] ? AA_NODE + AA_SLUGS[iso2] : AA_FALLBACK;
-}
+function buildLink(iso2) { return AA_SLUGS[iso2] ? AA_NODE + AA_SLUGS[iso2] : AA_FALLBACK; }
 
 // ── Popup ─────────────────────────────────────────────────────────────────────
 function showPopup(evt, iso2) {
   const lvl  = getLevel(iso2);
   const name = COUNTRY_NAMES[iso2] || iso2;
   const info = getInfo(iso2);
+  const col  = lvl >= 0 ? C[lvl] : (isDark ? '#2a3a4a' : '#94a8bc');
 
   document.getElementById('popup-title').textContent = name;
-  document.getElementById('popup-color-bar').style.background = lvl >= 0 ? C[lvl] : '#B0AEA6';
+  document.getElementById('popup-risk-bar').style.background = col;
 
   const badge = document.getElementById('popup-badge');
-  badge.textContent = lvl >= 0 ? LBL[lvl] : 'Keine Daten';
-  badge.style.cssText = lvl >= 0
-    ? `background:${BB[lvl]};color:${BC[lvl]}`
-    : 'background:#F1EFE8;color:#5F5E5A';
+  badge.textContent = lvl >= 0 ? LBL[lvl] : 'KEINE DATEN';
+  badge.style.color      = col;
+  badge.style.background = isDark ? `${col}18` : `${col}15`;
+  badge.style.borderColor = `${col}40`;
 
   document.getElementById('pp-sec').textContent   = info.sec;
   document.getElementById('pp-biz').textContent   = lvl >= 0 ? BIZ[lvl] : 'Bitte Auswärtiges Amt direkt prüfen.';
@@ -1010,12 +1081,16 @@ function showPopup(evt, iso2) {
   document.getElementById('popup-link').href      = buildLink(iso2);
 
   const pop  = document.getElementById('popup');
+  pop.style.display = 'none'; // reset animation
+  pop.style.animation = 'none';
+  requestAnimationFrame(() => {
+    pop.style.animation = '';
+    pop.style.display = 'block';
+  });
+
   const wrap = document.getElementById('map-wrap');
   const wr   = wrap.getBoundingClientRect();
-  pop.style.display = 'block';
-
-  const pw = pop.offsetWidth  || 296;
-  const ph = pop.offsetHeight || 340;
+  const pw   = 290, ph = 360;
   let x = evt.clientX - wr.left + 16;
   let y = evt.clientY - wr.top  + 16;
   if (x + pw > wrap.offsetWidth  - 8) x = Math.max(8, evt.clientX - wr.left - pw - 16);
@@ -1037,36 +1112,33 @@ function closePopup() {
   }
 }
 
-// Klick außerhalb des Popups schließt es (aber nicht Klicks auf die Karte selbst)
 document.getElementById('map-wrap').addEventListener('click', e => {
   const pop = document.getElementById('popup');
   if (pop.style.display !== 'none' && !pop.contains(e.target) && !e.target.closest('svg')) closePopup();
 });
 
-// ── Karte fokussieren (aus Suche) ─────────────────────────────────────────────
+// ── Focus country from search ─────────────────────────────────────────────────
 function focusCountry(iso2) {
   if (!svgPaths) return;
   const path = svgPaths.filter(d => getIso2(d.id) === iso2);
   if (path.empty()) return;
-  const k    = d3.zoomTransform(svg.node()).k;
+  const k = d3.zoomTransform(svg.node()).k;
   if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
   activeD = path.datum();
-  path.attr('stroke', '#ffffff').attr('stroke-width', 2 / k);
+  path.attr('stroke','#ffffff').attr('stroke-width', 2 / k);
   const node = path.node();
   const bbox = node.getBBox();
   const svgEl = document.querySelector('#map svg');
-  const pt    = svgEl.createSVGPoint();
-  pt.x = bbox.x + bbox.width  / 2;
+  const pt = svgEl.createSVGPoint();
+  pt.x = bbox.x + bbox.width / 2;
   pt.y = bbox.y + bbox.height / 2;
   const sp = pt.matrixTransform(node.getScreenCTM());
   showPopup({ clientX: sp.x, clientY: sp.y }, iso2);
 }
 
-// ── D3 Karte ──────────────────────────────────────────────────────────────────
-let svgPaths, activeD, zoom;
-const isDark  = matchMedia('(prefers-color-scheme: dark)').matches;
-const stroke0 = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.9)';
-const mapBg   = isDark ? '#16202e' : '#c5dcee';
+// ── D3 Map ────────────────────────────────────────────────────────────────────
+const stroke0 = isDark ? 'rgba(20,50,90,0.9)' : 'rgba(255,255,255,0.8)';
+const mapBg   = isDark ? '#060e1c' : '#b8d0e8';
 
 const svg = d3.select('#map').append('svg')
   .attr('viewBox', '0 0 960 500')
@@ -1088,28 +1160,28 @@ zoom = d3.zoom()
   });
 
 svg.call(zoom);
+svg.on('mousedown', () => svg.classed('panning', true));
+svg.on('mouseup mouseleave', () => svg.classed('panning', false));
 
 document.getElementById('zoom-in').addEventListener('click',
   () => svg.transition().duration(280).call(zoom.scaleBy, 1.6));
 document.getElementById('zoom-out').addEventListener('click',
   () => svg.transition().duration(280).call(zoom.scaleBy, 0.625));
 
-function resetZoom() {
-  svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity);
-}
+function resetZoom() { svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity); }
 
 const tooltip = document.getElementById('map-tooltip');
 
 d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
   const features = topojson.feature(world, world.objects.countries).features;
 
-  // Graticule
+  // Subtle graticule
   g.append('path')
     .datum(d3.geoGraticule()())
     .attr('d', pathGen)
     .attr('fill', 'none')
-    .attr('stroke', isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)')
-    .attr('stroke-width', 0.5);
+    .attr('stroke', isDark ? 'rgba(100,160,255,0.05)' : 'rgba(0,40,100,0.05)')
+    .attr('stroke-width', 0.4);
 
   svgPaths = g.selectAll('path.land').data(features).join('path')
     .attr('class', 'land')
@@ -1117,19 +1189,18 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
     .attr('fill', d => getColor(getIso2(d.id)))
     .attr('stroke', stroke0)
     .attr('stroke-width', 0.5)
-    .style('cursor', 'pointer')
+    .style('cursor', 'crosshair')
     .on('mousemove', function(evt, d) {
       const iso2 = getIso2(d.id);
       if (!iso2) return;
-      const name = COUNTRY_NAMES[iso2] || iso2;
-      const l    = getLevel(iso2);
-      const col  = l >= 0 ? C[l] : '#B0AEA6';
-      tooltip.innerHTML = `<span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:${col};margin-right:5px;vertical-align:middle" aria-hidden="true"></span>${name}`;
+      const l   = getLevel(iso2);
+      const col = l >= 0 ? C[l] : (isDark ? '#2a3a4a' : '#94a8bc');
+      tooltip.innerHTML = `<span style="display:inline-block;width:6px;height:6px;border-radius:1px;background:${col};margin-right:6px;vertical-align:middle" aria-hidden="true"></span>${COUNTRY_NAMES[iso2] || iso2}`;
       tooltip.style.display = 'block';
       const wr = document.getElementById('map-wrap').getBoundingClientRect();
-      let tx = evt.clientX - wr.left + 10;
+      let tx = evt.clientX - wr.left + 12;
       let ty = evt.clientY - wr.top  - 34;
-      if (tx + 200 > wr.width) tx = evt.clientX - wr.left - 210;
+      if (tx + 220 > wr.width) tx = evt.clientX - wr.left - 230;
       if (ty < 4) ty = evt.clientY - wr.top + 14;
       tooltip.style.left = tx + 'px';
       tooltip.style.top  = ty + 'px';
@@ -1141,7 +1212,7 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
       const k = d3.zoomTransform(svg.node()).k;
       if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
       activeD = d;
-      d3.select(this).attr('stroke', '#ffffff').attr('stroke-width', 2 / k);
+      d3.select(this).attr('stroke','#ffffff').attr('stroke-width', 2 / k);
       showPopup(evt, iso2);
     });
 
