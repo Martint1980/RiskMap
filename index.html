@@ -1000,6 +1000,8 @@ async function loadTexts() {
   try {
     const res  = await fetch('/api/texts');
     liveTexts  = (await res.json()).data || {};
+    // Re-color map now that level data from Haiku is available
+    if (svgPaths) { svgPaths.attr('fill', d => getColor(getIso2(d.id, d.properties?.name))); updateStats(); }
   } catch { /* statische Texte als Fallback */ }
 }
 
@@ -1010,7 +1012,13 @@ function getIso2(id, name) {
 
 function getLevel(iso2) {
   if (!iso2) return -1;
-  if (liveData[iso2]     !== undefined) return liveData[iso2].level;
+  // AA-API: Level 2+3 (most authoritative)
+  if (liveData[iso2] !== undefined && liveData[iso2].level >= 2) return liveData[iso2].level;
+  // Haiku-API: Level 0+1 (and 2+3 if AA-API not available)
+  if (liveTexts[iso2] !== undefined && liveTexts[iso2].level !== undefined) return liveTexts[iso2].level;
+  // AA-API Level 0 fallback
+  if (liveData[iso2] !== undefined) return liveData[iso2].level;
+  // Static fallbacks
   if (DETAILS[iso2]      !== undefined) return DETAILS[iso2][0];
   if (FALLBACK_LVL[iso2] !== undefined) return FALLBACK_LVL[iso2];
   return -1;

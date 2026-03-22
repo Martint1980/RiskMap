@@ -8,8 +8,67 @@ const PORT = process.env.PORT || 3000;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
 let warningCache = { data: {}, lastUpdated: null, source: 'none', count: 0 };
-let textCache = { data: {}, lastUpdated: null };
+let textCache    = { data: {}, lastUpdated: null };
 
+// ── All countries to classify (level + text via Haiku) ────────────────────────
+// Level 2/3 from AA-API overrides level here; text is always used.
+const ALL_COUNTRIES = [
+  ['AD','Andorra'],['AE','Vereinigte Arabische Emirate'],['AF','Afghanistan'],
+  ['AG','Antigua und Barbuda'],['AL','Albanien'],['AM','Armenien'],
+  ['AO','Angola'],['AR','Argentinien'],['AT','Österreich'],['AU','Australien'],
+  ['AZ','Aserbaidschan'],['BA','Bosnien und Herzegowina'],['BB','Barbados'],
+  ['BD','Bangladesch'],['BE','Belgien'],['BF','Burkina Faso'],['BG','Bulgarien'],
+  ['BH','Bahrain'],['BI','Burundi'],['BJ','Benin'],['BN','Brunei'],
+  ['BO','Bolivien'],['BR','Brasilien'],['BS','Bahamas'],['BT','Bhutan'],
+  ['BW','Botswana'],['BY','Belarus'],['BZ','Belize'],['CA','Kanada'],
+  ['CD','DR Kongo'],['CF','Zentralafrikanische Republik'],['CG','Kongo'],
+  ['CH','Schweiz'],['CI','Elfenbeinküste'],['CL','Chile'],['CM','Kamerun'],
+  ['CN','China'],['CO','Kolumbien'],['CR','Costa Rica'],['CU','Kuba'],
+  ['CV','Kap Verde'],['CY','Zypern'],['CZ','Tschechien'],['DE','Deutschland'],
+  ['DJ','Dschibuti'],['DK','Dänemark'],['DM','Dominica'],['DO','Dominikanische Republik'],
+  ['DZ','Algerien'],['EC','Ecuador'],['EE','Estland'],['EG','Ägypten'],
+  ['ER','Eritrea'],['ES','Spanien'],['ET','Äthiopien'],['FI','Finnland'],
+  ['FJ','Fidschi'],['FK','Falklandinseln'],['FR','Frankreich'],['GA','Gabun'],
+  ['GB','Großbritannien'],['GD','Grenada'],['GE','Georgien'],['GH','Ghana'],
+  ['GL','Grönland'],['GM','Gambia'],['GN','Guinea'],['GQ','Äquatorialguinea'],
+  ['GR','Griechenland'],['GT','Guatemala'],['GW','Guinea-Bissau'],['GY','Guyana'],
+  ['HK','Hongkong'],['HN','Honduras'],['HR','Kroatien'],['HT','Haiti'],
+  ['HU','Ungarn'],['ID','Indonesien'],['IE','Irland'],['IL','Israel'],
+  ['IN','Indien'],['IQ','Irak'],['IR','Iran'],['IS','Island'],
+  ['IT','Italien'],['JM','Jamaika'],['JO','Jordanien'],['JP','Japan'],
+  ['KE','Kenia'],['KG','Kirgisistan'],['KH','Kambodscha'],['KN','St. Kitts und Nevis'],
+  ['KP','Nordkorea'],['KR','Südkorea'],['KW','Kuwait'],['KZ','Kasachstan'],
+  ['LA','Laos'],['LB','Libanon'],['LC','St. Lucia'],['LK','Sri Lanka'],
+  ['LR','Liberia'],['LS','Lesotho'],['LT','Litauen'],['LU','Luxemburg'],
+  ['LV','Lettland'],['LY','Libyen'],['MA','Marokko'],['MD','Moldau'],
+  ['ME','Montenegro'],['MG','Madagaskar'],['MK','Nordmazedonien'],['ML','Mali'],
+  ['MM','Myanmar'],['MN','Mongolei'],['MO','Macau'],['MR','Mauretanien'],
+  ['MT','Malta'],['MU','Mauritius'],['MV','Malediven'],['MW','Malawi'],
+  ['MX','Mexiko'],['MY','Malaysia'],['MZ','Mosambik'],['NA','Namibia'],
+  ['NC','Neukaledonien'],['NE','Niger'],['NG','Nigeria'],['NI','Nicaragua'],
+  ['NL','Niederlande'],['NO','Norwegen'],['NP','Nepal'],['NR','Nauru'],
+  ['NZ','Neuseeland'],['OM','Oman'],['PA','Panama'],['PE','Peru'],
+  ['PG','Papua-Neuguinea'],['PH','Philippinen'],['PK','Pakistan'],['PL','Polen'],
+  ['PR','Puerto Rico'],['PS','Palästinensische Gebiete'],['PT','Portugal'],
+  ['PW','Palau'],['PY','Paraguay'],['QA','Katar'],['RO','Rumänien'],
+  ['RS','Serbien'],['RU','Russland'],['RW','Ruanda'],['SA','Saudi-Arabien'],
+  ['SB','Salomonen'],['SC','Seychellen'],['SD','Sudan'],['SE','Schweden'],
+  ['SG','Singapur'],['SI','Slowenien'],['SK','Slowakei'],['SL','Sierra Leone'],
+  ['SM','San Marino'],['SO','Somalia'],['SR','Suriname'],['SS','Südsudan'],
+  ['ST','São Tomé und Príncipe'],['SV','El Salvador'],['SY','Syrien'],
+  ['SZ','Eswatini'],['TD','Tschad'],['TG','Togo'],['TH','Thailand'],
+  ['TJ','Tadschikistan'],['TL','Osttimor'],['TM','Turkmenistan'],['TN','Tunesien'],
+  ['TO','Tonga'],['TR','Türkei'],['TT','Trinidad und Tobago'],['TW','Taiwan'],
+  ['TZ','Tansania'],['UA','Ukraine'],['UG','Uganda'],['US','USA'],
+  ['UY','Uruguay'],['UZ','Usbekistan'],['VA','Vatikanstadt'],['VC','St. Vincent und die Grenadinen'],
+  ['VE','Venezuela'],['VN','Vietnam'],['VU','Vanuatu'],['WS','Samoa'],
+  ['XK','Kosovo'],['YE','Jemen'],['ZA','Südafrika'],['ZM','Sambia'],
+  ['ZW','Simbabwe'],
+];
+
+const BATCH_SIZE = 10;
+
+// ── HTTP helpers ──────────────────────────────────────────────────────────────
 function httpsGet(options) {
   return new Promise((resolve, reject) => {
     const req = https.request(options, (res) => {
@@ -43,6 +102,7 @@ function httpsPost(options, payload) {
   });
 }
 
+// ── AA warnings (Level 2 + 3) ─────────────────────────────────────────────────
 async function fetchWarnings() {
   const res = await httpsGet({
     hostname: 'www.auswaertiges-amt.de',
@@ -72,7 +132,7 @@ async function updateWarnings() {
   try {
     const data = await fetchWarnings();
     warningCache = { data, lastUpdated: ts, source: 'live', count: Object.keys(data).length };
-    console.log(`[${ts}] Warnstufen OK: ${warningCache.count} Laender`);
+    console.log(`[${ts}] Warnstufen OK: ${warningCache.count} Länder`);
   } catch (e) {
     console.error(`[${ts}] Warnstufen-Fehler: ${e.message}`);
     if (warningCache.count > 0) warningCache.source = 'cached_after_error';
@@ -80,10 +140,20 @@ async function updateWarnings() {
   }
 }
 
-async function generateCountryText(iso2, countryNameDE) {
+// ── Haiku batch classification (Level 0/1 + texts) ───────────────────────────
+// Returns array of {i, l, s, e} — short keys to minimize output tokens.
+async function classifyBatch(countries) {
   if (!ANTHROPIC_API_KEY) throw new Error('Kein ANTHROPIC_API_KEY');
 
-  const prompt = `Suche nach den aktuellen offiziellen Reise- und Sicherheitshinweisen des Deutschen Auswaertigen Amts fuer ${countryNameDE} (ISO2: ${iso2}). Antworte NUR mit einem JSON-Objekt ohne Markdown oder Backticks: {"security":"<Sicherheitstext des AA, max 3 Saetze, Deutsch>","entry":"<Aktuelle Einreisebestimmungen fuer Deutsche: Visum ja/nein, Dauer, Besonderheiten. Max 2 Saetze, Deutsch>"}`;
+  const list = countries.map(([iso2, name]) => `${iso2} ${name}`).join(', ');
+
+  // Compact prompt — every saved word reduces cost
+  const prompt =
+    'Reisehinweise des Deutschen Auswärtigen Amts. ' +
+    'Level: 0=kein besonderes Risiko, 1=erhöhte Vorsicht/regionale Einschränkungen (kein offizieller Warning). ' +
+    'Antworte NUR mit JSON-Array, kein Markdown, keine Erklärung:\n' +
+    '[{"i":"XX","l":0,"s":"Sicherheitslage 1-2 Sätze auf Deutsch","e":"Einreise/Visum für Deutsche 1 Satz"}]\n' +
+    'Länder: ' + list;
 
   const res = await httpsPost(
     {
@@ -96,78 +166,67 @@ async function generateCountryText(iso2, countryNameDE) {
       }
     },
     {
-      model: 'claude-sonnet-4-6',
-      max_tokens: 400,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1500,
       messages: [{ role: 'user', content: prompt }]
     }
   );
 
-  if (res.status !== 200) throw new Error(`API Status ${res.status}: ${res.body.substring(0,200)}`);
+  if (res.status !== 200) throw new Error(`API ${res.status}: ${res.body.substring(0, 200)}`);
 
   const data = JSON.parse(res.body);
   const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
-  const match = text.match(/\{[\s\S]*?\}/);
-  if (!match) throw new Error('Kein JSON in Antwort');
+
+  // Extract JSON array from response (strip potential markdown fences)
+  const match = text.match(/\[[\s\S]*\]/);
+  if (!match) throw new Error('Kein JSON-Array in Antwort');
+
   const parsed = JSON.parse(match[0]);
-  if (!parsed.security || !parsed.entry) throw new Error('JSON unvollstaendig');
-  return parsed;
+  return parsed; // [{i, l, s, e}, ...]
 }
 
-const COUNTRIES_TO_UPDATE = [
-  ['AF','Afghanistan'],['AE','Vereinigte Arabische Emirate'],['BH','Bahrain'],
-  ['BY','Belarus'],['HT','Haiti'],['IR','Iran'],['IQ','Irak'],['IL','Israel'],
-  ['JO','Jordanien'],['QA','Katar'],['KW','Kuwait'],['LB','Libanon'],
-  ['LY','Libyen'],['ML','Mali'],['MM','Myanmar'],['NE','Niger'],['OM','Oman'],
-  ['PS','Palaestinensische Gebiete'],['SA','Saudi-Arabien'],['SO','Somalia'],
-  ['SD','Sudan'],['SS','Suedsudan'],['SY','Syrien'],['UA','Ukraine'],
-  ['YE','Jemen'],['CF','Zentralafrikanische Republik'],['RU','Russland'],
-  ['BF','Burkina Faso'],['PK','Pakistan'],['ET','Aethiopien'],['NG','Nigeria'],
-  ['CD','Demokratische Republik Kongo'],['TD','Tschad'],['KP','Nordkorea'],
-  ['MX','Mexiko'],['CO','Kolumbien'],['TH','Thailand'],['PH','Philippinen'],
-  ['CM','Kamerun'],['KE','Kenia'],['VE','Venezuela'],['GE','Georgien'],
-  ['AZ','Aserbaidschan'],['TJ','Tadschikistan'],['BD','Bangladesch'],
-  ['LK','Sri Lanka'],['MR','Mauretanien'],['MZ','Mosambik'],['AO','Angola'],
-  ['UG','Uganda'],['TZ','Tansania'],['GH','Ghana'],['KH','Kambodscha'],
-  ['TR','Tuerkei'],['EG','Aegypten'],['TN','Tunesien'],['MA','Marokko'],
-  ['IN','Indien'],['CN','China'],['BR','Brasilien'],['ZA','Suedafrika'],
-  ['ID','Indonesien'],['MY','Malaysia'],['NP','Nepal'],['EC','Ecuador'],
-  ['GT','Guatemala'],['HN','Honduras'],['SV','El Salvador'],['NI','Nicaragua'],
-  ['CU','Kuba'],['CI','Elfenbeinkueste'],['LR','Liberia'],['SL','Sierra Leone'],
-  ['GN','Guinea'],['TG','Togo'],['BJ','Benin'],['ZW','Simbabwe'],['ZM','Sambia'],
-  ['MW','Malawi'],['ER','Eritrea'],['DJ','Dschibuti'],['AM','Armenien'],
-  ['KG','Kirgisistan'],['MD','Moldau'],['BI','Burundi'],['RW','Ruanda'],
-  ['GW','Guinea-Bissau'],['DE','Deutschland'],['FR','Frankreich'],
-  ['GB','Grossbritannien'],['US','USA'],['CA','Kanada'],['JP','Japan'],
-  ['KR','Suedkorea'],['AU','Australien'],['NZ','Neuseeland'],['SG','Singapur'],
-  ['VN','Vietnam'],['AR','Argentinien'],
-];
-
-async function updateTexts() {
+async function updateTextsAndLevels() {
   if (!ANTHROPIC_API_KEY) {
-    console.log('[TEXT] Kein API Key – uebersprungen');
+    console.log('[TEXT] Kein API Key – übersprungen');
     return;
   }
+
   const ts = new Date().toISOString();
-  console.log(`[${ts}] Text-Update gestartet (${COUNTRIES_TO_UPDATE.length} Laender)...`);
+  console.log(`[${ts}] Text+Level-Update (${ALL_COUNTRIES.length} Länder, Haiku, Batches à ${BATCH_SIZE})...`);
+
   let success = 0, errors = 0;
 
-  for (const [iso2, name] of COUNTRIES_TO_UPDATE) {
+  for (let i = 0; i < ALL_COUNTRIES.length; i += BATCH_SIZE) {
+    const batch = ALL_COUNTRIES.slice(i, i + BATCH_SIZE);
     try {
-      const result = await generateCountryText(iso2, name);
-      textCache.data[iso2] = { ...result, updatedAt: ts };
-      success++;
-      console.log(`[TEXT] OK: ${name}`);
-      await new Promise(r => setTimeout(r, 2000));
+      const results = await classifyBatch(batch);
+      for (const entry of results) {
+        if (!entry.i || entry.l === undefined) continue;
+        textCache.data[entry.i] = {
+          level:     entry.l,
+          security:  entry.s || '',
+          entry:     entry.e || '',
+          updatedAt: ts
+        };
+        success++;
+      }
+      console.log(`[TEXT] Batch ${Math.floor(i / BATCH_SIZE) + 1}: OK (${batch.map(c => c[0]).join(',')})`);
     } catch (e) {
-      errors++;
-      console.warn(`[TEXT] FEHLER ${name}: ${e.message}`);
+      errors += batch.length;
+      console.warn(`[TEXT] Batch-Fehler: ${e.message}`);
+    }
+
+    // Pause between batches to respect rate limits
+    if (i + BATCH_SIZE < ALL_COUNTRIES.length) {
+      await new Promise(r => setTimeout(r, 1500));
     }
   }
+
   textCache.lastUpdated = ts;
-  console.log(`[${ts}] Text-Update fertig: ${success} OK, ${errors} Fehler`);
+  console.log(`[${ts}] Text+Level fertig: ${success} OK, ${errors} Fehler`);
 }
 
+// ── Express ───────────────────────────────────────────────────────────────────
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
@@ -179,11 +238,20 @@ app.use(express.static(path.join(__dirname)));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 app.get('/api/warnings', (req, res) => {
-  res.json({ lastUpdated: warningCache.lastUpdated, source: warningCache.source, count: warningCache.count, data: warningCache.data });
+  res.json({
+    lastUpdated: warningCache.lastUpdated,
+    source: warningCache.source,
+    count: warningCache.count,
+    data: warningCache.data
+  });
 });
 
 app.get('/api/texts', (req, res) => {
-  res.json({ lastUpdated: textCache.lastUpdated, count: Object.keys(textCache.data).length, data: textCache.data });
+  res.json({
+    lastUpdated: textCache.lastUpdated,
+    count: Object.keys(textCache.data).length,
+    data: textCache.data
+  });
 });
 
 app.get('/health', (req, res) => {
@@ -192,21 +260,24 @@ app.get('/health', (req, res) => {
     warnings: { lastUpdated: warningCache.lastUpdated, source: warningCache.source, count: warningCache.count },
     texts: { lastUpdated: textCache.lastUpdated, count: Object.keys(textCache.data).length },
     apiKeyPresent: !!ANTHROPIC_API_KEY,
-    schedule: 'Warnstufen: taeglich 06:00 + 12:00 UTC | Texte: montags 07:00 UTC'
+    model: 'claude-haiku-4-5-20251001',
+    batchSize: BATCH_SIZE,
+    totalCountries: ALL_COUNTRIES.length,
+    schedule: 'Warnstufen: tägl. 06:00 + 12:00 UTC | Texte+Level: Mo 07:00 UTC'
   });
 });
 
-// Warnstufen: täglich 06:00 + 12:00 UTC
-cron.schedule('0 0 6 * * *',  () => updateWarnings(), { timezone: 'UTC' });
-cron.schedule('0 0 12 * * *', () => updateWarnings(), { timezone: 'UTC' });
-// Texte: jeden Montag 07:00 UTC
-cron.schedule('0 0 7 * * 1',  () => updateTexts(),    { timezone: 'UTC' });
+// ── Cron ──────────────────────────────────────────────────────────────────────
+cron.schedule('0 0 6 * * *',  () => updateWarnings(),        { timezone: 'UTC' });
+cron.schedule('0 0 12 * * *', () => updateWarnings(),        { timezone: 'UTC' });
+cron.schedule('0 0 7 * * 1',  () => updateTextsAndLevels(),  { timezone: 'UTC' });
 
+// ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, async () => {
-  console.log(`Server Port ${PORT} | API Key: ${ANTHROPIC_API_KEY ? 'OK' : 'FEHLT'}`);
+  console.log(`Server Port ${PORT} | API Key: ${ANTHROPIC_API_KEY ? 'OK' : 'FEHLT'} | Modell: claude-haiku-4-5-20251001`);
   await updateWarnings();
   if (ANTHROPIC_API_KEY && Object.keys(textCache.data).length === 0) {
-    console.log('Erster Start – generiere Texte im Hintergrund...');
-    updateTexts();
+    console.log('Erster Start – generiere Texte+Level im Hintergrund...');
+    updateTextsAndLevels();
   }
 });
