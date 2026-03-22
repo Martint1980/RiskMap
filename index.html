@@ -830,6 +830,8 @@ const DETAILS = {
   SG:[0,'Kein besonderes Reiserisiko. Singapur gilt als eines der sichersten Reiseziele weltweit.','Kein Visum für Deutsche (30 Tage).','singapursicherheit-206244'],
   VN:[0,'Kein besonderes Reiserisiko. Vietnam gilt als relativ sicheres Reiseziel.','Kein Visum für Deutsche (45 Tage). eVisa empfohlen.','vietnamsicherheit-201306'],
   AR:[0,'Kein besonderes Reiserisiko. Argentinien gilt als relativ sicheres Reiseziel.','Kein Visum für Deutsche (90 Tage).','argentiniensicherheit-201440'],
+  HK:[0,'Kein besonderes Reiserisiko. Hongkong gilt als sicheres Reiseziel.','Kein Visum für Deutsche (90 Tage). Reisepass erforderlich.','hongkongsicherheit-203898'],
+  TW:[1,'Für Taiwan bestehen regionale Einschränkungen. Anhaltende Spannungen in der Taiwanstraße. Taiwan selbst gilt als sicher.','Kein Visum für Deutsche (90 Tage). Reisepass erforderlich.','taiwansicherheit-201586'],
 };
 
 const FALLBACK_LVL = {
@@ -837,6 +839,7 @@ const FALLBACK_LVL = {
   CZ:0,SK:0,HU:0,RO:0,BG:0,HR:0,SI:0,EE:0,LV:0,LT:0,LU:0,MT:0,CY:0,IS:0,
   AL:0,RS:0,ME:0,BA:0,MK:0,CL:0,PE:0,UY:0,BO:0,PY:0,CR:0,PA:0,DO:0,JM:0,TT:0,
   NA:0,BW:0,LS:0,SZ:0,MU:0,CG:0,GA:0,SR:0,GY:0,KM:0,SN:0,KZ:0,MN:0,UZ:0,LA:0,MG:1,
+  MO:0,TL:1,EH:1,SB:0,VU:0,WS:0,TO:0,TV:0,NR:0,PW:0,
 };
 
 const NUM_TO_ISO2 = {
@@ -860,6 +863,8 @@ const NUM_TO_ISO2 = {
   756:'CH',760:'SY',762:'TJ',764:'TH',768:'TG',780:'TT',784:'AE',788:'TN',
   792:'TR',800:'UG',804:'UA',807:'MK',826:'GB',834:'TZ',840:'US',854:'BF',
   858:'UY',860:'UZ',862:'VE',887:'YE',894:'ZM',31:'AZ',48:'BH',51:'AM',70:'BA',
+  344:'HK',446:'MO',158:'TW',626:'TL',702:'SG',732:'EH',418:'LA',116:'KH',
+  090:'SB',548:'VU',598:'PG',882:'WS',776:'TO',798:'TV',520:'NR',585:'PW',
 };
 
 const COUNTRY_NAMES = {
@@ -892,6 +897,8 @@ const COUNTRY_NAMES = {
   AM:'Armenien',GN:'Guinea',BH:'Bahrain',BI:'Burundi',SR:'Suriname',GY:'Guyana',
   LS:'Lesotho',SZ:'Eswatini',KM:'Komoren',MT:'Malta',IS:'Island',EE:'Estland',
   LV:'Lettland',LT:'Litauen',LU:'Luxemburg',GW:'Guinea-Bissau',
+  HK:'Hongkong',MO:'Macao',TW:'Taiwan',TL:'Timor-Leste',EH:'Westsahara',
+  SB:'Salomonen',VU:'Vanuatu',WS:'Samoa',TO:'Tonga',TV:'Tuvalu',NR:'Nauru',PW:'Palau',
 };
 
 const DEFAULT_TEXT = {
@@ -1133,10 +1140,40 @@ const AA_SLUGS = {
   UY:'uruguay-node',UZ:'usbekistan-node',VE:'venezuela-node',VN:'vietnam-node',
   YE:'jemen-node',ZM:'sambia-node',ZW:'simbabwe-node',DJ:'dschibuti-node',
   ER:'eritrea-node',GE:'georgien-node',SR:'suriname-node',LS:'lesotho-node',
+  HK:'hongkong-node',MO:'macao-node',TW:'taiwan-node',TL:'timor-leste-node',
+  SB:'salomoninseln-node',VU:'vanuatu-node',WS:'samoa-node',TO:'tonga-node',
 };
 function buildLink(iso2) { return AA_SLUGS[iso2] ? AA_NODE + AA_SLUGS[iso2] : AA_FALLBACK; }
 
 // ── Popup ─────────────────────────────────────────────────────────────────────
+function showNoDataPopup(evt) {
+  document.getElementById('popup-title').textContent = 'Gebiet / Territorium';
+  document.getElementById('popup-risk-bar').style.background = isDark ? '#2A3040' : '#C2CCDA';
+  document.getElementById('popup-risk-bar-bottom').style.background = isDark ? '#2A3040' : '#C2CCDA';
+  const badge = document.getElementById('popup-badge');
+  badge.textContent = 'KEINE DATEN';
+  badge.style.color = isDark ? '#8892AA' : '#4A5578';
+  badge.style.background = isDark ? 'rgba(100,120,160,0.10)' : 'rgba(0,20,80,0.06)';
+  badge.style.borderColor = 'transparent';
+  document.getElementById('pp-sec').textContent   = 'Für dieses Gebiet liegen keine gesonderten Reisehinweise vor.';
+  document.getElementById('pp-biz').textContent   = 'Bitte direkt beim Auswärtigen Amt prüfen.';
+  document.getElementById('pp-entry').textContent = 'Einreisebestimmungen beim Auswärtigen Amt prüfen.';
+  document.getElementById('popup-link').href      = AA_FALLBACK;
+  const pop = document.getElementById('popup');
+  pop.style.display = 'none';
+  pop.style.animation = 'none';
+  requestAnimationFrame(() => { pop.style.animation = ''; pop.style.display = 'block'; });
+  const wrap = document.getElementById('map-wrap');
+  const wr = wrap.getBoundingClientRect();
+  const pw = 300, ph = 370;
+  let x = evt.clientX - wr.left + 16;
+  let y = evt.clientY - wr.top  + 16;
+  if (x + pw > wrap.offsetWidth  - 8) x = Math.max(8, evt.clientX - wr.left - pw - 16);
+  if (y + ph > wrap.offsetHeight - 8) y = Math.max(8, evt.clientY - wr.top  - ph - 16);
+  pop.style.left = x + 'px';
+  pop.style.top  = y + 'px';
+}
+
 function showPopup(evt, iso2) {
   const lvl  = getLevel(iso2);
   const name = COUNTRY_NAMES[iso2] || iso2;
@@ -1320,11 +1357,11 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
     })
     .on('click', function(evt, d) {
       const iso2 = getIso2(d.id);
-      if (!iso2) return;
       const k = d3.zoomTransform(svg.node()).k;
       if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
       activeD = d;
       d3.select(this).attr('stroke','#ffffff').attr('stroke-width', 2 / k);
+      if (!iso2) { showNoDataPopup(evt); return; }
       showPopup(evt, iso2);
     });
 
