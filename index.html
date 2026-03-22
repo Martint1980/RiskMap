@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sicherheitskarte — Reisehinweise</title>
+  <title>Travel RiskMap — Reisehinweise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -21,10 +21,13 @@
       --text:      #EEF2FF;
       --text2:     #8892AA;
       --text3:     #434D65;
-      --accent:    #4361EE;
-      --accent-h:  #5a74f0;
-      --accent2:   rgba(67,97,238,0.12);
-      --accent-glow: rgba(67,97,238,0.22);
+      --accent:    #2B6E9A;
+      --accent-h:  #3D88BA;
+      --accent2:   rgba(43,110,154,0.13);
+      --accent-glow: rgba(43,110,154,0.28);
+      --nord-orange: #E07824;
+      --nord-orange2: rgba(224,120,36,0.10);
+      --nord-blue:  #2B6E9A;
 
       --c0: #12B87A;
       --c1: #EEB020;
@@ -59,10 +62,13 @@
         --text:     #0D1526;
         --text2:    #4A5578;
         --text3:    #9BA5BF;
-        --accent:   #3451D1;
-        --accent-h: #2840C0;
-        --accent2:  rgba(52,81,209,0.08);
-        --accent-glow: rgba(52,81,209,0.15);
+        --accent:   #1E5C8A;
+        --accent-h: #2B6E9A;
+        --accent2:  rgba(30,92,138,0.10);
+        --accent-glow: rgba(30,92,138,0.18);
+        --nord-orange: #C46418;
+        --nord-orange2: rgba(196,100,24,0.08);
+        --nord-blue: #1E5C8A;
 
         --c0:#0A8A5C; --c1:#B08000; --c2:#B04818; --c3:#820F1A;
         --b0:rgba(10,138,92,0.08); --b1:rgba(176,128,0,0.08);
@@ -95,7 +101,10 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(67,97,238,0.07) 0%, transparent 70%);
+      background:
+        radial-gradient(ellipse 55% 35% at 0% 0%, rgba(43,110,154,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 25% at 100% 0%, rgba(224,120,36,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 30% 40% at 50% 100%, rgba(43,110,154,0.05) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -108,46 +117,71 @@
       border-radius: var(--radius-xs);
     }
 
+    /* ── Top accent bar ───────────────────────────────────────────── */
+    #page-top-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #2B6E9A 0%, #5CA0CC 35%, #E07824 65%, #C06020 100%);
+      margin: -16px -20px 0;
+      flex-shrink: 0;
+    }
+
     /* ── Header ───────────────────────────────────────────────────── */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 14px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      margin: 0 -20px 10px;
+      padding: 18px 24px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border2);
+      position: relative;
     }
 
-    .header-left { display: flex; align-items: center; gap: 14px; }
+    .header-left { display: flex; align-items: center; gap: 16px; }
 
     .logo-mark {
-      width: 34px; height: 34px;
-      border-radius: var(--radius-sm);
-      background: var(--accent);
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      background: var(--nord-blue);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 0 0 1px rgba(67,97,238,0.4), 0 4px 16px var(--accent-glow);
+      box-shadow: 0 0 0 1px rgba(43,110,154,0.5), 0 4px 20px rgba(43,110,154,0.35);
+      position: relative;
+    }
+    .logo-mark::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      pointer-events: none;
     }
 
     .logo-mark svg { display: block; }
 
+    .logo-text-wrap { display: flex; flex-direction: column; gap: 2px; }
+
     h1 {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      color: var(--text);
-      line-height: 1.2;
+      font-family: 'Syne', 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--nord-blue);
+      line-height: 1.1;
     }
 
     h1 .sub {
       display: block;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text3);
-      letter-spacing: 0.01em;
-      margin-top: 1px;
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--nord-orange);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      margin-top: 3px;
+      opacity: 0.85;
     }
 
     /* ── Status pill ──────────────────────────────────────────────── */
@@ -196,7 +230,7 @@
     }
 
     /* ── Header right ─────────────────────────────────────────────── */
-    .header-right { display: flex; align-items: center; gap: 8px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
 
     /* ── Search ───────────────────────────────────────────────────── */
     .search-wrap { position: relative; }
@@ -206,12 +240,12 @@
       font-family: var(--font);
       font-size: 13px;
       font-weight: 500;
-      padding: 7px 30px 7px 36px;
-      border-radius: var(--radius-pill);
+      padding: 8px 32px 8px 38px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border2);
-      background: var(--surface);
+      background: var(--bg2);
       color: var(--text);
-      width: 220px;
+      width: 230px;
       transition: border-color .15s, box-shadow .15s, background .15s;
     }
     #search-input::placeholder { color: var(--text3); font-weight: 400; }
@@ -304,39 +338,43 @@
     /* ── Stats bar ────────────────────────────────────────────────── */
     #stats-bar {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin: 0 -20px 10px;
       align-items: center;
+      padding: 9px 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      border-left: 3px solid var(--nord-orange);
     }
 
     .stat-label {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.10em;
       text-transform: uppercase;
       color: var(--text3);
-      margin-right: 2px;
+      margin-right: 4px;
     }
 
     .stat-btn {
       font-family: var(--font);
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 7px;
       color: var(--text2);
-      background: var(--surface);
+      background: var(--surface2);
       border: 1px solid var(--border2);
-      border-radius: var(--radius-pill);
-      padding: 5px 14px 5px 10px;
+      border-radius: var(--radius-sm);
+      padding: 5px 13px 5px 9px;
       cursor: pointer;
       transition: background .12s, border-color .12s, color .12s, box-shadow .15s;
       white-space: nowrap;
     }
     .stat-btn:hover {
-      background: var(--surface2);
+      background: var(--border2);
       border-color: var(--border2);
       color: var(--text);
     }
@@ -345,31 +383,17 @@
     .stat-btn[data-level="1"].active { color: var(--c1); background: var(--b1); border-color: var(--bc1); box-shadow: 0 0 0 1px var(--bc1); }
     .stat-btn[data-level="0"].active { color: var(--c0); background: var(--b0); border-color: var(--bc0); box-shadow: 0 0 0 1px var(--bc0); }
 
-    .stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .stat-count { opacity: 0.55; font-size: 11px; }
-
-    /* ── Alert ────────────────────────────────────────────────────── */
-    .alert-banner {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--c1);
-      border-left: 3px solid var(--c1);
-      padding: 6px 14px;
-      margin-bottom: 12px;
-      background: var(--b1);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .stat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .stat-count { opacity: 0.50; font-size: 10.5px; font-weight: 500; }
 
     /* ── Map ──────────────────────────────────────────────────────── */
     #map-wrap {
       position: relative;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-md);
       overflow: hidden;
       border: 1px solid var(--border2);
-      box-shadow: 0 0 0 1px var(--border), 0 8px 40px rgba(0,0,0,0.25);
+      box-shadow: 0 0 0 1px var(--border), 0 8px 40px rgba(0,0,0,0.30);
+      margin-top: 10px;
     }
     #map svg { display: block; cursor: default; user-select: none; }
     #map svg.panning { cursor: grabbing; }
@@ -548,7 +572,7 @@
 
     /* ── Footer ───────────────────────────────────────────────────── */
     footer {
-      margin-top: 12px;
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -589,9 +613,13 @@
     /* ── Responsive ───────────────────────────────────────────────── */
     @media (max-width: 600px) {
       body { padding: 12px; }
+      #page-top-bar { margin: -12px -12px 0; }
+      header { margin: 0 -12px 8px; padding: 14px 16px 12px; }
+      #stats-bar { margin: 0 -12px 8px; padding: 8px 16px; }
       #search-input { width: 160px; }
       #popup { width: calc(100vw - 28px); max-width: 310px; }
       .stat-label { display: none; }
+      h1 { font-size: 17px; }
     }
   </style>
 </head>
@@ -599,18 +627,22 @@
 
 <div id="a11y-live" aria-live="polite" aria-atomic="true"></div>
 
+<div id="page-top-bar" aria-hidden="true"></div>
+
 <header>
   <div class="header-left">
     <div class="logo-mark" aria-hidden="true">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <path d="M9 2L15.5 5.5V12.5L9 16L2.5 12.5V5.5L9 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
-        <circle cx="9" cy="9" r="2.5" fill="white"/>
+      <svg width="20" height="22" viewBox="0 0 20 22" fill="none">
+        <path d="M10 1L18 4.5V10.5C18 15 14.5 19 10 21C5.5 19 2 15 2 10.5V4.5L10 1Z" stroke="rgba(255,255,255,0.9)" stroke-width="1.4" stroke-linejoin="round"/>
+        <path d="M7 11L9.2 13.2L13.5 8.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
-    <h1>
-      Sicherheitskarte
-      <span class="sub">Reisehinweise des Auswärtigen Amts</span>
-    </h1>
+    <div class="logo-text-wrap">
+      <h1>
+        Travel RiskMap
+        <span class="sub">Reisehinweise · Auswärtiges Amt</span>
+      </h1>
+    </div>
     <span id="status-pill">
       <span class="status-dot" aria-hidden="true"></span>
       Initialisiere…
@@ -660,13 +692,9 @@
   </button>
 </div>
 
-<div class="alert-banner" role="note">
-  <span aria-hidden="true">▲</span>
-  Nahost: Seit 28.02.2026 Reisewarnungen für 13 Länder der Region
-</div>
 
 <div id="map-wrap">
-  <div id="map" role="img" aria-label="Weltkarte mit Reisewarnstufen"></div>
+  <div id="map" role="img" aria-label="Travel RiskMap – Weltkarte mit Reisewarnstufen"></div>
   <div id="map-tooltip" role="tooltip"></div>
   <div id="zoom-controls">
     <button class="zoom-btn" id="zoom-in"  aria-label="Hineinzoomen">+</button>
@@ -847,6 +875,7 @@ const FALLBACK_LVL = {
   MO:0,TL:1,EH:1,SB:0,VU:0,WS:0,TO:0,NR:0,PW:0,BT:0,
   BS:0,BZ:1,BN:1,GQ:1,FK:0,FJ:0,GM:1,GL:0,NC:0,PR:0,
   CV:0,DM:0,GD:0,KN:0,LC:0,VC:0,ST:0,SC:0,
+  XK:1,XC:0,XS:1,
 };
 
 const NUM_TO_ISO2 = {
@@ -875,6 +904,13 @@ const NUM_TO_ISO2 = {
   270:'GM',304:'GL',540:'NC',630:'PR',795:'TM',
   132:'CV',212:'DM',308:'GD',659:'KN',662:'LC',670:'VC',678:'ST',690:'SC',
   548:'VU',776:'TO',882:'WS',520:'NR',585:'PW',
+};
+
+// Name-based lookup for disputed territories with null TopoJSON IDs
+const NAME_TO_ISO2 = {
+  'Kosovo': 'XK',
+  'N. Cyprus': 'XC',
+  'Somaliland': 'XS',
 };
 
 const COUNTRY_NAMES = {
@@ -914,6 +950,7 @@ const COUNTRY_NAMES = {
   CV:'Kap Verde',DM:'Dominica',GD:'Grenada',KN:'St. Kitts und Nevis',
   LC:'St. Lucia',VC:'St. Vincent',ST:'São Tomé und Príncipe',SC:'Seychellen',
   SB:'Salomonen',VU:'Vanuatu',WS:'Samoa',TO:'Tonga',NR:'Nauru',PW:'Palau',
+  XK:'Kosovo',XC:'Nordzypern',XS:'Somaliland',
 };
 
 const DEFAULT_TEXT = {
@@ -950,7 +987,7 @@ async function loadWarnings() {
     pill.innerHTML = `<span class="status-dot" aria-hidden="true"></span>Live · ${count} Länder · ${date} UTC`;
     pill.className = 'live';
     announce(`Live-Daten geladen: ${count} Länder, Stand ${date} UTC`);
-    if (svgPaths) { svgPaths.attr('fill', d => getColor(getIso2(d.id))); updateStats(); }
+    if (svgPaths) { svgPaths.attr('fill', d => getColor(getIso2(d.id, d.properties?.name))); updateStats(); }
   } catch {
     pill.innerHTML = `<span class="status-dot" aria-hidden="true"></span>Fallback · Stand ${DETAILS_UPDATED}`;
     pill.className = 'error';
@@ -967,7 +1004,9 @@ async function loadTexts() {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function getIso2(id) { return NUM_TO_ISO2[String(id)] || NUM_TO_ISO2[parseInt(id)]; }
+function getIso2(id, name) {
+  return NUM_TO_ISO2[String(id)] || NUM_TO_ISO2[parseInt(id)] || (name ? NAME_TO_ISO2[name] : undefined);
+}
 
 function getLevel(iso2) {
   if (!iso2) return -1;
@@ -1027,7 +1066,7 @@ document.querySelectorAll('.stat-btn').forEach(btn => {
       btn.classList.add('active');
     }
     closePopup();
-    if (svgPaths) svgPaths.attr('fill', d => getColor(getIso2(d.id)));
+    if (svgPaths) svgPaths.attr('fill', d => getColor(getIso2(d.id, d.properties?.name)));
   });
 });
 
@@ -1249,7 +1288,7 @@ document.getElementById('map-wrap').addEventListener('click', e => {
 // ── Focus country from search ─────────────────────────────────────────────────
 function focusCountry(iso2) {
   if (!svgPaths) return;
-  const path = svgPaths.filter(d => getIso2(d.id) === iso2);
+  const path = svgPaths.filter(d => getIso2(d.id, d.properties?.name) === iso2);
   if (path.empty()) return;
   const k = d3.zoomTransform(svg.node()).k;
   if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
@@ -1266,9 +1305,9 @@ function focusCountry(iso2) {
 }
 
 // ── D3 Map ────────────────────────────────────────────────────────────────────
-const stroke0 = isDark ? 'rgba(4,8,18,0.92)' : 'rgba(255,255,255,0.82)';
-const mapBgTop    = isDark ? '#060E1C' : '#96B8D4';
-const mapBgBottom = isDark ? '#030810' : '#7AA0C0';
+const stroke0 = isDark ? 'rgba(1,3,6,0.95)' : 'rgba(255,255,255,0.82)';
+const mapBgTop    = isDark ? '#010407' : '#7AAAC8';
+const mapBgBottom = isDark ? '#000204' : '#5E90B0';
 
 const svg = d3.select('#map').append('svg')
   .attr('viewBox', '0 0 960 500')
@@ -1345,7 +1384,7 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json').then(wo
   svgPaths = g.selectAll('path.land').data(features).join('path')
     .attr('class', 'land')
     .attr('d', pathGen)
-    .attr('fill', d => getColor(getIso2(d.id)))
+    .attr('fill', d => getColor(getIso2(d.id, d.properties?.name)))
     .attr('stroke', stroke0)
     .attr('stroke-width', 0.5)
     .style('cursor', 'pointer')
@@ -1357,7 +1396,7 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json').then(wo
         .attr('stroke-width', 1.0 / k);
     })
     .on('mousemove', function(evt, d) {
-      const iso2 = getIso2(d.id);
+      const iso2 = getIso2(d.id, d.properties?.name);
       if (!iso2) return;
       const l   = getLevel(iso2);
       const col = l >= 0 ? C[l] : (isDark ? '#3A4558' : '#9AABC0');
@@ -1378,7 +1417,7 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json').then(wo
       d3.select(this).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
     })
     .on('click', function(evt, d) {
-      const iso2 = getIso2(d.id);
+      const iso2 = getIso2(d.id, d.properties?.name);
       const k = d3.zoomTransform(svg.node()).k;
       if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
       activeD = d;
