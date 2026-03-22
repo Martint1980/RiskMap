@@ -1012,13 +1012,19 @@ function getIso2(id, name) {
 
 function getLevel(iso2) {
   if (!iso2) return -1;
-  // AA-API: Level 2+3 (most authoritative)
-  if (liveData[iso2] !== undefined && liveData[iso2].level >= 2) return liveData[iso2].level;
-  // Haiku-API: Level 0+1 (and 2+3 if AA-API not available)
-  if (liveTexts[iso2] !== undefined && liveTexts[iso2].level !== undefined) return liveTexts[iso2].level;
-  // AA-API Level 0 fallback
-  if (liveData[iso2] !== undefined) return liveData[iso2].level;
-  // Static fallbacks
+  const aaLvl    = liveData[iso2]?.level;
+  const haikuLvl = liveTexts[iso2]?.level;
+
+  // 1. AA-API Level 2/3: höchste Priorität, immer bindend
+  if (aaLvl >= 2) return aaLvl;
+
+  // 2. Haiku: darf nur Level 0 oder 1 setzen (nie 2/3 überschreiben)
+  if (haikuLvl !== undefined) return Math.min(haikuLvl, 1);
+
+  // 3. AA-API Level 0 (Haiku hat keine Daten)
+  if (aaLvl !== undefined) return aaLvl;
+
+  // 4. Statische Fallbacks
   if (DETAILS[iso2]      !== undefined) return DETAILS[iso2][0];
   if (FALLBACK_LVL[iso2] !== undefined) return FALLBACK_LVL[iso2];
   return -1;
