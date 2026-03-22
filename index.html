@@ -26,15 +26,15 @@
       --accent2:   rgba(67,97,238,0.12);
       --accent-glow: rgba(67,97,238,0.22);
 
-      --c0: #00C9A7;
-      --c1: #F5A623;
-      --c2: #FF5F1F;
+      --c0: #1FD4A0;
+      --c1: #F5C800;
+      --c2: #FF6B2B;
       --c3: #FF2D55;
-      --b0: rgba(0,201,167,0.10);
-      --b1: rgba(245,166,35,0.10);
-      --b2: rgba(255,95,31,0.10);
+      --b0: rgba(31,212,160,0.10);
+      --b1: rgba(245,200,0,0.10);
+      --b2: rgba(255,107,43,0.10);
       --b3: rgba(255,45,85,0.10);
-      --bc0:#00C9A7; --bc1:#F5A623; --bc2:#FF5F1F; --bc3:#FF2D55;
+      --bc0:#1FD4A0; --bc1:#F5C800; --bc2:#FF6B2B; --bc3:#FF2D55;
 
       --font: 'Plus Jakarta Sans', system-ui, sans-serif;
 
@@ -64,10 +64,10 @@
         --accent2:  rgba(52,81,209,0.08);
         --accent-glow: rgba(52,81,209,0.15);
 
-        --c0:#007C65; --c1:#B36A00; --c2:#C2380A; --c3:#C41C3E;
-        --b0:rgba(0,124,101,0.08); --b1:rgba(179,106,0,0.08);
-        --b2:rgba(194,56,10,0.08); --b3:rgba(196,28,62,0.08);
-        --bc0:#007C65; --bc1:#B36A00; --bc2:#C2380A; --bc3:#C41C3E;
+        --c0:#0A9E78; --c1:#B89300; --c2:#C44010; --c3:#C41C3E;
+        --b0:rgba(10,158,120,0.08); --b1:rgba(184,147,0,0.08);
+        --b2:rgba(196,64,16,0.08); --b3:rgba(196,28,62,0.08);
+        --bc0:#0A9E78; --bc1:#B89300; --bc2:#C44010; --bc3:#C41C3E;
         --shadow-pop: 0 0 0 1px rgba(0,20,80,0.08), 0 28px 72px rgba(0,0,0,0.14), 0 8px 24px rgba(0,0,0,0.07);
       }
     }
@@ -371,7 +371,7 @@
       border: 1px solid var(--border2);
       box-shadow: 0 0 0 1px var(--border), 0 8px 40px rgba(0,0,0,0.25);
     }
-    #map svg { display: block; cursor: crosshair; user-select: none; }
+    #map svg { display: block; cursor: default; user-select: none; }
     #map svg.panning { cursor: grabbing; }
 
     /* ── Zoom controls ────────────────────────────────────────────── */
@@ -692,13 +692,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
 // ── Konstanten ────────────────────────────────────────────────────────────────
-const DETAILS_UPDATED = 'März 2026';
+const DETAILS_UPDATED = '22.03.2026';
 
 const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
 
 // Risk colors (mirrored from CSS for D3)
-const C_DARK  = { 0:'#00C9A7', 1:'#F5A623', 2:'#FF5F1F', 3:'#FF2D55' };
-const C_LIGHT = { 0:'#007C65', 1:'#B36A00', 2:'#C2380A', 3:'#C41C3E' };
+const C_DARK  = { 0:'#1FD4A0', 1:'#F5C800', 2:'#FF6B2B', 3:'#FF2D55' };
+const C_LIGHT = { 0:'#0A9E78', 1:'#B89300', 2:'#C44010', 3:'#C41C3E' };
 const C = isDark ? C_DARK : C_LIGHT;
 
 const LBL = {
@@ -943,9 +943,9 @@ function getLevel(iso2) {
 
 function getColor(iso2) {
   const l = getLevel(iso2);
-  if (l === -1) return isDark ? '#1C222E' : '#C8D4E6';
+  if (l === -1) return isDark ? '#2A3040' : '#C2CCDA';
   if (activeFilter !== null && l !== activeFilter)
-    return isDark ? '#141921' : '#D4DEED';
+    return isDark ? '#1A2030' : '#D4DCEA';
   return C[l];
 }
 
@@ -1024,7 +1024,7 @@ searchInput.addEventListener('input', () => {
   } else {
     searchDropdown.innerHTML = matches.map(([iso, name]) => {
       const l = getLevel(iso);
-      const col = l >= 0 ? C[l] : (isDark ? '#1C222E' : '#C8D4E6');
+      const col = l >= 0 ? C[l] : (isDark ? '#2A3040' : '#C2CCDA');
       const lbl = l === 3 ? '!!!' : l === 2 ? '!!' : l === 1 ? '!' : l === 0 ? '✓' : '?';
       return `<div class="sd-item" data-iso="${iso}" role="option" tabindex="-1">
         <div class="sd-dot" style="background:${col}" aria-hidden="true"></div>
@@ -1194,8 +1194,8 @@ function focusCountry(iso2) {
 }
 
 // ── D3 Map ────────────────────────────────────────────────────────────────────
-const stroke0 = isDark ? 'rgba(14,17,23,0.85)' : 'rgba(255,255,255,0.75)';
-const mapBg   = isDark ? '#0A0D14' : '#C4D4E8';
+const stroke0 = isDark ? 'rgba(8,12,22,0.9)' : 'rgba(255,255,255,0.8)';
+const mapBg   = isDark ? '#08111E' : '#A8C4DE';
 
 const svg = d3.select('#map').append('svg')
   .attr('viewBox', '0 0 960 500')
@@ -1232,13 +1232,21 @@ const tooltip = document.getElementById('map-tooltip');
 d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
   const features = topojson.feature(world, world.objects.countries).features;
 
-  // Subtle graticule
+  // Outer map border / sphere outline
+  g.append('rect')
+    .attr('x', 1).attr('y', 1)
+    .attr('width', 958).attr('height', 498)
+    .attr('fill', 'none')
+    .attr('stroke', isDark ? 'rgba(67,97,238,0.12)' : 'rgba(0,30,100,0.10)')
+    .attr('stroke-width', 1);
+
+  // Graticule grid
   g.append('path')
     .datum(d3.geoGraticule()())
     .attr('d', pathGen)
     .attr('fill', 'none')
-    .attr('stroke', isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,30,80,0.04)')
-    .attr('stroke-width', 0.4);
+    .attr('stroke', isDark ? 'rgba(100,140,255,0.06)' : 'rgba(0,40,120,0.06)')
+    .attr('stroke-width', 0.5);
 
   svgPaths = g.selectAll('path.land').data(features).join('path')
     .attr('class', 'land')
@@ -1246,12 +1254,12 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
     .attr('fill', d => getColor(getIso2(d.id)))
     .attr('stroke', stroke0)
     .attr('stroke-width', 0.5)
-    .style('cursor', 'crosshair')
+    .style('cursor', 'pointer')
     .on('mousemove', function(evt, d) {
       const iso2 = getIso2(d.id);
       if (!iso2) return;
       const l   = getLevel(iso2);
-      const col = l >= 0 ? C[l] : (isDark ? '#2a3a4a' : '#94a8bc');
+      const col = l >= 0 ? C[l] : (isDark ? '#3A4558' : '#9AABC0');
       tooltip.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${col};margin-right:8px;vertical-align:middle" aria-hidden="true"></span>${COUNTRY_NAMES[iso2] || iso2}`;
       tooltip.style.display = 'block';
       const wr = document.getElementById('map-wrap').getBoundingClientRect();
