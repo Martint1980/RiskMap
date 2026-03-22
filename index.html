@@ -1037,10 +1037,10 @@ function closePopup() {
   }
 }
 
-// Klick außerhalb des Popups schließt es
+// Klick außerhalb des Popups schließt es (aber nicht Klicks auf die Karte selbst)
 document.getElementById('map-wrap').addEventListener('click', e => {
   const pop = document.getElementById('popup');
-  if (pop.style.display !== 'none' && !pop.contains(e.target)) closePopup();
+  if (pop.style.display !== 'none' && !pop.contains(e.target) && !e.target.closest('svg')) closePopup();
 });
 
 // ── Karte fokussieren (aus Suche) ─────────────────────────────────────────────
