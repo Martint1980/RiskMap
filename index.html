@@ -15,7 +15,8 @@
       --text3: #888780;
       --border: rgba(0,0,0,0.12);
       --border2: rgba(0,0,0,0.22);
-      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --shadow: 0 4px 20px rgba(0,0,0,0.12);
+      --c0: #27500A; --c1: #B38600; --c2: #C04F10; --c3: #A32D2D;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -27,7 +28,7 @@
         --text3: #666460;
         --border: rgba(255,255,255,0.1);
         --border2: rgba(255,255,255,0.2);
-        --shadow: 0 2px 12px rgba(0,0,0,0.4);
+        --shadow: 0 4px 20px rgba(0,0,0,0.5);
       }
     }
 
@@ -45,35 +46,108 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     h1 {
       font-size: 17px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text);
     }
 
+    .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    #search-wrap {
+      position: relative;
+    }
+    #search-input {
+      font-size: 13px;
+      padding: 4px 28px 4px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--text);
+      outline: none;
+      width: 180px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    #search-input:focus { border-color: #185FA5; box-shadow: 0 0 0 2px rgba(24,95,165,0.15); }
+    #search-clear {
+      position: absolute; right: 7px; top: 50%; transform: translateY(-50%);
+      font-size: 13px; color: var(--text3); cursor: pointer;
+      display: none; background: none; border: none; padding: 0;
+    }
+    #search-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 240px;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      z-index: 100;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .sd-item {
+      padding: 7px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sd-item:hover { background: var(--bg); }
+    .sd-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .sd-empty { padding: 10px 12px; font-size: 13px; color: var(--text3); }
+
     #status-pill {
       font-size: 11px;
-      padding: 3px 10px;
+      padding: 4px 10px;
       border-radius: 20px;
       border: 0.5px solid var(--border2);
       color: var(--text2);
       background: var(--bg2);
+      white-space: nowrap;
     }
-
     #status-pill.loading { color: var(--text3); }
     #status-pill.live    { border-color: #3B6D11; color: #3B6D11; }
     #status-pill.error   { border-color: #A32D2D; color: #A32D2D; }
 
+    /* Stats bar */
+    #stats-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text2);
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 10px;
+      cursor: pointer;
+      transition: background .12s;
+      user-select: none;
+    }
+    .stat-chip:hover { background: var(--bg); }
+    .stat-chip.active { border-color: var(--border2); }
+    .stat-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .stat-count { font-weight: 600; }
+
     .legend {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
-
     .legend-item {
       display: flex;
       align-items: center;
@@ -81,13 +155,7 @@
       font-size: 12px;
       color: var(--text2);
     }
-
-    .legend-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
     .nahost-note {
       font-size: 11px;
@@ -95,10 +163,9 @@
       color: #633806;
       border-radius: 6px;
       padding: 4px 10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       display: inline-block;
     }
-
     @media (prefers-color-scheme: dark) {
       .nahost-note { background: #412402; color: #FAC775; }
     }
@@ -107,120 +174,174 @@
       position: relative;
       border-radius: 12px;
       overflow: hidden;
+      border: 1px solid var(--border);
     }
+    #map svg { display: block; cursor: grab; }
+    #map svg:active { cursor: grabbing; }
 
-    #map svg { display: block; }
+    /* Zoom controls */
+    #zoom-controls {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 5;
+    }
+    .zoom-btn {
+      width: 28px; height: 28px;
+      background: var(--bg2);
+      border: 0.5px solid var(--border2);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      transition: background .1s;
+    }
+    .zoom-btn:hover { background: var(--bg); }
+
+    /* Tooltip on hover */
+    #tooltip {
+      display: none;
+      position: absolute;
+      z-index: 8;
+      background: var(--bg2);
+      border: 0.5px solid var(--border2);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: var(--text);
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
 
     #popup {
       display: none;
       position: absolute;
       z-index: 10;
-      width: 295px;
+      width: 300px;
       background: var(--bg2);
       border: 0.5px solid var(--border2);
-      border-radius: 12px;
-      padding: 14px 16px;
+      border-radius: 14px;
+      padding: 16px 18px;
       font-size: 13px;
       color: var(--text);
       box-shadow: var(--shadow);
     }
-
-    #popup-title { font-weight: 500; font-size: 15px; margin-bottom: 5px; }
-
+    #popup-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
+    #popup-title { font-weight: 600; font-size: 16px; }
     #popup-badge {
-      display: inline-block;
-      font-size: 11px;
-      padding: 2px 9px;
-      border-radius: 6px;
-      font-weight: 500;
-      margin-bottom: 10px;
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; padding: 3px 9px;
+      border-radius: 6px; font-weight: 500;
+      margin-bottom: 12px;
     }
-
-    .ps { margin-bottom: 9px; }
-
+    .ps { margin-bottom: 10px; }
     .pl {
-      font-size: 11px;
-      color: var(--text2);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-size: 10px; color: var(--text3);
+      text-transform: uppercase; letter-spacing: 0.06em;
       margin-bottom: 3px;
     }
-
-    .pv { font-size: 13px; color: var(--text); line-height: 1.5; }
-
+    .pv { font-size: 13px; color: var(--text); line-height: 1.55; }
     #popup-link {
-      display: inline-block;
-      margin-top: 8px;
-      font-size: 12px;
-      color: #185FA5;
-      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 3px;
+      margin-top: 10px; font-size: 12px;
+      color: #185FA5; text-decoration: none;
       border-bottom: 0.5px solid #85B7EB;
     }
-
     #close-btn {
-      float: right;
-      cursor: pointer;
-      font-size: 16px;
-      color: var(--text2);
-      line-height: 1;
-      background: none;
-      border: none;
+      cursor: pointer; font-size: 14px;
+      color: var(--text3); line-height: 1;
+      background: var(--bg); border: 0.5px solid var(--border2);
+      border-radius: 6px; width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-left: 8px;
     }
+    #close-btn:hover { color: var(--text); }
 
     footer {
       margin-top: 8px;
       font-size: 11px;
       color: var(--text3);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
     }
-
     footer a { color: var(--text3); }
+    #reset-zoom-btn {
+      font-size: 11px; color: var(--text3);
+      background: none; border: none; cursor: pointer;
+      text-decoration: underline; padding: 0;
+    }
+    #reset-zoom-btn:hover { color: var(--text2); }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      #search-input { width: 140px; }
+      #popup { width: calc(100vw - 32px); }
+    }
   </style>
 </head>
 <body>
 
 <header>
   <h1>Geschäftsreise – Sicherheitskarte</h1>
-  <span id="status-pill" class="loading">Lädt...</span>
+  <div class="header-right">
+    <div id="search-wrap">
+      <input id="search-input" type="text" placeholder="Land suchen…" autocomplete="off" />
+      <button id="search-clear">✕</button>
+      <div id="search-dropdown"></div>
+    </div>
+    <span id="status-pill" class="loading">Lädt…</span>
+  </div>
 </header>
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#27500A"></div>Kein besonderes Risiko</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#FAC775"></div>Regionale Einschränkungen</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#E8621A"></div>Teilreisewarnung</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#E24B4A"></div>Reisewarnung</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#B4B2A9"></div>Keine Daten</div>
+<div id="stats-bar">
+  <div class="stat-chip" data-level="3"><div class="stat-dot" style="background:#E24B4A"></div>Reisewarnung <span class="stat-count" id="cnt3">–</span></div>
+  <div class="stat-chip" data-level="2"><div class="stat-dot" style="background:#E8621A"></div>Teilreisewarnung <span class="stat-count" id="cnt2">–</span></div>
+  <div class="stat-chip" data-level="1"><div class="stat-dot" style="background:#FAC775"></div>Einschränkungen <span class="stat-count" id="cnt1">–</span></div>
+  <div class="stat-chip" data-level="0"><div class="stat-dot" style="background:#27500A"></div>Sicher <span class="stat-count" id="cnt0">–</span></div>
 </div>
 
 <div class="nahost-note">⚠ Nahost: Seit 28.02.2026 Reisewarnungen für 13 Länder der Region</div>
 
 <div id="map-wrap">
   <div id="map"></div>
+  <div id="tooltip"></div>
+  <div id="zoom-controls">
+    <button class="zoom-btn" id="zoom-in" title="Hineinzoomen">+</button>
+    <button class="zoom-btn" id="zoom-out" title="Herauszoomen">−</button>
+  </div>
   <div id="popup">
-    <button id="close-btn" onclick="closePopup()">&#x2715;</button>
-    <div id="popup-title"></div>
+    <div id="popup-header">
+      <div id="popup-title"></div>
+      <button id="close-btn" onclick="closePopup()">✕</button>
+    </div>
     <div id="popup-badge"></div>
     <div class="ps"><div class="pl">Sicherheit – Reisewarnung (Ausw. Amt)</div><div class="pv" id="pp-sec"></div></div>
     <div class="ps"><div class="pl">Geschäftsreise-Empfehlung</div><div class="pv" id="pp-biz"></div></div>
     <div class="ps"><div class="pl">Einreise & Dokumente</div><div class="pv" id="pp-entry"></div></div>
-    <a id="popup-link" href="#" target="_blank" rel="noopener">Aktueller Hinweis beim Ausw. Amt &#8599;</a>
+    <a id="popup-link" href="#" target="_blank" rel="noopener">Aktueller Hinweis beim Ausw. Amt ↗</a>
   </div>
 </div>
 
 <footer>
-  Quelle: <a href="https://www.auswaertiges-amt.de" target="_blank">Auswärtiges Amt</a> &middot;
-  Warnstufen: täglich 06:00 &amp; 12:00 UTC &middot;
-  Texte: wöchentlich montags &middot;
-  Vor jeder Reise offiziell prüfen.
+  <span>Quelle: <a href="https://www.auswaertiges-amt.de" target="_blank">Auswärtiges Amt</a> · Warnstufen: tägl. 06:00 &amp; 12:00 UTC · Texte: wöchentlich · Vor jeder Reise offiziell prüfen.</span>
+  <button id="reset-zoom-btn" onclick="resetZoom()">Zoom zurücksetzen</button>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
 
-
-const C   = { 0:'#27500A', 1:'#FAC775', 2:'#E8621A', 3:'#E24B4A' };
-const BB  = { 0:'#EAF3DE', 1:'#FAEEDA', 2:'#FAECE7', 3:'#FCEBEB' };
-const BC  = { 0:'#27500A', 1:'#633806', 2:'#712B13', 3:'#501313' };
+const C   = { 0:'#27500A', 1:'#C9970A', 2:'#C9560A', 3:'#C0302F' };
+const BB  = { 0:'#EAF3DE', 1:'#FEF5DC', 2:'#FAECE7', 3:'#FCEBEB' };
+const BC  = { 0:'#27500A', 1:'#7A5500', 2:'#712B13', 3:'#501313' };
 const LBL = {
   0: 'Kein besonderes Reiserisiko',
   1: 'Regionale Einschränkungen / erhöhte Vorsicht',
@@ -413,9 +534,10 @@ const DEFAULT_TEXT = {
   3: ['Vor Reisen in dieses Land wird gewarnt. Aktuelle Hinweise des Auswärtigen Amts unbedingt beachten.', 'Einreise nicht empfohlen.'],
 };
 
-// Live-Daten vom eigenen Server
+// ── Live-Daten ──────────────────────────────────────────────────────────────
 let liveData = {};
 let liveTexts = {};
+let activeFilter = null; // level filter from stats chips
 
 async function loadWarnings() {
   const pill = document.getElementById('status-pill');
@@ -424,13 +546,17 @@ async function loadWarnings() {
     const json = await res.json();
     liveData = json.data || {};
     const count = Object.keys(liveData).length;
-    const date = json.lastUpdated ? new Date(json.lastUpdated).toLocaleString('de-DE') : '–';
-    pill.textContent = `Live · ${count} Länder · ${date}`;
+    const date = json.lastUpdated ? new Date(json.lastUpdated).toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'}) : '–';
+    pill.textContent = `Live · ${count} Länder · ${date} UTC`;
     pill.className = 'live';
-    if (svgPaths) svgPaths.attr('fill', d => getColor(getIso2(d.id)));
+    if (svgPaths) {
+      svgPaths.attr('fill', d => getColor(getIso2(d.id)));
+      updateStats();
+    }
   } catch (e) {
     pill.textContent = 'Fallback-Daten aktiv';
     pill.className = 'error';
+    updateStats();
   }
 }
 
@@ -439,7 +565,6 @@ async function loadTexts() {
     const res = await fetch('/api/texts');
     const json = await res.json();
     liveTexts = json.data || {};
-    console.log(`Texte geladen: ${Object.keys(liveTexts).length} Länder`);
   } catch (e) {
     console.warn('Text-API nicht erreichbar, nutze statische Texte');
   }
@@ -457,7 +582,117 @@ function getLevel(iso2) {
 
 function getColor(iso2) {
   const l = getLevel(iso2);
-  return l === -1 ? '#B4B2A9' : C[l];
+  if (l === -1) return '#B4B2A9';
+  if (activeFilter !== null && l !== activeFilter) return isDark ? 'rgba(100,100,95,0.3)' : 'rgba(180,178,169,0.4)';
+  return C[l];
+}
+
+function updateStats() {
+  const counts = {0:0,1:0,2:0,3:0};
+  const allIso = new Set([...Object.keys(DETAILS), ...Object.keys(FALLBACK_LVL), ...Object.keys(liveData)]);
+  allIso.forEach(iso => {
+    const l = getLevel(iso);
+    if (l >= 0) counts[l]++;
+  });
+  [0,1,2,3].forEach(l => {
+    const el = document.getElementById('cnt' + l);
+    if (el) el.textContent = counts[l];
+  });
+}
+
+// Stats chip filter
+document.querySelectorAll('.stat-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const lvl = parseInt(chip.dataset.level);
+    if (activeFilter === lvl) {
+      activeFilter = null;
+      chip.classList.remove('active');
+    } else {
+      document.querySelectorAll('.stat-chip').forEach(c => c.classList.remove('active'));
+      activeFilter = lvl;
+      chip.classList.add('active');
+    }
+    closePopup();
+    if (svgPaths) svgPaths.attr('fill', d => getColor(getIso2(d.id)));
+  });
+});
+
+// ── Search ──────────────────────────────────────────────────────────────────
+const searchInput = document.getElementById('search-input');
+const searchClear = document.getElementById('search-clear');
+const searchDropdown = document.getElementById('search-dropdown');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  searchClear.style.display = q ? 'flex' : 'none';
+  if (!q) { searchDropdown.style.display = 'none'; return; }
+
+  const matches = Object.entries(COUNTRY_NAMES)
+    .filter(([iso, name]) => name.toLowerCase().includes(q) || iso.toLowerCase().includes(q))
+    .sort((a, b) => {
+      const la = getLevel(a[0]), lb = getLevel(b[0]);
+      return lb - la; // higher risk first
+    })
+    .slice(0, 10);
+
+  if (!matches.length) {
+    searchDropdown.innerHTML = '<div class="sd-empty">Kein Land gefunden</div>';
+  } else {
+    searchDropdown.innerHTML = matches.map(([iso, name]) => {
+      const l = getLevel(iso);
+      const col = l >= 0 ? C[l] : '#B4B2A9';
+      return `<div class="sd-item" data-iso="${iso}"><div class="sd-dot" style="background:${col}"></div>${name}</div>`;
+    }).join('');
+    searchDropdown.querySelectorAll('.sd-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const iso = item.dataset.iso;
+        searchInput.value = COUNTRY_NAMES[iso] || iso;
+        searchDropdown.style.display = 'none';
+        focusCountry(iso);
+      });
+    });
+  }
+  searchDropdown.style.display = 'block';
+});
+
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  searchClear.style.display = 'none';
+  searchDropdown.style.display = 'none';
+  closePopup();
+});
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('search-wrap').contains(e.target)) {
+    searchDropdown.style.display = 'none';
+  }
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { searchInput.blur(); searchDropdown.style.display = 'none'; }
+});
+
+// focus + open popup for a country by ISO2
+function focusCountry(iso2) {
+  if (!svgPaths) return;
+  const path = svgPaths.filter(d => getIso2(d.id) === iso2);
+  if (path.empty()) return;
+  // highlight it
+  if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5);
+  const node = path.node();
+  const bbox = node.getBBox();
+  const wrap = document.getElementById('map-wrap');
+  const wr = wrap.getBoundingClientRect();
+  // fake event at center of bbox (in SVG space → screen space via transform)
+  const svgEl = document.querySelector('#map svg');
+  const pt = svgEl.createSVGPoint();
+  pt.x = bbox.x + bbox.width / 2;
+  pt.y = bbox.y + bbox.height / 2;
+  const screenPt = pt.matrixTransform(node.getScreenCTM());
+  const fakeEvt = { clientX: screenPt.x, clientY: screenPt.y };
+  activeD = path.datum();
+  path.attr('stroke', '#fff').attr('stroke-width', 2);
+  showPopup(fakeEvt, iso2);
 }
 
 // Stabile AA Länderseiten – immer aktuell, nie veraltete Nummern
@@ -560,29 +795,32 @@ function showPopup(evt, iso2) {
   const pop = document.getElementById('popup');
   pop.style.display = 'block';
 
-  let x = evt.clientX - wr.left + 14;
-  let y = evt.clientY - wr.top + 14;
-  const pw = pop.offsetWidth || 295;
-  const ph = pop.offsetHeight || 300;
-  if (x + pw > wrap.offsetWidth - 4) x = Math.max(4, evt.clientX - wr.left - pw - 14);
-  if (y + ph > wrap.offsetHeight + 50) y = Math.max(4, y - ph - 20);
+  let x = evt.clientX - wr.left + 16;
+  let y = evt.clientY - wr.top + 16;
+  const pw = pop.offsetWidth || 300;
+  const ph = pop.offsetHeight || 320;
+  if (x + pw > wrap.offsetWidth - 8) x = Math.max(8, evt.clientX - wr.left - pw - 16);
+  if (y + ph > wrap.offsetHeight - 8) y = Math.max(8, evt.clientY - wr.top - ph - 16);
   pop.style.left = x + 'px';
-  pop.style.top = y + 'px';
+  pop.style.top  = y + 'px';
 }
 
 function closePopup() {
   document.getElementById('popup').style.display = 'none';
   if (svgPaths && activeD) {
-    svgPaths.filter(d => d === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5);
+    const k = zoom ? d3.zoomTransform(svg.node()).k : 1;
+    svgPaths.filter(d => d === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
     activeD = null;
   }
 }
 
-// ── Karte ─────────────────────────────────────────────────────────────────────
-let svgPaths, activeD;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+
+// ── Karte ───────────────────────────────────────────────────────────────────
+let svgPaths, activeD, zoom;
 const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
-const stroke0 = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)';
-const mapBg   = isDark ? '#1a253a' : '#cde0f0';
+const stroke0 = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.85)';
+const mapBg   = isDark ? '#18253a' : '#c8dff0';
 
 const svg = d3.select('#map').append('svg')
   .attr('viewBox', '0 0 960 500')
@@ -590,28 +828,79 @@ const svg = d3.select('#map').append('svg')
   .style('background', mapBg)
   .style('display', 'block');
 
-const proj = d3.geoNaturalEarth1().scale(153).translate([480, 250]);
+svg.append('rect').attr('width', 960).attr('height', 500).attr('fill', mapBg);
+
+const g = svg.append('g');
+
+const proj    = d3.geoNaturalEarth1().scale(153).translate([480, 250]);
 const pathGen = d3.geoPath(proj);
+
+zoom = d3.zoom()
+  .scaleExtent([1, 12])
+  .on('zoom', event => {
+    g.attr('transform', event.transform);
+    if (svgPaths) svgPaths.attr('stroke-width', 0.5 / event.transform.k);
+  });
+
+svg.call(zoom);
+
+document.getElementById('zoom-in').addEventListener('click',  () => svg.transition().duration(300).call(zoom.scaleBy, 1.6));
+document.getElementById('zoom-out').addEventListener('click', () => svg.transition().duration(300).call(zoom.scaleBy, 0.625));
+
+function resetZoom() {
+  svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+}
+
+// Hover tooltip
+const tooltip = document.getElementById('tooltip');
 
 d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
   const features = topojson.feature(world, world.objects.countries).features;
 
-  svgPaths = svg.selectAll('path').data(features).join('path')
+  // graticule grid lines
+  g.append('path')
+    .datum(d3.geoGraticule()())
+    .attr('d', pathGen)
+    .attr('fill', 'none')
+    .attr('stroke', isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)')
+    .attr('stroke-width', 0.5);
+
+  svgPaths = g.selectAll('path.country').data(features).join('path')
+    .attr('class', 'country')
     .attr('d', pathGen)
     .attr('fill', d => getColor(getIso2(d.id)))
     .attr('stroke', stroke0)
     .attr('stroke-width', 0.5)
     .style('cursor', 'pointer')
+    .on('mousemove', function(evt, d) {
+      const iso2 = getIso2(d.id);
+      if (!iso2) return;
+      const name = COUNTRY_NAMES[iso2] || iso2;
+      const l = getLevel(iso2);
+      const col = l >= 0 ? C[l] : '#B4B2A9';
+      tooltip.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${col};margin-right:5px;vertical-align:middle"></span>${name}`;
+      tooltip.style.display = 'block';
+      const wrap = document.getElementById('map-wrap');
+      const wr = wrap.getBoundingClientRect();
+      let tx = evt.clientX - wr.left + 10;
+      let ty = evt.clientY - wr.top - 30;
+      if (tx + 180 > wrap.offsetWidth) tx = evt.clientX - wr.left - 190;
+      if (ty < 4) ty = evt.clientY - wr.top + 14;
+      tooltip.style.left = tx + 'px';
+      tooltip.style.top  = ty + 'px';
+    })
+    .on('mouseleave', () => { tooltip.style.display = 'none'; })
     .on('click', function(evt, d) {
       const iso2 = getIso2(d.id);
       if (!iso2) return;
-      if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5);
+      const k = d3.zoomTransform(svg.node()).k;
+      if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
       activeD = d;
-      d3.select(this).attr('stroke', '#fff').attr('stroke-width', 2);
+      d3.select(this).attr('stroke', '#ffffff').attr('stroke-width', 2 / k);
       showPopup(evt, iso2);
     });
 
-  // Live-Daten laden
+  updateStats();
   loadWarnings();
   loadTexts();
 });

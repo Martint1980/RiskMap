@@ -57,7 +57,7 @@ async function fetchWarnings() {
     const iso2 = item.iso2CountryCode;
     if (!iso2) continue;
     result[iso2] = {
-      level: item.warning ? 3 : item.partialWarning ? 1 : 0,
+      level: item.warning ? 3 : item.partialWarning ? 2 : 0,
       warning: item.warning || false,
       partialWarning: item.partialWarning || false,
       countryName: item.countryName || ''
@@ -96,7 +96,7 @@ async function generateCountryText(iso2, countryNameDE) {
       }
     },
     {
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 400,
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
       messages: [{ role: 'user', content: prompt }]
@@ -175,7 +175,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname)));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 app.get('/api/warnings', (req, res) => {
   res.json({ lastUpdated: warningCache.lastUpdated, source: warningCache.source, count: warningCache.count, data: warningCache.data });
