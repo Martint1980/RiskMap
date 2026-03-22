@@ -946,6 +946,7 @@ function getColor(iso2) {
   if (l === -1) return isDark ? '#2A3040' : '#C2CCDA';
   if (activeFilter !== null && l !== activeFilter)
     return isDark ? '#1A2030' : '#D4DCEA';
+  if (l === 1) return 'url(#stripe-lvl1)';
   return C[l];
 }
 
@@ -1204,6 +1205,18 @@ const svg = d3.select('#map').append('svg')
 
 svg.append('rect').attr('width', 960).attr('height', 500).attr('fill', mapBg);
 
+// SVG pattern: diagonal green/yellow stripes for level 1
+const defs = svg.append('defs');
+const pat = defs.append('pattern')
+  .attr('id', 'stripe-lvl1')
+  .attr('width', 9).attr('height', 9)
+  .attr('patternUnits', 'userSpaceOnUse')
+  .attr('patternTransform', 'rotate(45)');
+pat.append('rect').attr('width', 9).attr('height', 9)
+  .attr('fill', isDark ? '#1FD4A0' : '#0A9E78');
+pat.append('rect').attr('x', 0).attr('y', 0).attr('width', 3.5).attr('height', 9)
+  .attr('fill', isDark ? '#F5C800' : '#C8A000').attr('opacity', 0.7);
+
 const g = svg.append('g');
 
 const proj    = d3.geoNaturalEarth1().scale(153).translate([480, 250]);
@@ -1255,6 +1268,13 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
     .attr('stroke', stroke0)
     .attr('stroke-width', 0.5)
     .style('cursor', 'pointer')
+    .on('mouseover', function(evt, d) {
+      if (d === activeD) return;
+      const k = d3.zoomTransform(svg.node()).k;
+      d3.select(this)
+        .attr('stroke', isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.28)')
+        .attr('stroke-width', 1.0 / k);
+    })
     .on('mousemove', function(evt, d) {
       const iso2 = getIso2(d.id);
       if (!iso2) return;
@@ -1270,7 +1290,12 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
       tooltip.style.left = tx + 'px';
       tooltip.style.top  = ty + 'px';
     })
-    .on('mouseleave', () => { tooltip.style.display = 'none'; })
+    .on('mouseleave', function(evt, d) {
+      tooltip.style.display = 'none';
+      if (d === activeD) return;
+      const k = d3.zoomTransform(svg.node()).k;
+      d3.select(this).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
+    })
     .on('click', function(evt, d) {
       const iso2 = getIso2(d.id);
       if (!iso2) return;
