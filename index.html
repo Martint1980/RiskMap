@@ -3,362 +3,587 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geschäftsreise Sicherheitskarte</title>
+  <title>Geschäftsreise – Sicherheitskarte</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f8f8f6;
-      --bg2: #ffffff;
-      --text: #2c2c2a;
-      --text2: #5f5e5a;
-      --text3: #888780;
-      --border: rgba(0,0,0,0.12);
-      --border2: rgba(0,0,0,0.22);
-      --shadow: 0 4px 20px rgba(0,0,0,0.12);
-      --c0: #27500A; --c1: #B38600; --c2: #C04F10; --c3: #A32D2D;
+      --bg:       #f5f5f3;
+      --surface:  #ffffff;
+      --surface2: #f9f9f7;
+      --border:   rgba(0,0,0,0.08);
+      --border2:  rgba(0,0,0,0.16);
+      --text:     #111110;
+      --text2:    #6b6b66;
+      --text3:    #a0a09a;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --c0: #2a5c0a; --c1: #b07d00; --c2: #b84a0a; --c3: #b52828;
+      --b0: #eef6e6; --b1: #fdf5dc; --b2: #fceee6; --b3: #fdeaea;
+      --bc0:#1e4407; --bc1:#7a5500; --bc2:#7a2d08; --bc3:#7a1a1a;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #1a1a18;
-        --bg2: #242422;
-        --text: #e8e6e0;
-        --text2: #9c9a92;
-        --text3: #666460;
-        --border: rgba(255,255,255,0.1);
-        --border2: rgba(255,255,255,0.2);
-        --shadow: 0 4px 20px rgba(0,0,0,0.5);
+        --bg:       #111110;
+        --surface:  #1c1c1a;
+        --surface2: #222220;
+        --border:   rgba(255,255,255,0.08);
+        --border2:  rgba(255,255,255,0.16);
+        --text:     #edede8;
+        --text2:    #8a8a82;
+        --text3:    #555550;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+        --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
+        --c0: #4a9c1a; --c1: #d4a017; --c2: #d4601a; --c3: #d43a3a;
+        --b0: #182910; --b1: #281e08; --b2: #2a160a; --b3: #280a0a;
+        --bc0:#7dcc44; --bc1:#f0c040; --bc2:#f08040; --bc3:#f05050;
       }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+
+    html { font-size: 15px; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       padding: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* ── Focus ────────────────────────────────────────────────────── */
+    :focus-visible {
+      outline: 2px solid #185FA5;
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* ── Header ────────────────────────────────────────────────────── */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 12px;
     }
+
+    .header-left { display: flex; align-items: center; gap: 10px; }
 
     h1 {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 600;
-      color: var(--text);
+      letter-spacing: -0.01em;
+      text-wrap: balance;
     }
 
+    /* ── Status pill ────────────────────────────────────────────────── */
+    #status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 99px;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      background: var(--surface);
+      white-space: nowrap;
+      transition: color .2s, border-color .2s;
+    }
+    #status-pill::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text3);
+      flex-shrink: 0;
+      transition: background .2s;
+    }
+    #status-pill.live::before   { background: #22c55e; }
+    #status-pill.live           { color: var(--text2); border-color: rgba(34,197,94,0.3); }
+    #status-pill.error::before  { background: #f97316; }
+    #status-pill.error          { color: var(--text2); border-color: rgba(249,115,22,0.3); }
+
+    /* ── Header right ───────────────────────────────────────────────── */
     .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-    #search-wrap {
-      position: relative;
+    /* ── Search ────────────────────────────────────────────────────── */
+    .search-wrap { position: relative; }
+
+    .search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+    .search-icon {
+      position: absolute;
+      left: 9px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      pointer-events: none;
+      font-size: 13px;
     }
+
     #search-input {
       font-size: 13px;
-      padding: 4px 28px 4px 10px;
-      border-radius: 8px;
+      font-family: inherit;
+      padding: 5px 28px 5px 30px;
+      border-radius: var(--radius-md);
       border: 1px solid var(--border2);
-      background: var(--bg2);
+      background: var(--surface);
       color: var(--text);
-      outline: none;
-      width: 180px;
+      width: 190px;
       transition: border-color .15s, box-shadow .15s;
     }
-    #search-input:focus { border-color: #185FA5; box-shadow: 0 0 0 2px rgba(24,95,165,0.15); }
-    #search-clear {
-      position: absolute; right: 7px; top: 50%; transform: translateY(-50%);
-      font-size: 13px; color: var(--text3); cursor: pointer;
-      display: none; background: none; border: none; padding: 0;
+    #search-input::placeholder { color: var(--text3); }
+    #search-input:focus {
+      outline: none;
+      border-color: #185FA5;
+      box-shadow: 0 0 0 3px rgba(24,95,165,0.12);
     }
+
+    .search-shortcut {
+      position: absolute;
+      right: 8px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--text3);
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 1px 4px;
+      pointer-events: none;
+    }
+    .search-shortcut.hidden { display: none; }
+
+    #search-clear {
+      position: absolute;
+      right: 7px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: var(--text3);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      width: 18px; height: 18px;
+      padding: 0;
+      transition: color .15s;
+    }
+    #search-clear:hover { color: var(--text); }
+
     #search-dropdown {
       display: none;
       position: absolute;
-      top: calc(100% + 4px);
+      top: calc(100% + 6px);
       left: 0;
       width: 240px;
-      background: var(--bg2);
+      background: var(--surface);
       border: 1px solid var(--border2);
-      border-radius: 10px;
-      box-shadow: var(--shadow);
-      z-index: 100;
-      max-height: 240px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      z-index: 200;
+      max-height: 260px;
       overflow-y: auto;
+      padding: 4px;
     }
     .sd-item {
-      padding: 7px 12px;
+      padding: 7px 10px;
       cursor: pointer;
       font-size: 13px;
       display: flex;
       align-items: center;
       gap: 8px;
+      border-radius: var(--radius-sm);
+      transition: background .1s;
     }
-    .sd-item:hover { background: var(--bg); }
-    .sd-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-    .sd-empty { padding: 10px 12px; font-size: 13px; color: var(--text3); }
+    .sd-item:hover, .sd-item:focus { background: var(--surface2); outline: none; }
+    .sd-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
+    .sd-level { margin-left: auto; font-size: 10px; color: var(--text3); }
+    .sd-empty { padding: 12px 10px; font-size: 13px; color: var(--text3); text-align: center; }
 
-    #status-pill {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      border: 0.5px solid var(--border2);
-      color: var(--text2);
-      background: var(--bg2);
-      white-space: nowrap;
-    }
-    #status-pill.loading { color: var(--text3); }
-    #status-pill.live    { border-color: #3B6D11; color: #3B6D11; }
-    #status-pill.error   { border-color: #A32D2D; color: #A32D2D; }
-
-    /* Stats bar */
+    /* ── Stats bar ──────────────────────────────────────────────────── */
     #stats-bar {
       display: flex;
-      gap: 10px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-    .stat-chip {
-      display: flex;
+
+    .stat-btn {
+      display: inline-flex;
       align-items: center;
       gap: 5px;
       font-size: 12px;
+      font-weight: 500;
+      font-family: inherit;
       color: var(--text2);
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      border-radius: 20px;
-      padding: 3px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 99px;
+      padding: 4px 11px 4px 8px;
       cursor: pointer;
-      transition: background .12s;
-      user-select: none;
+      transition: background .12s, border-color .12s, color .12s, box-shadow .12s;
+      white-space: nowrap;
     }
-    .stat-chip:hover { background: var(--bg); }
-    .stat-chip.active { border-color: var(--border2); }
-    .stat-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-    .stat-count { font-weight: 600; }
-
-    .legend {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
+    .stat-btn:hover { background: var(--surface2); border-color: var(--border2); }
+    .stat-btn.active {
+      background: var(--text);
+      color: var(--surface);
+      border-color: var(--text);
     }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      color: var(--text2);
-    }
-    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-
-    .nahost-note {
+    .stat-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
+    .stat-count {
       font-size: 11px;
-      background: #FAEEDA;
-      color: #633806;
-      border-radius: 6px;
-      padding: 4px 10px;
-      margin-bottom: 8px;
-      display: inline-block;
-    }
-    @media (prefers-color-scheme: dark) {
-      .nahost-note { background: #412402; color: #FAC775; }
+      font-weight: 600;
+      color: inherit;
+      opacity: 0.7;
     }
 
+    /* ── Alert banner ───────────────────────────────────────────────── */
+    .alert-banner {
+      font-size: 12px;
+      background: var(--b1);
+      color: var(--bc1);
+      border: 1px solid rgba(176,125,0,0.2);
+      border-radius: var(--radius-md);
+      padding: 6px 12px;
+      margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── Map ────────────────────────────────────────────────────────── */
     #map-wrap {
       position: relative;
-      border-radius: 12px;
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      border: 1px solid var(--border);
+      border: 1px solid var(--border2);
+      box-shadow: var(--shadow-sm);
     }
-    #map svg { display: block; cursor: grab; }
+    #map svg { display: block; cursor: grab; user-select: none; }
     #map svg:active { cursor: grabbing; }
 
-    /* Zoom controls */
+    /* ── Zoom controls ──────────────────────────────────────────────── */
     #zoom-controls {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
+      bottom: 12px;
+      right: 12px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
       z-index: 5;
     }
     .zoom-btn {
-      width: 28px; height: 28px;
-      background: var(--bg2);
-      border: 0.5px solid var(--border2);
-      border-radius: 6px;
+      width: 30px; height: 30px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      font-size: 16px;
+      font-size: 17px;
+      font-family: inherit;
       display: flex; align-items: center; justify-content: center;
-      color: var(--text);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-      transition: background .1s;
+      color: var(--text2);
+      box-shadow: var(--shadow-sm);
+      transition: background .1s, color .1s;
+      line-height: 1;
     }
-    .zoom-btn:hover { background: var(--bg); }
+    .zoom-btn:hover { background: var(--surface2); color: var(--text); }
+    #zoom-in { border-radius: var(--radius-sm) var(--radius-sm) 0 0; }
+    #zoom-out { border-radius: 0 0 var(--radius-sm) var(--radius-sm); border-top: none; }
 
-    /* Tooltip on hover */
-    #tooltip {
+    /* ── Tooltip ────────────────────────────────────────────────────── */
+    #map-tooltip {
       display: none;
       position: absolute;
       z-index: 8;
-      background: var(--bg2);
-      border: 0.5px solid var(--border2);
-      border-radius: 6px;
-      padding: 4px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 5px 10px;
       font-size: 12px;
+      font-weight: 500;
       color: var(--text);
       pointer-events: none;
       white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      box-shadow: var(--shadow-md);
     }
 
+    /* ── Popup ──────────────────────────────────────────────────────── */
     #popup {
       display: none;
       position: absolute;
       z-index: 10;
-      width: 300px;
-      background: var(--bg2);
-      border: 0.5px solid var(--border2);
-      border-radius: 14px;
-      padding: 16px 18px;
-      font-size: 13px;
-      color: var(--text);
-      box-shadow: var(--shadow);
+      width: 296px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
     }
-    #popup-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
-    #popup-title { font-weight: 600; font-size: 16px; }
+    #popup-color-bar {
+      height: 3px;
+      width: 100%;
+    }
+    #popup-body {
+      padding: 14px 16px 16px;
+    }
+    #popup-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    #popup-title {
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #popup-close {
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text3);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: color .1s, background .1s;
+      font-family: inherit;
+    }
+    #popup-close:hover { color: var(--text); background: var(--bg); }
     #popup-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 11px; padding: 3px 9px;
-      border-radius: 6px; font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-weight: 500;
       margin-bottom: 12px;
     }
-    .ps { margin-bottom: 10px; }
-    .pl {
-      font-size: 10px; color: var(--text3);
-      text-transform: uppercase; letter-spacing: 0.06em;
-      margin-bottom: 3px;
-    }
-    .pv { font-size: 13px; color: var(--text); line-height: 1.55; }
-    #popup-link {
-      display: inline-flex; align-items: center; gap: 3px;
-      margin-top: 10px; font-size: 12px;
-      color: #185FA5; text-decoration: none;
-      border-bottom: 0.5px solid #85B7EB;
-    }
-    #close-btn {
-      cursor: pointer; font-size: 14px;
-      color: var(--text3); line-height: 1;
-      background: var(--bg); border: 0.5px solid var(--border2);
-      border-radius: 6px; width: 22px; height: 22px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-left: 8px;
-    }
-    #close-btn:hover { color: var(--text); }
-
-    footer {
-      margin-top: 8px;
-      font-size: 11px;
+    .prow { margin-bottom: 10px; }
+    .prow:last-of-type { margin-bottom: 0; }
+    .plabel {
+      font-size: 10px;
+      font-weight: 600;
       color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 2px;
+    }
+    .pval {
+      font-size: 12.5px;
+      color: var(--text);
+      line-height: 1.55;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+    }
+    #popup-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+    #popup-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #185FA5;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+    #popup-link:hover { opacity: 0.75; }
+
+    /* ── Footer ────────────────────────────────────────────────────── */
+    footer {
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
-      gap: 4px;
+      gap: 6px;
     }
-    footer a { color: var(--text3); }
+    .footer-text {
+      font-size: 11px;
+      color: var(--text3);
+    }
+    .footer-text a { color: var(--text3); text-decoration: none; border-bottom: 1px solid var(--border2); }
+    .footer-text a:hover { color: var(--text2); }
+
     #reset-zoom-btn {
-      font-size: 11px; color: var(--text3);
-      background: none; border: none; cursor: pointer;
-      text-decoration: underline; padding: 0;
+      font-size: 11px;
+      font-family: inherit;
+      color: var(--text3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
     #reset-zoom-btn:hover { color: var(--text2); }
 
+    /* ── Live region ─────────────────────────────────────────────────── */
+    #a11y-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+    /* ── Responsive ─────────────────────────────────────────────────── */
     @media (max-width: 600px) {
       body { padding: 10px; }
-      #search-input { width: 140px; }
-      #popup { width: calc(100vw - 32px); }
+      #search-input { width: 150px; }
+      #popup { width: calc(100vw - 24px); max-width: 320px; }
+      .stat-btn { font-size: 11px; padding: 3px 8px 3px 6px; }
     }
   </style>
 </head>
 <body>
 
+<div id="a11y-live" aria-live="polite" aria-atomic="true"></div>
+
 <header>
-  <h1>Geschäftsreise – Sicherheitskarte</h1>
+  <div class="header-left">
+    <h1>Geschäftsreise&thinsp;–&thinsp;Sicherheitskarte</h1>
+    <span id="status-pill">Lädt…</span>
+  </div>
   <div class="header-right">
-    <div id="search-wrap">
-      <input id="search-input" type="text" placeholder="Land suchen…" autocomplete="off" />
-      <button id="search-clear">✕</button>
-      <div id="search-dropdown"></div>
+    <div class="search-wrap">
+      <label class="search-label" for="search-input">Land suchen</label>
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input
+        id="search-input"
+        type="search"
+        name="country-search"
+        placeholder="Land suchen…"
+        autocomplete="off"
+        spellcheck="false"
+        role="combobox"
+        aria-expanded="false"
+        aria-controls="search-dropdown"
+        aria-haspopup="listbox"
+        aria-autocomplete="list"
+      />
+      <span class="search-shortcut" aria-hidden="true" id="search-shortcut">/</span>
+      <button id="search-clear" aria-label="Suche zurücksetzen">✕</button>
+      <div id="search-dropdown" role="listbox" aria-label="Ländervorschläge"></div>
     </div>
-    <span id="status-pill" class="loading">Lädt…</span>
   </div>
 </header>
 
-<div id="stats-bar">
-  <div class="stat-chip" data-level="3"><div class="stat-dot" style="background:#E24B4A"></div>Reisewarnung <span class="stat-count" id="cnt3">–</span></div>
-  <div class="stat-chip" data-level="2"><div class="stat-dot" style="background:#E8621A"></div>Teilreisewarnung <span class="stat-count" id="cnt2">–</span></div>
-  <div class="stat-chip" data-level="1"><div class="stat-dot" style="background:#FAC775"></div>Einschränkungen <span class="stat-count" id="cnt1">–</span></div>
-  <div class="stat-chip" data-level="0"><div class="stat-dot" style="background:#27500A"></div>Sicher <span class="stat-count" id="cnt0">–</span></div>
+<div id="stats-bar" role="group" aria-label="Nach Warnstufe filtern">
+  <button class="stat-btn" data-level="3" aria-pressed="false">
+    <span class="stat-dot" style="background:#c0302f" aria-hidden="true"></span>
+    Reisewarnung <span class="stat-count" id="cnt3">–</span>
+  </button>
+  <button class="stat-btn" data-level="2" aria-pressed="false">
+    <span class="stat-dot" style="background:#c9560a" aria-hidden="true"></span>
+    Teilreisewarnung <span class="stat-count" id="cnt2">–</span>
+  </button>
+  <button class="stat-btn" data-level="1" aria-pressed="false">
+    <span class="stat-dot" style="background:#c9970a" aria-hidden="true"></span>
+    Einschränkungen <span class="stat-count" id="cnt1">–</span>
+  </button>
+  <button class="stat-btn" data-level="0" aria-pressed="false">
+    <span class="stat-dot" style="background:#2a5c0a" aria-hidden="true"></span>
+    Kein Risiko <span class="stat-count" id="cnt0">–</span>
+  </button>
 </div>
 
-<div class="nahost-note">⚠ Nahost: Seit 28.02.2026 Reisewarnungen für 13 Länder der Region</div>
+<div class="alert-banner" role="note">
+  <span aria-hidden="true">⚠</span>
+  Nahost: Seit 28.02.2026 Reisewarnungen für 13 Länder der Region
+</div>
 
 <div id="map-wrap">
-  <div id="map"></div>
-  <div id="tooltip"></div>
+  <div id="map" role="img" aria-label="Weltkarte mit Reisewarnstufen"></div>
+  <div id="map-tooltip" role="tooltip"></div>
+
   <div id="zoom-controls">
-    <button class="zoom-btn" id="zoom-in" title="Hineinzoomen">+</button>
-    <button class="zoom-btn" id="zoom-out" title="Herauszoomen">−</button>
+    <button class="zoom-btn" id="zoom-in"  aria-label="Hineinzoomen">+</button>
+    <button class="zoom-btn" id="zoom-out" aria-label="Herauszoomen">−</button>
   </div>
-  <div id="popup">
-    <div id="popup-header">
-      <div id="popup-title"></div>
-      <button id="close-btn" onclick="closePopup()">✕</button>
+
+  <div
+    id="popup"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="popup-title"
+  >
+    <div id="popup-color-bar"></div>
+    <div id="popup-body">
+      <div id="popup-header">
+        <div id="popup-title"></div>
+        <button id="popup-close" aria-label="Info schließen" onclick="closePopup()">✕</button>
+      </div>
+      <div id="popup-badge"></div>
+      <div class="prow"><div class="plabel">Sicherheitslage</div><div class="pval" id="pp-sec"></div></div>
+      <div class="prow"><div class="plabel">Geschäftsreise-Empfehlung</div><div class="pval" id="pp-biz"></div></div>
+      <div class="prow"><div class="plabel">Einreise &amp; Dokumente</div><div class="pval" id="pp-entry"></div></div>
+      <div id="popup-divider"></div>
+      <a id="popup-link" href="#" target="_blank" rel="noopener noreferrer">
+        Auswärtiges Amt
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M1.5 8.5L8.5 1.5M8.5 1.5H4M8.5 1.5V6"/></svg>
+      </a>
     </div>
-    <div id="popup-badge"></div>
-    <div class="ps"><div class="pl">Sicherheit – Reisewarnung (Ausw. Amt)</div><div class="pv" id="pp-sec"></div></div>
-    <div class="ps"><div class="pl">Geschäftsreise-Empfehlung</div><div class="pv" id="pp-biz"></div></div>
-    <div class="ps"><div class="pl">Einreise & Dokumente</div><div class="pv" id="pp-entry"></div></div>
-    <a id="popup-link" href="#" target="_blank" rel="noopener">Aktueller Hinweis beim Ausw. Amt ↗</a>
   </div>
 </div>
 
 <footer>
-  <span>Quelle: <a href="https://www.auswaertiges-amt.de" target="_blank">Auswärtiges Amt</a> · Warnstufen: tägl. 06:00 &amp; 12:00 UTC · Texte: wöchentlich · Vor jeder Reise offiziell prüfen.</span>
+  <span class="footer-text">
+    Quelle: <a href="https://www.auswaertiges-amt.de" target="_blank" rel="noopener">Auswärtiges Amt</a>
+    &middot; Warnstufen: tägl. 06:00 &amp; 12:00&thinsp;UTC
+    &middot; Texte: wöchentlich
+    &middot; Vor jeder Reise offiziell prüfen.
+  </span>
   <button id="reset-zoom-btn" onclick="resetZoom()">Zoom zurücksetzen</button>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <script>
+// ── Konstanten ────────────────────────────────────────────────────────────────
+// Datum der statischen Fallback-Daten (für Status-Anzeige bei Server-Ausfall)
+const DETAILS_UPDATED = 'März 2026';
 
-const C   = { 0:'#27500A', 1:'#C9970A', 2:'#C9560A', 3:'#C0302F' };
-const BB  = { 0:'#EAF3DE', 1:'#FEF5DC', 2:'#FAECE7', 3:'#FCEBEB' };
-const BC  = { 0:'#27500A', 1:'#7A5500', 2:'#712B13', 3:'#501313' };
+const C   = { 0:'#2a5c0a', 1:'#c9970a', 2:'#c9560a', 3:'#c0302f' };
+const BB  = { 0:'var(--b0)', 1:'var(--b1)', 2:'var(--b2)', 3:'var(--b3)' };
+const BC  = { 0:'var(--bc0)', 1:'var(--bc1)', 2:'var(--bc2)', 3:'var(--bc3)' };
 const LBL = {
   0: 'Kein besonderes Reiserisiko',
   1: 'Regionale Einschränkungen / erhöhte Vorsicht',
   2: 'Teilreisewarnung',
-  3: 'Reisewarnung'
+  3: 'Reisewarnung',
 };
 const BIZ = {
   0: 'Geschäftsreisen problemlos möglich. Übliche Sicherheitsvorkehrungen einhalten.',
   1: 'Geschäftsreisen möglich. Bestimmte Regionen beachten. Reiseroute im Voraus planen, Lage täglich prüfen.',
   2: 'Reise grundsätzlich möglich, erhöhte Vorsicht erforderlich. Intern genehmigen lassen, Notfallkontakte hinterlegen.',
-  3: 'Vom Auswärtigen Amt wird von Reisen abgeraten. Nur wenn zwingend notwendig – vollständigen Sicherheitsplan und Evakuierungsplan vorbereiten.'
+  3: 'Vom Auswärtigen Amt wird von Reisen abgeraten. Nur wenn zwingend notwendig – vollständigen Sicherheitsplan und Evakuierungsplan vorbereiten.',
 };
 
-// Statische Detaildaten
-// Format: [Warnstufe (0-3), Sicherheitstext, Einreisetext, URL-Suffix]
-// Format: [Warnstufe, Sicherheitstext, Einreisetext, URL-Suffix]
-// 0=kein Risiko, 1=regionale Einschränkungen, 2=Teilreisewarnung, 3=Reisewarnung
+// ── Statische Detaildaten ─────────────────────────────────────────────────────
+// Format: [Warnstufe (0–3), Sicherheitstext, Einreisetext, URL-Suffix]
 const DETAILS = {
   AF:[3,'Vor Reisen nach Afghanistan wird gewarnt. Extreme Sicherheitsrisiken durch Terrorismus und willkürliche Verhaftungen.','Einreise nicht empfohlen. Kein konsularischer Schutz.','afghanistandeutscher-452552'],
   AE:[3,'Vor Reisen in die VAE wird gewarnt. Seit 28.02.2026 Luftschläge gegen Iran. Flughäfen Dubai/Abu Dhabi eingeschränkt.','Flugbetrieb stark reduziert. Fluggesellschaft vor Reise kontaktieren.','vereinigtearabischeemiratesicherheit-202332'],
@@ -462,7 +687,6 @@ const DETAILS = {
   AR:[0,'Kein besonderes Reiserisiko. Argentinien gilt als relativ sicheres Reiseziel.','Kein Visum für Deutsche (90 Tage).','argentiniensicherheit-201440'],
 };
 
-// Fallback-Warnstufen für Länder ohne Live-Daten und ohne DETAILS-Eintrag
 const FALLBACK_LVL = {
   IT:0,ES:0,NL:0,BE:0,CH:0,AT:0,PL:0,SE:0,NO:0,FI:0,DK:0,PT:0,IE:0,GR:0,
   CZ:0,SK:0,HU:0,RO:0,BG:0,HR:0,SI:0,EE:0,LV:0,LT:0,LU:0,MT:0,CY:0,IS:0,
@@ -500,7 +724,7 @@ const COUNTRY_NAMES = {
   AU:'Australien',AT:'Österreich',BD:'Bangladesch',BY:'Belarus',BE:'Belgien',
   BJ:'Benin',BO:'Bolivien',BA:'Bosnien-Herzegowina',BW:'Botswana',BR:'Brasilien',
   BF:'Burkina Faso',BG:'Bulgarien',MM:'Myanmar',KH:'Kambodscha',CM:'Kamerun',
-  CA:'Kanada',CF:'Zentrafrikanische Rep.',TD:'Tschad',CL:'Chile',CN:'China',
+  CA:'Kanada',CF:'Zentralafrikan. Rep.',TD:'Tschad',CL:'Chile',CN:'China',
   CO:'Kolumbien',CG:'Kongo',CD:'Dem. Rep. Kongo',CR:'Costa Rica',HR:'Kroatien',
   CU:'Kuba',CY:'Zypern',CZ:'Tschechien',DK:'Dänemark',DO:'Dominikanische Rep.',
   EC:'Ecuador',EG:'Ägypten',SV:'El Salvador',ET:'Äthiopien',FI:'Finnland',
@@ -517,7 +741,7 @@ const COUNTRY_NAMES = {
   SK:'Slowakei',SI:'Slowenien',SO:'Somalia',ZA:'Südafrika',ES:'Spanien',LK:'Sri Lanka',
   SD:'Sudan',SS:'Südsudan',SE:'Schweden',CH:'Schweiz',SY:'Syrien',TJ:'Tadschikistan',
   TH:'Thailand',TN:'Tunesien',TR:'Türkei',UG:'Uganda',UA:'Ukraine',
-  AE:'Vereinigte Arab. Emirate',GB:'Großbritannien',TZ:'Tansania',US:'USA',
+  AE:'Ver. Arab. Emirate',GB:'Großbritannien',TZ:'Tansania',US:'USA',
   UY:'Uruguay',UZ:'Usbekistan',VE:'Venezuela',VN:'Vietnam',YE:'Jemen',ZM:'Sambia',
   ZW:'Simbabwe',AZ:'Aserbaidschan',KZ:'Kasachstan',MD:'Moldau',MK:'Nordmazedonien',
   RS:'Serbien',ME:'Montenegro',KG:'Kirgisistan',PS:'Palästin. Gebiete',ER:'Eritrea',
@@ -528,111 +752,140 @@ const COUNTRY_NAMES = {
 };
 
 const DEFAULT_TEXT = {
-  0: ['Kein besonderes Reiserisiko. Übliche Sicherheitsvorkehrungen beachten.', 'Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
-  1: ['Regionale Einschränkungen bestehen. Aktuelle Hinweise des Auswärtigen Amts prüfen.', 'Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
-  2: ['Teilreisewarnung. Von Reisen in bestimmte Regionen wird abgeraten. Aktuelle Hinweise prüfen.', 'Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
-  3: ['Vor Reisen in dieses Land wird gewarnt. Aktuelle Hinweise des Auswärtigen Amts unbedingt beachten.', 'Einreise nicht empfohlen.'],
+  0: ['Kein besonderes Reiserisiko. Übliche Sicherheitsvorkehrungen beachten.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  1: ['Regionale Einschränkungen bestehen. Aktuelle Hinweise des Auswärtigen Amts prüfen.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  2: ['Teilreisewarnung. Von Reisen in bestimmte Regionen wird abgeraten.','Einreisebestimmungen beim Auswärtigen Amt prüfen.'],
+  3: ['Vor Reisen in dieses Land wird gewarnt. Aktuelle Hinweise unbedingt beachten.','Einreise nicht empfohlen.'],
 };
 
-// ── Live-Daten ──────────────────────────────────────────────────────────────
-let liveData = {};
-let liveTexts = {};
-let activeFilter = null; // level filter from stats chips
+// ── Live-Daten ────────────────────────────────────────────────────────────────
+let liveData   = {};
+let liveTexts  = {};
+let activeFilter = null;
+const pill     = document.getElementById('status-pill');
+const liveEl   = document.getElementById('a11y-live');
+
+function announce(msg) { liveEl.textContent = ''; requestAnimationFrame(() => { liveEl.textContent = msg; }); }
 
 async function loadWarnings() {
-  const pill = document.getElementById('status-pill');
   try {
-    const res = await fetch('/api/warnings');
+    const res  = await fetch('/api/warnings');
     const json = await res.json();
     liveData = json.data || {};
     const count = Object.keys(liveData).length;
-    const date = json.lastUpdated ? new Date(json.lastUpdated).toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'}) : '–';
+    const date  = json.lastUpdated
+      ? new Date(json.lastUpdated).toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' })
+      : '–';
     pill.textContent = `Live · ${count} Länder · ${date} UTC`;
-    pill.className = 'live';
-    if (svgPaths) {
-      svgPaths.attr('fill', d => getColor(getIso2(d.id)));
-      updateStats();
-    }
-  } catch (e) {
-    pill.textContent = 'Fallback-Daten aktiv';
-    pill.className = 'error';
+    pill.className   = 'live';
+    announce(`Warnstufen geladen: ${count} Länder, Stand ${date} UTC`);
+    if (svgPaths) { svgPaths.attr('fill', d => getColor(getIso2(d.id))); updateStats(); }
+  } catch {
+    pill.textContent = `Fallback-Daten (Stand: ${DETAILS_UPDATED})`;
+    pill.className   = 'error';
+    announce(`Server nicht erreichbar – statische Daten vom ${DETAILS_UPDATED} aktiv`);
     updateStats();
   }
 }
 
 async function loadTexts() {
   try {
-    const res = await fetch('/api/texts');
+    const res  = await fetch('/api/texts');
     const json = await res.json();
-    liveTexts = json.data || {};
-  } catch (e) {
-    console.warn('Text-API nicht erreichbar, nutze statische Texte');
-  }
+    liveTexts  = json.data || {};
+  } catch { /* statische Texte als Fallback */ }
 }
 
-function getIso2(id) { return NUM_TO_ISO2[String(id)] || NUM_TO_ISO2[parseInt(id)]; }
+// ── Daten-Abfragen ────────────────────────────────────────────────────────────
+function getIso2(id)  { return NUM_TO_ISO2[String(id)] || NUM_TO_ISO2[parseInt(id)]; }
 
 function getLevel(iso2) {
   if (!iso2) return -1;
-  if (liveData[iso2] !== undefined) return liveData[iso2].level;
-  if (DETAILS[iso2] !== undefined) return DETAILS[iso2][0];
+  if (liveData[iso2]    !== undefined) return liveData[iso2].level;
+  if (DETAILS[iso2]     !== undefined) return DETAILS[iso2][0];
   if (FALLBACK_LVL[iso2] !== undefined) return FALLBACK_LVL[iso2];
   return -1;
 }
 
 function getColor(iso2) {
   const l = getLevel(iso2);
-  if (l === -1) return '#B4B2A9';
-  if (activeFilter !== null && l !== activeFilter) return isDark ? 'rgba(100,100,95,0.3)' : 'rgba(180,178,169,0.4)';
+  if (l === -1) return '#B0AEA6';
+  if (activeFilter !== null && l !== activeFilter)
+    return isDark ? 'rgba(80,80,76,0.35)' : 'rgba(170,168,160,0.35)';
   return C[l];
 }
 
+function getInfo(iso2) {
+  if (liveTexts[iso2])  return { sec: liveTexts[iso2].security, entry: liveTexts[iso2].entry };
+  if (DETAILS[iso2])    return { sec: DETAILS[iso2][1], entry: DETAILS[iso2][2] };
+  const l = getLevel(iso2);
+  const d = DEFAULT_TEXT[l >= 0 ? l : 0];
+  return { sec: d[0], entry: d[1] };
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
 function updateStats() {
-  const counts = {0:0,1:0,2:0,3:0};
-  const allIso = new Set([...Object.keys(DETAILS), ...Object.keys(FALLBACK_LVL), ...Object.keys(liveData)]);
-  allIso.forEach(iso => {
-    const l = getLevel(iso);
-    if (l >= 0) counts[l]++;
-  });
+  const counts = {0:0, 1:0, 2:0, 3:0};
+  const all = new Set([...Object.keys(DETAILS), ...Object.keys(FALLBACK_LVL), ...Object.keys(liveData)]);
+  all.forEach(iso => { const l = getLevel(iso); if (l >= 0) counts[l]++; });
   [0,1,2,3].forEach(l => {
     const el = document.getElementById('cnt' + l);
     if (el) el.textContent = counts[l];
   });
 }
 
-// Stats chip filter
-document.querySelectorAll('.stat-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    const lvl = parseInt(chip.dataset.level);
+updateStats(); // sofort mit statischen Daten befüllen
+
+document.querySelectorAll('.stat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const lvl = parseInt(btn.dataset.level);
     if (activeFilter === lvl) {
       activeFilter = null;
-      chip.classList.remove('active');
+      btn.setAttribute('aria-pressed', 'false');
     } else {
-      document.querySelectorAll('.stat-chip').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.stat-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
       activeFilter = lvl;
-      chip.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
     }
     closePopup();
     if (svgPaths) svgPaths.attr('fill', d => getColor(getIso2(d.id)));
   });
 });
 
-// ── Search ──────────────────────────────────────────────────────────────────
-const searchInput = document.getElementById('search-input');
-const searchClear = document.getElementById('search-clear');
+// ── Search ────────────────────────────────────────────────────────────────────
+const searchInput    = document.getElementById('search-input');
+const searchClear    = document.getElementById('search-clear');
 const searchDropdown = document.getElementById('search-dropdown');
+const searchShortcut = document.getElementById('search-shortcut');
+
+// Tastaturkürzel: "/" öffnet Suche
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== searchInput
+      && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') {
+    if (document.getElementById('popup').style.display !== 'none') { closePopup(); return; }
+    if (searchDropdown.style.display !== 'none') { searchDropdown.style.display = 'none'; searchInput.blur(); }
+  }
+});
+
+searchInput.addEventListener('focus', () => { searchShortcut.classList.add('hidden'); });
+searchInput.addEventListener('blur',  () => {
+  if (!searchInput.value) searchShortcut.classList.remove('hidden');
+});
 
 searchInput.addEventListener('input', () => {
   const q = searchInput.value.trim().toLowerCase();
   searchClear.style.display = q ? 'flex' : 'none';
+  searchInput.setAttribute('aria-expanded', q ? 'true' : 'false');
+
   if (!q) { searchDropdown.style.display = 'none'; return; }
 
   const matches = Object.entries(COUNTRY_NAMES)
     .filter(([iso, name]) => name.toLowerCase().includes(q) || iso.toLowerCase().includes(q))
-    .sort((a, b) => {
-      const la = getLevel(a[0]), lb = getLevel(b[0]);
-      return lb - la; // higher risk first
-    })
+    .sort((a, b) => getLevel(b[0]) - getLevel(a[0]))
     .slice(0, 10);
 
   if (!matches.length) {
@@ -640,173 +893,143 @@ searchInput.addEventListener('input', () => {
   } else {
     searchDropdown.innerHTML = matches.map(([iso, name]) => {
       const l = getLevel(iso);
-      const col = l >= 0 ? C[l] : '#B4B2A9';
-      return `<div class="sd-item" data-iso="${iso}"><div class="sd-dot" style="background:${col}"></div>${name}</div>`;
+      const col = l >= 0 ? C[l] : '#B0AEA6';
+      const lbl = l >= 0 ? LBL[l] : 'Keine Daten';
+      return `<div class="sd-item" data-iso="${iso}" role="option" tabindex="-1" aria-label="${name}: ${lbl}">
+        <div class="sd-dot" style="background:${col}" aria-hidden="true"></div>
+        ${name}
+        <span class="sd-level">${['✓','!','!!','!!!'][l] || '?'}</span>
+      </div>`;
     }).join('');
     searchDropdown.querySelectorAll('.sd-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const iso = item.dataset.iso;
-        searchInput.value = COUNTRY_NAMES[iso] || iso;
-        searchDropdown.style.display = 'none';
-        focusCountry(iso);
-      });
+      item.addEventListener('click', () => selectCountry(item.dataset.iso));
+      item.addEventListener('keydown', e => { if (e.key === 'Enter') selectCountry(item.dataset.iso); });
     });
   }
   searchDropdown.style.display = 'block';
 });
 
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown') {
+    const first = searchDropdown.querySelector('.sd-item');
+    if (first) first.focus();
+  }
+});
+
+function selectCountry(iso2) {
+  searchInput.value = COUNTRY_NAMES[iso2] || iso2;
+  searchInput.setAttribute('aria-expanded', 'false');
+  searchDropdown.style.display = 'none';
+  focusCountry(iso2);
+}
+
 searchClear.addEventListener('click', () => {
   searchInput.value = '';
+  searchInput.setAttribute('aria-expanded', 'false');
   searchClear.style.display = 'none';
+  searchShortcut.classList.remove('hidden');
   searchDropdown.style.display = 'none';
   closePopup();
 });
 
 document.addEventListener('click', e => {
-  if (!document.getElementById('search-wrap').contains(e.target)) {
+  if (!e.target.closest('.search-wrap')) {
     searchDropdown.style.display = 'none';
+    searchInput.setAttribute('aria-expanded', 'false');
   }
 });
 
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { searchInput.blur(); searchDropdown.style.display = 'none'; }
-});
-
-// focus + open popup for a country by ISO2
-function focusCountry(iso2) {
-  if (!svgPaths) return;
-  const path = svgPaths.filter(d => getIso2(d.id) === iso2);
-  if (path.empty()) return;
-  // highlight it
-  if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5);
-  const node = path.node();
-  const bbox = node.getBBox();
-  const wrap = document.getElementById('map-wrap');
-  const wr = wrap.getBoundingClientRect();
-  // fake event at center of bbox (in SVG space → screen space via transform)
-  const svgEl = document.querySelector('#map svg');
-  const pt = svgEl.createSVGPoint();
-  pt.x = bbox.x + bbox.width / 2;
-  pt.y = bbox.y + bbox.height / 2;
-  const screenPt = pt.matrixTransform(node.getScreenCTM());
-  const fakeEvt = { clientX: screenPt.x, clientY: screenPt.y };
-  activeD = path.datum();
-  path.attr('stroke', '#fff').attr('stroke-width', 2);
-  showPopup(fakeEvt, iso2);
-}
-
-// Stabile AA Länderseiten – immer aktuell, nie veraltete Nummern
-const AA_NODE = 'https://www.auswaertiges-amt.de/de/service/laender/';
+// ── AA Links ──────────────────────────────────────────────────────────────────
+const AA_NODE     = 'https://www.auswaertiges-amt.de/de/service/laender/';
 const AA_FALLBACK = 'https://www.auswaertiges-amt.de/de/reiseundsicherheit/10-2-8reisewarnungen';
 
-// ISO2 → AA country-node slug – vollständig verifiziert März 2026
 const AA_SLUGS = {
-  AF:'afghanistan-node',   AE:'vereinigtearabischeemirate-node',
-  AL:'albanien-node',      DZ:'algerien-node',      AO:'angola-node',
-  AR:'argentinien-node',   AM:'armenien-node',       AU:'australien-node',
-  AT:'oesterreich-node',   AZ:'aserbaidschan-node',  BH:'bahrain-node',
-  BD:'bangladesch-node',   BY:'belarus-node',         BE:'belgien-node',
-  BJ:'benin-node',         BO:'bolivien-node',       BA:'bosnienundherzegowina-node',
-  BW:'botsuana-node',      BR:'brasilien-node',      BF:'burkinafaso-node',
-  BG:'bulgarien-node',     BI:'burundi-node',        MM:'myanmar-node',
-  KH:'kambodscha-node',    CM:'kamerun-node',        CA:'kanada-node',
-  CF:'zentralafrikanischerepublik-node',              TD:'tschad-node',
-  CL:'chile-node',         CN:'china-node',          CO:'kolumbien-node',
-  CG:'kongorepublik-node', CD:'kongodemokratischerepublik-node',
-  CR:'costarica-node',     HR:'kroatien-node',       CU:'kuba-node',
-  CY:'zypern-node',        CZ:'tschechien-node',     DK:'daenemark-node',
-  DO:'dominikanischerepublik-node',                   EC:'ecuador-node',
-  EG:'aegypten-node',      SV:'elsalvador-node',     ET:'aethiopien-node',
-  FI:'finnland-node',      FR:'frankreich-node',     DE:'deutschland-node',
-  GH:'ghana-node',         GR:'griechenland-node',   GT:'guatemala-node',
-  GN:'guinea-node',        GW:'guineabissau-node',   GY:'guyana-node',
-  HT:'haiti-node',         HN:'honduras-node',       HU:'ungarn-node',
-  IN:'indien-node',        ID:'indonesien-node',     IR:'iran-node',
-  IQ:'irak-node',          IE:'irland-node',         IL:'israel-node',
-  IT:'italien-node',       CI:'cotedivoire-node',    JP:'japan-node',
-  JO:'jordanien-node',     KE:'kenia-node',
-  KP:'koreademokratischevolksrepublik-node',          KR:'korearepublik-node',
-  KW:'kuwait-node',        KG:'kirgisistan-node',    KZ:'kasachstan-node',
-  LA:'laos-node',          LB:'libanon-node',        LR:'liberia-node',
-  LY:'libyen-node',        MG:'madagaskar-node',     MW:'malawi-node',
-  MY:'malaysia-node',      ML:'mali-node',           MX:'mexiko-node',
-  MN:'mongolei-node',      MA:'marokko-node',        MD:'moldau-node',
-  ME:'montenegro-node',    MZ:'mosambik-node',       MR:'mauretanien-node',
-  MU:'mauritius-node',     NA:'namibia-node',        NP:'nepal-node',
-  NL:'niederlande-node',   NZ:'neuseeland-node',     NI:'nicaragua-node',
-  NE:'niger-node',         NG:'nigeria-node',        NO:'norwegen-node',
-  MK:'nordmazedonien-node',OM:'oman-node',           PK:'pakistan-node',
-  PA:'panama-node',        PG:'papuaneuguinea-node', PY:'paraguay-node',
-  PE:'peru-node',          PH:'philippinen-node',    PL:'polen-node',
-  PT:'portugal-node',      PS:'palaestinensischegebiete-node',
-  QA:'katar-node',         RO:'rumaenien-node',
-  RU:'russischefoederation-node',                    RW:'ruanda-node',
-  SA:'saudiarabien-node',  SN:'senegal-node',        RS:'serbien-node',
-  SL:'sierraleone-node',   SK:'slowakei-node',       SI:'slowenien-node',
-  SO:'somalia-node',       ZA:'suedafrika-node',     ES:'spanien-node',
-  LK:'srilanka-node',      SD:'sudan-node',          SS:'suedsudan-node',
-  SE:'schweden-node',      CH:'schweiz-node',        SY:'syrien-node',
-  TJ:'tadschikistan-node', TH:'thailand-node',       TG:'togo-node',
-  TN:'tunesien-node',      TR:'tuerkei-node',        UG:'uganda-node',
-  UA:'ukraine-node',       GB:'grossbritannien-node',TZ:'tansania-node',
-  US:'usa-node',           UY:'uruguay-node',        UZ:'usbekistan-node',
-  VE:'venezuela-node',     VN:'vietnam-node',        YE:'jemen-node',
-  ZM:'sambia-node',        ZW:'simbabwe-node',
-  DJ:'dschibuti-node',     ER:'eritrea-node',        GE:'georgien-node',
-  SR:'suriname-node',      LS:'lesotho-node',
+  AF:'afghanistan-node',AE:'vereinigtearabischeemirate-node',AL:'albanien-node',
+  DZ:'algerien-node',AO:'angola-node',AR:'argentinien-node',AM:'armenien-node',
+  AU:'australien-node',AT:'oesterreich-node',AZ:'aserbaidschan-node',BH:'bahrain-node',
+  BD:'bangladesch-node',BY:'belarus-node',BE:'belgien-node',BJ:'benin-node',
+  BO:'bolivien-node',BA:'bosnienundherzegowina-node',BW:'botsuana-node',
+  BR:'brasilien-node',BF:'burkinafaso-node',BG:'bulgarien-node',BI:'burundi-node',
+  MM:'myanmar-node',KH:'kambodscha-node',CM:'kamerun-node',CA:'kanada-node',
+  CF:'zentralafrikanischerepublik-node',TD:'tschad-node',CL:'chile-node',
+  CN:'china-node',CO:'kolumbien-node',CG:'kongorepublik-node',
+  CD:'kongodemokratischerepublik-node',CR:'costarica-node',HR:'kroatien-node',
+  CU:'kuba-node',CY:'zypern-node',CZ:'tschechien-node',DK:'daenemark-node',
+  DO:'dominikanischerepublik-node',EC:'ecuador-node',EG:'aegypten-node',
+  SV:'elsalvador-node',ET:'aethiopien-node',FI:'finnland-node',FR:'frankreich-node',
+  DE:'deutschland-node',GH:'ghana-node',GR:'griechenland-node',GT:'guatemala-node',
+  GN:'guinea-node',GW:'guineabissau-node',GY:'guyana-node',HT:'haiti-node',
+  HN:'honduras-node',HU:'ungarn-node',IN:'indien-node',ID:'indonesien-node',
+  IR:'iran-node',IQ:'irak-node',IE:'irland-node',IL:'israel-node',IT:'italien-node',
+  CI:'cotedivoire-node',JP:'japan-node',JO:'jordanien-node',KE:'kenia-node',
+  KP:'koreademokratischevolksrepublik-node',KR:'korearepublik-node',KW:'kuwait-node',
+  KG:'kirgisistan-node',KZ:'kasachstan-node',LA:'laos-node',LB:'libanon-node',
+  LR:'liberia-node',LY:'libyen-node',MG:'madagaskar-node',MW:'malawi-node',
+  MY:'malaysia-node',ML:'mali-node',MX:'mexiko-node',MN:'mongolei-node',
+  MA:'marokko-node',MD:'moldau-node',ME:'montenegro-node',MZ:'mosambik-node',
+  MR:'mauretanien-node',MU:'mauritius-node',NA:'namibia-node',NP:'nepal-node',
+  NL:'niederlande-node',NZ:'neuseeland-node',NI:'nicaragua-node',NE:'niger-node',
+  NG:'nigeria-node',NO:'norwegen-node',MK:'nordmazedonien-node',OM:'oman-node',
+  PK:'pakistan-node',PA:'panama-node',PG:'papuaneuguinea-node',PY:'paraguay-node',
+  PE:'peru-node',PH:'philippinen-node',PL:'polen-node',PT:'portugal-node',
+  PS:'palaestinensischegebiete-node',QA:'katar-node',RO:'rumaenien-node',
+  RU:'russischefoederation-node',RW:'ruanda-node',SA:'saudiarabien-node',
+  SN:'senegal-node',RS:'serbien-node',SL:'sierraleone-node',SK:'slowakei-node',
+  SI:'slowenien-node',SO:'somalia-node',ZA:'suedafrika-node',ES:'spanien-node',
+  LK:'srilanka-node',SD:'sudan-node',SS:'suedsudan-node',SE:'schweden-node',
+  CH:'schweiz-node',SY:'syrien-node',TJ:'tadschikistan-node',TH:'thailand-node',
+  TG:'togo-node',TN:'tunesien-node',TR:'tuerkei-node',UG:'uganda-node',
+  UA:'ukraine-node',GB:'grossbritannien-node',TZ:'tansania-node',US:'usa-node',
+  UY:'uruguay-node',UZ:'usbekistan-node',VE:'venezuela-node',VN:'vietnam-node',
+  YE:'jemen-node',ZM:'sambia-node',ZW:'simbabwe-node',DJ:'dschibuti-node',
+  ER:'eritrea-node',GE:'georgien-node',SR:'suriname-node',LS:'lesotho-node',
 };
 
 function buildLink(iso2) {
-  const slug = AA_SLUGS[iso2];
-  if (slug) return AA_NODE + slug;
-  return AA_FALLBACK;
+  return AA_SLUGS[iso2] ? AA_NODE + AA_SLUGS[iso2] : AA_FALLBACK;
 }
 
-function getInfo(iso2) {
-  const lvl = getLevel(iso2);
-  // Priorität 1: Live-Texte vom Server (wöchentlich via KI generiert)
-  if (liveTexts[iso2]) return { sec: liveTexts[iso2].security, entry: liveTexts[iso2].entry };
-  // Priorität 2: Statische DETAILS-Tabelle
-  if (DETAILS[iso2]) return { sec: DETAILS[iso2][1], entry: DETAILS[iso2][2] };
-  // Priorität 3: Standardtext je Warnstufe
-  const d = DEFAULT_TEXT[lvl >= 0 ? lvl : 0];
-  return { sec: d[0], entry: d[1] };
-}
-
+// ── Popup ─────────────────────────────────────────────────────────────────────
 function showPopup(evt, iso2) {
-  const lvl = getLevel(iso2);
+  const lvl  = getLevel(iso2);
   const name = COUNTRY_NAMES[iso2] || iso2;
   const info = getInfo(iso2);
 
   document.getElementById('popup-title').textContent = name;
+  document.getElementById('popup-color-bar').style.background = lvl >= 0 ? C[lvl] : '#B0AEA6';
 
   const badge = document.getElementById('popup-badge');
   badge.textContent = lvl >= 0 ? LBL[lvl] : 'Keine Daten';
-  badge.style.background = lvl >= 0 ? BB[lvl] : '#F1EFE8';
-  badge.style.color = lvl >= 0 ? BC[lvl] : '#5F5E5A';
+  badge.style.cssText = lvl >= 0
+    ? `background:${BB[lvl]};color:${BC[lvl]}`
+    : 'background:#F1EFE8;color:#5F5E5A';
 
-  document.getElementById('pp-sec').textContent = info.sec;
-  document.getElementById('pp-biz').textContent = lvl >= 0 ? BIZ[lvl] : 'Bitte Auswärtiges Amt direkt prüfen.';
+  document.getElementById('pp-sec').textContent   = info.sec;
+  document.getElementById('pp-biz').textContent   = lvl >= 0 ? BIZ[lvl] : 'Bitte Auswärtiges Amt direkt prüfen.';
   document.getElementById('pp-entry').textContent = info.entry;
-  document.getElementById('popup-link').href = buildLink(iso2);
+  document.getElementById('popup-link').href      = buildLink(iso2);
 
+  const pop  = document.getElementById('popup');
   const wrap = document.getElementById('map-wrap');
-  const wr = wrap.getBoundingClientRect();
-  const pop = document.getElementById('popup');
+  const wr   = wrap.getBoundingClientRect();
   pop.style.display = 'block';
 
+  const pw = pop.offsetWidth  || 296;
+  const ph = pop.offsetHeight || 340;
   let x = evt.clientX - wr.left + 16;
-  let y = evt.clientY - wr.top + 16;
-  const pw = pop.offsetWidth || 300;
-  const ph = pop.offsetHeight || 320;
-  if (x + pw > wrap.offsetWidth - 8) x = Math.max(8, evt.clientX - wr.left - pw - 16);
-  if (y + ph > wrap.offsetHeight - 8) y = Math.max(8, evt.clientY - wr.top - ph - 16);
+  let y = evt.clientY - wr.top  + 16;
+  if (x + pw > wrap.offsetWidth  - 8) x = Math.max(8, evt.clientX - wr.left - pw - 16);
+  if (y + ph > wrap.offsetHeight - 8) y = Math.max(8, evt.clientY - wr.top  - ph - 16);
   pop.style.left = x + 'px';
   pop.style.top  = y + 'px';
+
+  announce(`${name}: ${lvl >= 0 ? LBL[lvl] : 'Keine Daten'}`);
 }
 
 function closePopup() {
-  document.getElementById('popup').style.display = 'none';
+  const pop = document.getElementById('popup');
+  if (pop.style.display === 'none') return;
+  pop.style.display = 'none';
   if (svgPaths && activeD) {
     const k = zoom ? d3.zoomTransform(svg.node()).k : 1;
     svgPaths.filter(d => d === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
@@ -814,18 +1037,40 @@ function closePopup() {
   }
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+// Klick außerhalb des Popups schließt es
+document.getElementById('map-wrap').addEventListener('click', e => {
+  const pop = document.getElementById('popup');
+  if (pop.style.display !== 'none' && !pop.contains(e.target)) closePopup();
+});
 
-// ── Karte ───────────────────────────────────────────────────────────────────
+// ── Karte fokussieren (aus Suche) ─────────────────────────────────────────────
+function focusCountry(iso2) {
+  if (!svgPaths) return;
+  const path = svgPaths.filter(d => getIso2(d.id) === iso2);
+  if (path.empty()) return;
+  const k    = d3.zoomTransform(svg.node()).k;
+  if (activeD) svgPaths.filter(x => x === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
+  activeD = path.datum();
+  path.attr('stroke', '#ffffff').attr('stroke-width', 2 / k);
+  const node = path.node();
+  const bbox = node.getBBox();
+  const svgEl = document.querySelector('#map svg');
+  const pt    = svgEl.createSVGPoint();
+  pt.x = bbox.x + bbox.width  / 2;
+  pt.y = bbox.y + bbox.height / 2;
+  const sp = pt.matrixTransform(node.getScreenCTM());
+  showPopup({ clientX: sp.x, clientY: sp.y }, iso2);
+}
+
+// ── D3 Karte ──────────────────────────────────────────────────────────────────
 let svgPaths, activeD, zoom;
-const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
-const stroke0 = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.85)';
-const mapBg   = isDark ? '#18253a' : '#c8dff0';
+const isDark  = matchMedia('(prefers-color-scheme: dark)').matches;
+const stroke0 = isDark ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.9)';
+const mapBg   = isDark ? '#16202e' : '#c5dcee';
 
 const svg = d3.select('#map').append('svg')
   .attr('viewBox', '0 0 960 500')
   .attr('width', '100%')
-  .style('background', mapBg)
   .style('display', 'block');
 
 svg.append('rect').attr('width', 960).attr('height', 500).attr('fill', mapBg);
@@ -836,7 +1081,7 @@ const proj    = d3.geoNaturalEarth1().scale(153).translate([480, 250]);
 const pathGen = d3.geoPath(proj);
 
 zoom = d3.zoom()
-  .scaleExtent([1, 12])
+  .scaleExtent([1, 14])
   .on('zoom', event => {
     g.attr('transform', event.transform);
     if (svgPaths) svgPaths.attr('stroke-width', 0.5 / event.transform.k);
@@ -844,20 +1089,21 @@ zoom = d3.zoom()
 
 svg.call(zoom);
 
-document.getElementById('zoom-in').addEventListener('click',  () => svg.transition().duration(300).call(zoom.scaleBy, 1.6));
-document.getElementById('zoom-out').addEventListener('click', () => svg.transition().duration(300).call(zoom.scaleBy, 0.625));
+document.getElementById('zoom-in').addEventListener('click',
+  () => svg.transition().duration(280).call(zoom.scaleBy, 1.6));
+document.getElementById('zoom-out').addEventListener('click',
+  () => svg.transition().duration(280).call(zoom.scaleBy, 0.625));
 
 function resetZoom() {
-  svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+  svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity);
 }
 
-// Hover tooltip
-const tooltip = document.getElementById('tooltip');
+const tooltip = document.getElementById('map-tooltip');
 
 d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
   const features = topojson.feature(world, world.objects.countries).features;
 
-  // graticule grid lines
+  // Graticule
   g.append('path')
     .datum(d3.geoGraticule()())
     .attr('d', pathGen)
@@ -865,8 +1111,8 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
     .attr('stroke', isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)')
     .attr('stroke-width', 0.5);
 
-  svgPaths = g.selectAll('path.country').data(features).join('path')
-    .attr('class', 'country')
+  svgPaths = g.selectAll('path.land').data(features).join('path')
+    .attr('class', 'land')
     .attr('d', pathGen)
     .attr('fill', d => getColor(getIso2(d.id)))
     .attr('stroke', stroke0)
@@ -876,15 +1122,14 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(w
       const iso2 = getIso2(d.id);
       if (!iso2) return;
       const name = COUNTRY_NAMES[iso2] || iso2;
-      const l = getLevel(iso2);
-      const col = l >= 0 ? C[l] : '#B4B2A9';
-      tooltip.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${col};margin-right:5px;vertical-align:middle"></span>${name}`;
+      const l    = getLevel(iso2);
+      const col  = l >= 0 ? C[l] : '#B0AEA6';
+      tooltip.innerHTML = `<span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:${col};margin-right:5px;vertical-align:middle" aria-hidden="true"></span>${name}`;
       tooltip.style.display = 'block';
-      const wrap = document.getElementById('map-wrap');
-      const wr = wrap.getBoundingClientRect();
+      const wr = document.getElementById('map-wrap').getBoundingClientRect();
       let tx = evt.clientX - wr.left + 10;
-      let ty = evt.clientY - wr.top - 30;
-      if (tx + 180 > wrap.offsetWidth) tx = evt.clientX - wr.left - 190;
+      let ty = evt.clientY - wr.top  - 34;
+      if (tx + 200 > wr.width) tx = evt.clientX - wr.left - 210;
       if (ty < 4) ty = evt.clientY - wr.top + 14;
       tooltip.style.left = tx + 'px';
       tooltip.style.top  = ty + 'px';
