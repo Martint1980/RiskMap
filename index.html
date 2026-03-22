@@ -29,12 +29,12 @@
       --c0: #12B87A;
       --c1: #EEB020;
       --c2: #E06028;
-      --c3: #C42040;
+      --c3: #A81828;
       --b0: rgba(18,184,122,0.10);
       --b1: rgba(238,176,32,0.10);
       --b2: rgba(224,96,40,0.10);
-      --b3: rgba(196,32,64,0.10);
-      --bc0:#12B87A; --bc1:#EEB020; --bc2:#E06028; --bc3:#C42040;
+      --b3: rgba(168,24,40,0.10);
+      --bc0:#12B87A; --bc1:#EEB020; --bc2:#E06028; --bc3:#A81828;
 
       --font: 'Plus Jakarta Sans', system-ui, sans-serif;
 
@@ -64,10 +64,10 @@
         --accent2:  rgba(52,81,209,0.08);
         --accent-glow: rgba(52,81,209,0.15);
 
-        --c0:#0A8A5C; --c1:#B08000; --c2:#B04818; --c3:#9E1830;
+        --c0:#0A8A5C; --c1:#B08000; --c2:#B04818; --c3:#820F1A;
         --b0:rgba(10,138,92,0.08); --b1:rgba(176,128,0,0.08);
-        --b2:rgba(176,72,24,0.08); --b3:rgba(158,24,48,0.08);
-        --bc0:#0A8A5C; --bc1:#B08000; --bc2:#B04818; --bc3:#9E1830;
+        --b2:rgba(176,72,24,0.08); --b3:rgba(130,15,26,0.08);
+        --bc0:#0A8A5C; --bc1:#B08000; --bc2:#B04818; --bc3:#820F1A;
         --shadow-pop: 0 0 0 1px rgba(0,20,80,0.08), 0 28px 72px rgba(0,0,0,0.14), 0 8px 24px rgba(0,0,0,0.07);
       }
     }
@@ -697,8 +697,11 @@ const DETAILS_UPDATED = '22.03.2026';
 const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
 
 // Risk colors (mirrored from CSS for D3)
-const C_DARK  = { 0:'#12B87A', 1:'#EEB020', 2:'#E06028', 3:'#C42040' };
-const C_LIGHT = { 0:'#0A8A5C', 1:'#B08000', 2:'#B04818', 3:'#9E1830' };
+const C_DARK  = { 0:'#12B87A', 1:'#EEB020', 2:'#E06028', 3:'#A81828' };
+const C_LIGHT = { 0:'#0A8A5C', 1:'#B08000', 2:'#B04818', 3:'#820F1A' };
+
+// Stripe angles for level-1 countries — distributed by ISO2 code so neighbors differ
+const STRIPE_ANGLES = [22, 38, 54, 70, 88, 104];
 const C = isDark ? C_DARK : C_LIGHT;
 
 const LBL = {
@@ -941,12 +944,17 @@ function getLevel(iso2) {
   return -1;
 }
 
+function getStripePattern(iso2) {
+  const idx = (iso2.charCodeAt(0) * 3 + iso2.charCodeAt(1)) % STRIPE_ANGLES.length;
+  return `url(#stripe-lvl1-${STRIPE_ANGLES[idx]})`;
+}
+
 function getColor(iso2) {
   const l = getLevel(iso2);
   if (l === -1) return isDark ? '#2A3040' : '#C2CCDA';
   if (activeFilter !== null && l !== activeFilter)
     return isDark ? '#1A2030' : '#D4DCEA';
-  if (l === 1) return 'url(#stripe-lvl1)';
+  if (l === 1) return getStripePattern(iso2);
   return C[l];
 }
 
@@ -1205,17 +1213,19 @@ const svg = d3.select('#map').append('svg')
 
 svg.append('rect').attr('width', 960).attr('height', 500).attr('fill', mapBg);
 
-// SVG pattern: diagonal green/yellow stripes for level 1
+// SVG patterns: diagonal green/yellow stripes for level 1, one per angle
 const defs = svg.append('defs');
-const pat = defs.append('pattern')
-  .attr('id', 'stripe-lvl1')
-  .attr('width', 6).attr('height', 6)
-  .attr('patternUnits', 'userSpaceOnUse')
-  .attr('patternTransform', 'rotate(45)');
-pat.append('rect').attr('width', 6).attr('height', 6)
-  .attr('fill', isDark ? '#12B87A' : '#0A8A5C');
-pat.append('rect').attr('x', 0).attr('y', 0).attr('width', 1.4).attr('height', 6)
-  .attr('fill', isDark ? '#EEB020' : '#B08000').attr('opacity', 0.78);
+STRIPE_ANGLES.forEach(angle => {
+  const pat = defs.append('pattern')
+    .attr('id', `stripe-lvl1-${angle}`)
+    .attr('width', 5).attr('height', 5)
+    .attr('patternUnits', 'userSpaceOnUse')
+    .attr('patternTransform', `rotate(${angle})`);
+  pat.append('rect').attr('width', 5).attr('height', 5)
+    .attr('fill', isDark ? '#12B87A' : '#0A8A5C');
+  pat.append('rect').attr('x', 0).attr('y', 0).attr('width', 0.9).attr('height', 5)
+    .attr('fill', isDark ? '#FADA50' : '#C09800').attr('opacity', 0.82);
+});
 
 const g = svg.append('g');
 
