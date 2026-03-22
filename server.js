@@ -179,12 +179,21 @@ async function classifyBatch(countries) {
 
   const list = countries.map(([iso2, name]) => `${iso2} ${name}`).join(', ');
 
-  // Compact prompt — every saved word reduces cost
-  const prompt =
-    'Reisehinweise des Deutschen Auswärtigen Amts. ' +
-    'Level: 0=kein besonderes Risiko, 1=erhöhte Vorsicht/regionale Einschränkungen (kein offizieller Warning). ' +
-    'Antworte NUR mit JSON-Array, kein Markdown, keine Erklärung:\n' +
-    '[{"i":"XX","l":0,"s":"Sicherheitslage 1-2 Sätze auf Deutsch","e":"Einreise/Visum für Deutsche 1 Satz"}]\n' +
+  const system =
+    'Du bist ein präziser Reisesicherheits-Experte mit aktuellem Wissensstand (2025). ' +
+    'Du kennst die Reise- und Sicherheitshinweise des Deutschen Auswärtigen Amts genau. ' +
+    'Wichtige aktuelle Einreiseregeln für Deutsche (Stand 2024/2025): ' +
+    'China: visumfrei 30 Tage (seit Nov. 2023). ' +
+    'Japan: visumfrei 90 Tage. ' +
+    'USA: ESTA erforderlich, kein Visum. ' +
+    'Großbritannien: Reisepass erforderlich, kein Visum (6 Monate). ' +
+    'Sei bei Visa-Angaben immer sehr präzise – nenne Dauer und ob Visum, eVisa oder visumfrei. ' +
+    'Antworte AUSSCHLIESSLICH mit einem JSON-Array, kein Markdown, kein Text davor oder danach.';
+
+  const user =
+    'Erstelle für jedes Land exakte Reiseinformationen basierend auf den aktuellen AA-Hinweisen.\n' +
+    'Level: 0=kein besonderes Risiko laut AA, 1=AA empfiehlt erhöhte Vorsicht oder regionale Einschränkungen (kein offizieller Warning).\n' +
+    'Format: [{"i":"ISO2","l":0,"s":"Sicherheitslage 1-2 Sätze präzise","e":"Einreise für Deutsche: Visum/visumfrei, Dauer, Besonderheiten – 1 Satz"}]\n' +
     'Länder: ' + list;
 
   const res = await httpsPost(
@@ -199,8 +208,9 @@ async function classifyBatch(countries) {
     },
     {
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1500,
-      messages: [{ role: 'user', content: prompt }]
+      max_tokens: 1800,
+      system,
+      messages: [{ role: 'user', content: user }]
     }
   );
 

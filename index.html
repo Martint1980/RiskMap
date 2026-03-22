@@ -1045,10 +1045,10 @@ function getColor(iso2) {
 }
 
 function getInfo(iso2) {
-  // DETAILS = manuell geprüfte Texte → höhere Priorität als Haiku
-  if (DETAILS[iso2])   return { sec: DETAILS[iso2][1], entry: DETAILS[iso2][2] };
-  // Haiku-Texte für alle anderen Länder
+  // Haiku-Texte (automatisch, wöchentlich aktualisiert) haben Vorrang
   if (liveTexts[iso2]) return { sec: liveTexts[iso2].security, entry: liveTexts[iso2].entry };
+  // Statische DETAILS als Fallback wenn Server offline
+  if (DETAILS[iso2])   return { sec: DETAILS[iso2][1], entry: DETAILS[iso2][2] };
   const d = DEFAULT_TEXT[Math.max(0, getLevel(iso2))];
   return { sec: d[0], entry: d[1] };
 }
