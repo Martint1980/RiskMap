@@ -69,9 +69,19 @@ const ALL_COUNTRIES = [
 const BATCH_SIZE = 10;
 
 // ── HTTP helpers ──────────────────────────────────────────────────────────────
-function httpsGet(options) {
+function httpsGet(options, redirects = 0) {
   return new Promise((resolve, reject) => {
     const req = https.request(options, (res) => {
+      // Follow redirects (301/302/307/308)
+      if ([301, 302, 307, 308].includes(res.statusCode) && res.headers.location && redirects < 5) {
+        const loc = new URL(res.headers.location, `https://${options.hostname}`);
+        return httpsGet({
+          hostname: loc.hostname,
+          path: loc.pathname + (loc.search || ''),
+          method: options.method || 'GET',
+          headers: options.headers
+        }, redirects + 1).then(resolve).catch(reject);
+      }
       let body = '';
       res.on('data', chunk => body += chunk);
       res.on('end', () => resolve({ status: res.statusCode, body }));
@@ -108,12 +118,34 @@ async function fetchWarnings() {
     hostname: 'www.auswaertiges-amt.de',
     path: '/opendata/travelwarning',
     method: 'GET',
-    headers: { 'User-Agent': 'travel-warning-map/1.0', 'Accept': 'application/json' }
+    headers: { 'User-Agent': 'Mozilla/5.0 travel-warning-map/1.0', 'Accept': 'application/json' }
   });
+
+  console.log(`[AA] HTTP ${res.status}, Body-Anfang: ${res.body.substring(0, 300)}`);
+
+  if (res.status !== 200) throw new Error(`AA API HTTP ${res.status}`);
+
   const json = JSON.parse(res.body);
-  const items = json.response || json;
   const result = {};
-  for (const [, item] of Object.entries(items)) {
+
+  // Handle multiple possible response structures from the AA API
+  let entries = null;
+
+  if (Array.isArray(json)) {
+    // Format: [{iso2CountryCode, warning, ...}, ...]
+    entries = json;
+  } else if (Array.isArray(json.response)) {
+    entries = json.response;
+  } else if (json.response && typeof json.response === 'object') {
+    entries = Object.values(json.response);
+  } else if (typeof json === 'object') {
+    entries = Object.values(json);
+  }
+
+  if (!entries) throw new Error('Unbekanntes AA-API Format');
+
+  for (const item of entries) {
+    if (!item || typeof item !== 'object') continue;
     const iso2 = item.iso2CountryCode;
     if (!iso2) continue;
     result[iso2] = {
