@@ -442,7 +442,8 @@
       to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    #popup-risk-bar { height: 4px; width: 100%; }
+    #popup-risk-bar,
+    #popup-risk-bar-bottom { height: 6px; width: 100%; }
 
     #popup-body { padding: 16px 18px 18px; }
 
@@ -518,6 +519,14 @@
       height: 1px;
       background: var(--border);
       margin: 14px 0;
+    }
+
+    #popup-aa-note {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text3);
+      line-height: 1.5;
+      margin-bottom: 10px;
     }
 
     #popup-link {
@@ -671,10 +680,12 @@
       <div class="prow"><div class="plabel">Geschäftsreise</div><div class="pval" id="pp-biz"></div></div>
       <div class="prow"><div class="plabel">Einreise &amp; Dokumente</div><div class="pval" id="pp-entry"></div></div>
       <div id="popup-divider"></div>
+      <p id="popup-aa-note">Bitte vor jeder Reise die aktuellen Hinweise direkt beim Auswärtigen Amt prüfen — diese Karte ersetzt keine offizielle Beratung.</p>
       <a id="popup-link" href="#" target="_blank" rel="noopener noreferrer">
         Auswärtiges Amt →
       </a>
     </div>
+  <div id="popup-risk-bar-bottom"></div>
   </div>
 </div>
 
@@ -701,7 +712,7 @@ const C_DARK  = { 0:'#12B87A', 1:'#EEB020', 2:'#E06028', 3:'#A81828' };
 const C_LIGHT = { 0:'#0A8A5C', 1:'#B08000', 2:'#B04818', 3:'#820F1A' };
 
 // Stripe angles for level-1 countries — distributed by ISO2 code so neighbors differ
-const STRIPE_ANGLES = [22, 38, 54, 70, 88, 104];
+const STRIPE_ANGLES = [20, 38, 56, 74, 92, 110, 128];
 const C = isDark ? C_DARK : C_LIGHT;
 
 const LBL = {
@@ -1134,6 +1145,7 @@ function showPopup(evt, iso2) {
 
   document.getElementById('popup-title').textContent = name;
   document.getElementById('popup-risk-bar').style.background = col;
+  document.getElementById('popup-risk-bar-bottom').style.background = col;
 
   const badge = document.getElementById('popup-badge');
   badge.textContent = lvl >= 0 ? LBL[lvl] : 'KEINE DATEN';
@@ -1218,13 +1230,13 @@ const defs = svg.append('defs');
 STRIPE_ANGLES.forEach(angle => {
   const pat = defs.append('pattern')
     .attr('id', `stripe-lvl1-${angle}`)
-    .attr('width', 5).attr('height', 5)
+    .attr('width', 4).attr('height', 4)
     .attr('patternUnits', 'userSpaceOnUse')
     .attr('patternTransform', `rotate(${angle})`);
-  pat.append('rect').attr('width', 5).attr('height', 5)
+  pat.append('rect').attr('width', 4).attr('height', 4)
     .attr('fill', isDark ? '#12B87A' : '#0A8A5C');
-  pat.append('rect').attr('x', 0).attr('y', 0).attr('width', 0.9).attr('height', 5)
-    .attr('fill', isDark ? '#FADA50' : '#C09800').attr('opacity', 0.82);
+  pat.append('rect').attr('x', 0).attr('y', 0).attr('width', 0.65).attr('height', 4)
+    .attr('fill', isDark ? '#FFE060' : '#C09800').attr('opacity', 0.85);
 });
 
 const g = svg.append('g');
