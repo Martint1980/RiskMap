@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impressum – Travel RiskMap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0E1117; --bg2: #141921; --surface: #1C222E; --surface2: #232C3B;
+      --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.11);
+      --text: #EEF2FF; --text2: #8892AA; --accent: #2B6E9A;
+      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+    .page-wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 64px; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 20px 0 24px; border-bottom: 1px solid var(--border2); margin-bottom: 40px; }
+    .logo { font-size: 1.2rem; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .back-link { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .back-link:hover { text-decoration: underline; }
+    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+    .subtitle { color: var(--text2); margin-bottom: 48px; font-size: 0.95rem; }
+    section { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 28px 32px; margin-bottom: 20px; }
+    h2 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 16px; }
+    p { color: var(--text2); line-height: 1.7; font-size: 0.95rem; margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: var(--text); font-weight: 600; }
+    a { color: var(--accent); }
+    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; color: var(--text2); font-size: 0.82rem; }
+    footer a { color: var(--text2); text-decoration: none; margin: 0 8px; }
+    footer a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <header>
+      <a class="logo" href="/"><div class="logo-icon">&#128506;</div>Travel RiskMap</a>
+      <a class="back-link" href="/">&#8592; Zurück zur Karte</a>
+    </header>
+    <h1>Impressum</h1>
+    <p class="subtitle">Angaben gemäß § 5 Telemediengesetz (TMG)</p>
+    <section>
+      <h2>Verantwortlich</h2>
+      <p><strong>Martin Tech</strong><br>Tremsbütteler Weg 57b<br>22941 Bargteheide</p>
+      <p><strong>E-Mail:</strong> <a href="mailto:martintech@web.de">martintech@web.de</a></p>
+      <p>Für telefonische Rückfragen stehe ich auf Anfrage per E-Mail zur Verfügung.</p>
+      <p>Diese Website wird als privates, nicht-kommerzielles Projekt betrieben.</p>
+    </section>
+    <section>
+      <h2>Haftungsausschluss</h2>
+      <p><strong>Haftung für Inhalte:</strong> Die Reisewarnungsdaten stammen direkt vom Auswärtigen Amt. Für Richtigkeit, Vollständigkeit und Aktualität wird keine Gewähr übernommen. Vor jeder Reise sollten die aktuellen Hinweise direkt beim <a href="https://www.auswaertiges-amt.de" target="_blank">Auswärtigen Amt</a> geprüft werden.</p>
+      <p><strong>Haftung für Links:</strong> Für die Inhalte verlinkter externer Webseiten wird keine Haftung übernommen.</p>
+      <p><strong>KI-generierte Inhalte:</strong> Länderbeschreibungen werden teilweise mithilfe von Claude (Anthropic, Inc.) generiert und können Fehler enthalten. Sie ersetzen keine offizielle Reiseberatung.</p>
+    </section>
+    <section>
+      <h2>Quellenangaben &amp; Lizenzen</h2>
+      <p><strong>Reisewarnungsdaten:</strong> Auswärtiges Amt (<a href="https://www.auswaertiges-amt.de" target="_blank">auswaertiges-amt.de</a>). Lizenz: <a href="https://www.govdata.de/dl-de/by-2-0" target="_blank">Datenlizenz Deutschland – Namensnennung – Version 2.0</a>.</p>
+      <p><strong>Kartendaten:</strong> Natural Earth (<a href="https://www.naturalearthdata.com" target="_blank">naturalearthdata.com</a>), Public Domain.</p>
+      <p><strong>KI-Dienst:</strong> Claude (Anthropic, Inc., <a href="https://www.anthropic.com" target="_blank">anthropic.com</a>).</p>
+      <p><strong>Kartenvisualisierung:</strong> D3.js, ISC License.</p>
+    </section>
+    <section>
+      <h2>Hinweis gemäß EU AI Act</h2>
+      <p>Länderbeschreibungen auf dieser Website werden teilweise durch ein KI-System (Claude, Anthropic Inc.) generiert. KI-generierte Inhalte können unvollständig oder fehlerhaft sein und ersetzen keine offizielle Beratung.</p>
+    </section>
+    <footer>
+      <a href="/">Karte</a> &middot; <a href="/impressum.html">Impressum</a> &middot; <a href="/datenschutz.html">Datenschutz</a>
+      <p style="margin-top:10px">&copy; 2026 Martin Tech &middot; Daten: Auswärtiges Amt</p>
+    </footer>
+  </div>
+</body>
+</html>
