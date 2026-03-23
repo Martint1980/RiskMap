@@ -306,14 +306,14 @@ app.get('/health', (req, res) => {
     model: 'claude-haiku-4-5-20251001',
     batchSize: BATCH_SIZE,
     totalCountries: ALL_COUNTRIES.length,
-    schedule: 'Warnstufen: tägl. 06:00 + 12:00 UTC | Texte+Level: Mo 07:00 UTC'
+    schedule: 'Warnstufen: tägl. 06:00 + 12:00 UTC | Texte+Level: Mo + Mi 12:00 UTC'
   });
 });
 
 // ── Cron ──────────────────────────────────────────────────────────────────────
-cron.schedule('0 0 6 * * *',  () => updateWarnings(),        { timezone: 'UTC' });
-cron.schedule('0 0 12 * * *', () => updateWarnings(),        { timezone: 'UTC' });
-cron.schedule('0 0 7 * * 1',  () => updateTextsAndLevels(),  { timezone: 'UTC' });
+cron.schedule('0 0 6 * * *',    () => updateWarnings(),       { timezone: 'UTC' });
+cron.schedule('0 0 12 * * *',   () => updateWarnings(),       { timezone: 'UTC' });
+cron.schedule('0 0 12 * * 1,3', () => updateTextsAndLevels(), { timezone: 'UTC' }); // Mo + Mi 12:00 UTC
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, async () => {
