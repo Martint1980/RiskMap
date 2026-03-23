@@ -311,13 +311,34 @@ app.get('/health', (req, res) => {
 });
 
 // ── Cron ──────────────────────────────────────────────────────────────────────
-cron.schedule('0 0 6 * * *',    () => updateWarnings(),       { timezone: 'UTC' });
-cron.schedule('0 0 12 * * *',   () => updateWarnings(),       { timezone: 'UTC' });
-cron.schedule('0 0 12 * * 1,3', () => updateTextsAndLevels(), { timezone: 'UTC' }); // Mo + Mi 12:00 UTC
+// node-cron 6-Felder: Sekunde Minute Stunde Tag Monat Wochentag (1=Mo, 3=Mi)
+cron.schedule('0 0 6 * * *', () => {
+  console.log(`[CRON] Warnstufen-Job gestartet (tägl. 06:00 UTC) – ${new Date().toISOString()}`);
+  updateWarnings();
+}, { timezone: 'UTC' });
+
+cron.schedule('0 0 12 * * *', () => {
+  console.log(`[CRON] Warnstufen-Job gestartet (tägl. 12:00 UTC) – ${new Date().toISOString()}`);
+  updateWarnings();
+}, { timezone: 'UTC' });
+
+cron.schedule('0 0 12 * * 1,3', () => {
+  console.log(`[CRON] Text+Level-Job gestartet (Mo+Mi 12:00 UTC) – ${new Date().toISOString()}`);
+  updateTextsAndLevels();
+}, { timezone: 'UTC' });
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, async () => {
   console.log(`Server Port ${PORT} | API Key: ${ANTHROPIC_API_KEY ? 'OK' : 'FEHLT'} | Modell: claude-haiku-4-5-20251001`);
+  if (!ANTHROPIC_API_KEY) {
+    console.error('');
+    console.error('╔══════════════════════════════════════════════════════╗');
+    console.error('║  WARNUNG: ANTHROPIC_API_KEY ist nicht gesetzt!       ║');
+    console.error('║  Texte+Level-Updates werden NICHT funktionieren.     ║');
+    console.error('║  Bitte in Railway unter Variables setzen.            ║');
+    console.error('╚══════════════════════════════════════════════════════╝');
+    console.error('');
+  }
   await updateWarnings();
   if (ANTHROPIC_API_KEY && Object.keys(textCache.data).length === 0) {
     console.log('Erster Start – generiere Texte+Level im Hintergrund...');
