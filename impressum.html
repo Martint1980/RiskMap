@@ -3,74 +3,329 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Impressum – Travel RiskMap</title>
+  <title>Impressum — Travel RiskMap</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0E1117; --bg2: #141921; --surface: #1C222E; --surface2: #232C3B;
-      --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.11);
-      --text: #EEF2FF; --text2: #8892AA; --accent: #2B6E9A;
+      --bg:        #0E1117;
+      --bg2:       #141921;
+      --surface:   #1C222E;
+      --surface2:  #232C3B;
+      --border:    rgba(255,255,255,0.06);
+      --border2:   rgba(255,255,255,0.11);
+      --text:      #EEF2FF;
+      --text2:     #8892AA;
+      --text3:     #434D65;
+      --accent:    #2B6E9A;
+      --accent-h:  #3D88BA;
+      --accent2:   rgba(43,110,154,0.13);
+      --nord-orange: #E07824;
+      --nord-blue:  #2B6E9A;
       --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --radius-sm: 10px;
+      --radius-md: 16px;
     }
-    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
-    .page-wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 64px; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 20px 0 24px; border-bottom: 1px solid var(--border2); margin-bottom: 40px; }
-    .logo { font-size: 1.2rem; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-    .logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-    .back-link { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
-    .back-link:hover { text-decoration: underline; }
-    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
-    .subtitle { color: var(--text2); margin-bottom: 48px; font-size: 0.95rem; }
-    section { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 28px 32px; margin-bottom: 20px; }
-    h2 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 16px; }
-    p { color: var(--text2); line-height: 1.7; font-size: 0.95rem; margin-bottom: 10px; }
-    p:last-child { margin-bottom: 0; }
-    strong { color: var(--text); font-weight: 600; }
-    a { color: var(--accent); }
-    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; color: var(--text2); font-size: 0.82rem; }
-    footer a { color: var(--text2); text-decoration: none; margin: 0 8px; }
-    footer a:hover { color: var(--text); }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg:       #F4F6FB;
+        --bg2:      #E8ECF5;
+        --surface:  #FFFFFF;
+        --surface2: #F0F3FA;
+        --border:   rgba(0,20,80,0.08);
+        --border2:  rgba(0,20,80,0.14);
+        --text:     #0D1526;
+        --text2:    #4A5578;
+        --text3:    #9BA5BF;
+        --accent:   #1E5C8A;
+        --accent-h: #2B6E9A;
+        --accent2:  rgba(30,92,138,0.10);
+        --nord-orange: #C46418;
+        --nord-blue: #1E5C8A;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+
+    html { font-size: 14px; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px 20px 40px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 35% at 0% 0%, rgba(43,110,154,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 25% at 100% 0%, rgba(224,120,36,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 30% 40% at 50% 100%, rgba(43,110,154,0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    * { position: relative; z-index: 1; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    #page-top-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #2B6E9A 0%, #5CA0CC 35%, #E07824 65%, #C06020 100%);
+      margin: -16px -20px 0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 0 -20px 32px;
+      padding: 18px 24px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .logo-mark {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      background: var(--nord-blue);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(43,110,154,0.5), 0 4px 20px rgba(43,110,154,0.35);
+      position: relative;
+    }
+    .logo-mark::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .logo-mark svg { display: block; }
+
+    .logo-text-wrap { display: flex; flex-direction: column; gap: 2px; }
+
+    h1 {
+      font-family: 'Syne', 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--nord-blue);
+      line-height: 1.1;
+    }
+    h1 .sub {
+      display: block;
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--nord-orange);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      margin-top: 3px;
+      opacity: 0.85;
+    }
+
+    .page-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-family: 'Syne', 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--nord-orange);
+      margin-bottom: 14px;
+    }
+
+    .card p, .card address {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text2);
+      font-style: normal;
+    }
+
+    .card p + p { margin-top: 10px; }
+
+    .card a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(43,110,154,0.35);
+      transition: color .12s, border-color .12s;
+    }
+    .card a:hover { color: var(--text); border-color: var(--text); }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    .note-box {
+      background: var(--accent2);
+      border: 1px solid rgba(43,110,154,0.22);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    footer {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-text {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text3);
+    }
+    .footer-text a {
+      color: var(--text3);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border2);
+      transition: color .12s;
+    }
+    .footer-text a:hover { color: var(--text2); }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: none !important;
+      transition: color .12s;
+    }
+    .back-link:hover { color: var(--text); }
+    .back-link svg { flex-shrink: 0; }
   </style>
 </head>
 <body>
-  <div class="page-wrap">
-    <header>
-      <a class="logo" href="/"><div class="logo-icon">&#128506;</div>Travel RiskMap</a>
-      <a class="back-link" href="/">&#8592; Zurück zur Karte</a>
-    </header>
-    <h1>Impressum</h1>
-    <p class="subtitle">Angaben gemäß § 5 Telemediengesetz (TMG)</p>
-    <section>
-      <h2>Verantwortlich</h2>
-      <p><strong>Martin Tech</strong><br>Tremsbütteler Weg 57b<br>22941 Bargteheide</p>
-      <p><strong>E-Mail:</strong> <a href="mailto:martintech@web.de">martintech@web.de</a></p>
-      <p>Für telefonische Rückfragen stehe ich auf Anfrage per E-Mail zur Verfügung.</p>
-      <p>Diese Website wird als privates, nicht-kommerzielles Projekt betrieben.</p>
-    </section>
-    <section>
-      <h2>Haftungsausschluss</h2>
-      <p><strong>Haftung für Inhalte:</strong> Die Reisewarnungsdaten stammen direkt vom Auswärtigen Amt. Für Richtigkeit, Vollständigkeit und Aktualität wird keine Gewähr übernommen. Vor jeder Reise sollten die aktuellen Hinweise direkt beim <a href="https://www.auswaertiges-amt.de" target="_blank">Auswärtigen Amt</a> geprüft werden.</p>
-      <p><strong>Haftung für Links:</strong> Für die Inhalte verlinkter externer Webseiten wird keine Haftung übernommen.</p>
-      <p><strong>KI-generierte Inhalte:</strong> Länderbeschreibungen werden teilweise mithilfe von Claude (Anthropic, Inc.) generiert und können Fehler enthalten. Sie ersetzen keine offizielle Reiseberatung.</p>
-    </section>
-    <section>
-      <h2>Quellenangaben &amp; Lizenzen</h2>
-      <p><strong>Reisewarnungsdaten:</strong> Auswärtiges Amt (<a href="https://www.auswaertiges-amt.de" target="_blank">auswaertiges-amt.de</a>). Lizenz: <a href="https://www.govdata.de/dl-de/by-2-0" target="_blank">Datenlizenz Deutschland – Namensnennung – Version 2.0</a>.</p>
-      <p><strong>Kartendaten:</strong> Natural Earth (<a href="https://www.naturalearthdata.com" target="_blank">naturalearthdata.com</a>), Public Domain.</p>
-      <p><strong>KI-Dienst:</strong> Claude (Anthropic, Inc., <a href="https://www.anthropic.com" target="_blank">anthropic.com</a>).</p>
-      <p><strong>Kartenvisualisierung:</strong> D3.js, ISC License.</p>
-    </section>
-    <section>
-      <h2>Hinweis gemäß EU AI Act</h2>
-      <p>Länderbeschreibungen auf dieser Website werden teilweise durch ein KI-System (Claude, Anthropic Inc.) generiert. KI-generierte Inhalte können unvollständig oder fehlerhaft sein und ersetzen keine offizielle Beratung.</p>
-    </section>
-    <footer>
-      <a href="/">Karte</a> &middot; <a href="/impressum.html">Impressum</a> &middot; <a href="/datenschutz.html">Datenschutz</a>
-      <p style="margin-top:10px">&copy; 2026 Martin Tech &middot; Daten: Auswärtiges Amt</p>
-    </footer>
+
+<div id="page-top-bar"></div>
+
+<header>
+  <div class="logo-mark">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <circle cx="11" cy="11" r="7" stroke="#EEF2FF" stroke-width="1.5" fill="none"/>
+      <path d="M11 4 C11 4, 8 7, 8 11 C8 15, 11 18, 11 18 C11 18, 14 15, 14 11 C14 7, 11 4, 11 4Z" stroke="#EEF2FF" stroke-width="1.2" fill="none"/>
+      <line x1="4" y1="11" x2="18" y2="11" stroke="#EEF2FF" stroke-width="1.2"/>
+    </svg>
   </div>
+  <div class="logo-text-wrap">
+    <h1>Travel RiskMap<span class="sub">Reisehinweise · Auswärtiges Amt</span></h1>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="page-title">Impressum</div>
+  <div class="page-subtitle">Angaben gemäß § 5 TMG</div>
+
+  <div class="card">
+    <div class="card-title">Anbieter</div>
+    <address>
+      Martin Tech<br>
+      Tremsbütteler Weg 57b<br>
+      22941 Bargteheide<br>
+      Deutschland
+    </address>
+    <div class="divider"></div>
+    <p><strong>E-Mail:</strong> <a href="mailto:martintech@web.de">martintech@web.de</a></p>
+    <p><strong>Telefon:</strong> wird auf Anfrage per E-Mail mitgeteilt</p>
+    <div class="note-box">
+      Diese Website wird von einer Privatperson betrieben und dient ausschließlich nicht-kommerziellen, informativen Zwecken. Es besteht keine gewerbliche Tätigkeit im Zusammenhang mit diesem Angebot.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Haftungsausschluss — Inhalte</div>
+    <p>Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden. Als privater Anbieter bin ich gemäß § 7 Abs. 1 TMG für eigene Inhalte nach den allgemeinen Gesetzen verantwortlich.</p>
+    <p>Die auf dieser Seite dargestellten Reisehinweise und Sicherheitseinstufungen stammen vom <strong>Auswärtigen Amt der Bundesrepublik Deutschland</strong> und werden automatisiert abgerufen. Vor jeder Reise sollten die offiziellen Reise- und Sicherheitshinweise des Auswärtigen Amts unter <a href="https://www.auswaertiges-amt.de" target="_blank" rel="noopener">auswaertiges-amt.de</a> direkt geprüft werden.</p>
+    <p>Die zusammenfassenden Länderberichte werden mithilfe der <strong>Claude KI (Anthropic)</strong> generiert. KI-generierte Texte können Ungenauigkeiten enthalten und ersetzen nicht die eigenverantwortliche Prüfung aktueller Reiseinformationen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Haftungsausschluss — Externe Links</div>
+    <p>Diese Website enthält Links zu externen Webseiten Dritter, auf deren Inhalte kein Einfluss besteht. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden derartige Links umgehend entfernt.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Datenquellen &amp; Lizenzen</div>
+    <p><strong>Auswärtiges Amt:</strong> Reise- und Sicherheitshinweise stehen unter der Datenlizenz Deutschland — Namensnennung — Version 2.0 (<a href="https://www.govdata.de/dl-de/by-2-0" target="_blank" rel="noopener">dl-de/by-2-0</a>). Quelle: Auswärtiges Amt der Bundesrepublik Deutschland.</p>
+    <p><strong>KI-generierte Zusammenfassungen:</strong> Länderbeschreibungen werden mittels Claude API (Anthropic, Inc.) erzeugt. Die Texte sind automatisch generiert und können von den Originaldaten abweichen.</p>
+    <p><strong>Kartendarstellung:</strong> Geografische Daten basieren auf öffentlich verfügbaren TopoJSON-Daten (Natural Earth).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Urheberrecht</div>
+    <p>Die durch den Seitenbetreiber erstellten eigenen Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet.</p>
+  </div>
+
+  <footer>
+    <span class="footer-text">
+      &copy; 2026 Martin Tech &nbsp;·&nbsp;
+      <a href="datenschutz.html">Datenschutz</a>
+    </span>
+    <a href="index.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Zurück zur Karte
+    </a>
+  </footer>
+</div>
+
 </body>
 </html>

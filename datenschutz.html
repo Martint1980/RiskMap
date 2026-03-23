@@ -3,105 +3,383 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Datenschutz &#8211; Travel RiskMap</title>
+  <title>Datenschutz — Travel RiskMap</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0E1117; --bg2: #141921; --surface: #1C222E;
-      --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.11);
-      --text: #EEF2FF; --text2: #8892AA; --accent: #2B6E9A;
+      --bg:        #0E1117;
+      --bg2:       #141921;
+      --surface:   #1C222E;
+      --surface2:  #232C3B;
+      --border:    rgba(255,255,255,0.06);
+      --border2:   rgba(255,255,255,0.11);
+      --text:      #EEF2FF;
+      --text2:     #8892AA;
+      --text3:     #434D65;
+      --accent:    #2B6E9A;
+      --accent-h:  #3D88BA;
+      --accent2:   rgba(43,110,154,0.13);
+      --nord-orange: #E07824;
+      --nord-blue:  #2B6E9A;
       --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --radius-sm: 10px;
+      --radius-md: 16px;
     }
-    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
-    .page-wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 64px; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 20px 0 24px; border-bottom: 1px solid var(--border2); margin-bottom: 40px; }
-    .logo { font-size: 1.2rem; font-weight: 700; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-    .logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-    .back-link { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
-    .back-link:hover { text-decoration: underline; }
-    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
-    .subtitle { color: var(--text2); margin-bottom: 48px; font-size: 0.95rem; }
-    section { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 28px 32px; margin-bottom: 20px; }
-    h2 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 16px; }
-    p { color: var(--text2); line-height: 1.7; font-size: 0.95rem; margin-bottom: 10px; }
-    p:last-child { margin-bottom: 0; }
-    strong { color: var(--text); font-weight: 600; }
-    a { color: var(--accent); }
-    ul { color: var(--text2); padding-left: 20px; margin-top: 8px; font-size: 0.95rem; line-height: 1.8; }
-    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; color: var(--text2); font-size: 0.82rem; }
-    footer a { color: var(--text2); text-decoration: none; margin: 0 8px; }
-    footer a:hover { color: var(--text); }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg:       #F4F6FB;
+        --bg2:      #E8ECF5;
+        --surface:  #FFFFFF;
+        --surface2: #F0F3FA;
+        --border:   rgba(0,20,80,0.08);
+        --border2:  rgba(0,20,80,0.14);
+        --text:     #0D1526;
+        --text2:    #4A5578;
+        --text3:    #9BA5BF;
+        --accent:   #1E5C8A;
+        --accent-h: #2B6E9A;
+        --accent2:  rgba(30,92,138,0.10);
+        --nord-orange: #C46418;
+        --nord-blue: #1E5C8A;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+
+    html { font-size: 14px; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px 20px 40px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 35% at 0% 0%, rgba(43,110,154,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 25% at 100% 0%, rgba(224,120,36,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 30% 40% at 50% 100%, rgba(43,110,154,0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    * { position: relative; z-index: 1; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    #page-top-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #2B6E9A 0%, #5CA0CC 35%, #E07824 65%, #C06020 100%);
+      margin: -16px -20px 0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 0 -20px 32px;
+      padding: 18px 24px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .logo-mark {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      background: var(--nord-blue);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(43,110,154,0.5), 0 4px 20px rgba(43,110,154,0.35);
+      position: relative;
+    }
+    .logo-mark::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .logo-mark svg { display: block; }
+
+    .logo-text-wrap { display: flex; flex-direction: column; gap: 2px; }
+
+    h1 {
+      font-family: 'Syne', 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--nord-blue);
+      line-height: 1.1;
+    }
+    h1 .sub {
+      display: block;
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--nord-orange);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      margin-top: 3px;
+      opacity: 0.85;
+    }
+
+    .page-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-family: 'Syne', 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--nord-orange);
+      margin-bottom: 14px;
+    }
+
+    .card p, .card address {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text2);
+      font-style: normal;
+    }
+
+    .card p + p { margin-top: 10px; }
+
+    .card a {
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(43,110,154,0.35);
+      transition: color .12s, border-color .12s;
+    }
+    .card a:hover { color: var(--text); border-color: var(--text); }
+
+    .card ul {
+      margin: 10px 0 0 18px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text2);
+    }
+    .card ul li + li { margin-top: 4px; }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    .note-box {
+      background: var(--accent2);
+      border: 1px solid rgba(43,110,154,0.22);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: rgba(18,184,122,0.12);
+      color: #12B87A;
+      border: 1px solid rgba(18,184,122,0.25);
+      margin-bottom: 12px;
+    }
+
+    footer {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-text {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text3);
+    }
+    .footer-text a {
+      color: var(--text3);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border2);
+      transition: color .12s;
+    }
+    .footer-text a:hover { color: var(--text2); }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-h);
+      text-decoration: none;
+      border-bottom: none !important;
+      transition: color .12s;
+    }
+    .back-link:hover { color: var(--text); }
+    .back-link svg { flex-shrink: 0; }
   </style>
 </head>
 <body>
-  <div class="page-wrap">
-    <header>
-      <a class="logo" href="/"><div class="logo-icon">&#128506;</div>Travel RiskMap</a>
-      <a class="back-link" href="/">&#8592; Zurück zur Karte</a>
-    </header>
-    <h1>Datenschutzerklärung</h1>
-    <p class="subtitle">Gemäß Art. 13/14 DSGVO &amp; §§ 12 ff. BDSG &ndash; Stand: März 2026</p>
 
-    <section>
-      <h2>Verantwortlicher</h2>
-      <p><strong>Martin Tech</strong><br>Tremsbütteler Weg 57b<br>22941 Bargteheide</p>
-      <p><strong>E-Mail:</strong> <a href="mailto:martintech@web.de">martintech@web.de</a></p>
-    </section>
+<div id="page-top-bar"></div>
 
-    <section>
-      <h2>Server-Logs</h2>
-      <p>Beim Aufruf dieser Website übermittelt dein Browser automatisch Zugriffsdaten an den Server. Diese werden von Railway.app (Railway Corp., USA) serverseitig protokolliert:</p>
-      <ul>
-        <li>IP-Adresse (anonymisiert nach Verarbeitung)</li>
-        <li>Datum und Uhrzeit des Zugriffs</li>
-        <li>Aufgerufene URL, HTTP-Statuscode</li>
-        <li>Browser (User-Agent) und Referrer</li>
-      </ul>
-      <p style="margin-top:12px"><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an Betriebssicherheit und Fehleranalyse). <strong>Speicherdauer:</strong> bis zu 7 Tage.</p>
-      <p><strong>Hostingdienstleister:</strong> Railway Corp., 340 S Lemon Ave #4133, Walnut, CA 91789, USA. Weitere Informationen: <a href="https://railway.app/legal/privacy" target="_blank">railway.app/legal/privacy</a>.</p>
-    </section>
-
-    <section>
-      <h2>Anthropic Claude API (KI-Dienst)</h2>
-      <p>Zur automatischen Generierung von Länderbeschreibungen und Risikotexten werden über den Server Anfragen an die API von Anthropic, Inc. gesendet. Dabei werden <strong>ausschließlich Ländernamen und Kontextdaten</strong> übermittelt &ndash; keine personenbezogenen Nutzerdaten.</p>
-      <p><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an aktuellen und verständlichen Inhalten). <strong>Drittlandtransfer:</strong> Die Daten werden an Anthropic, Inc. (USA) übermittelt gemäß Art. 46 DSGVO (Standardvertragsklauseln). Weitere Informationen: <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a>.</p>
-    </section>
-
-    <section>
-      <h2>Auswärtiges Amt (Reisewarnungsdaten)</h2>
-      <p>Der Server ruft regelmäß ig Reisewarnungsdaten von auswaertiges-amt.de ab. Dabei werden <strong>keine personenbezogenen Nutzerdaten</strong> an das Auswärtige Amt übermittelt. Es handelt sich um einen rein serverseitigen Abruf öffentlich zugänglicher Daten.</p>
-    </section>
-
-    <section>
-      <h2>Google Fonts</h2>
-      <p>Diese Website lädt Schriftarten von <code>fonts.googleapis.com</code> (Google LLC, USA). Dabei wird die IP-Adresse deines Browsers an Google übermittelt. <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO. Weitere Informationen: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>.</p>
-    </section>
-
-    <section>
-      <h2>Cookies &amp; Tracking</h2>
-      <p>Diese Website verwendet <strong>keine Cookies</strong>, kein Tracking, kein Web-Analytics und keine Social-Media-Plugins. Es werden keine Nutzungsprofile erstellt.</p>
-    </section>
-
-    <section>
-      <h2>Deine Rechte</h2>
-      <p>Gemäß DSGVO hast du folgende Rechte gegenüber dem Verantwortlichen:</p>
-      <ul>
-        <li>Auskunft über gespeicherte Daten (Art. 15 DSGVO)</li>
-        <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
-        <li>Löschung (Art. 17 DSGVO) und Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-        <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
-        <li>Beschwerde bei einer Datenschutzaufsichtsbehörde</li>
-      </ul>
-      <p style="margin-top:12px">Zur Ausübung deiner Rechte wende dich per E-Mail an: <a href="mailto:martintech@web.de">martintech@web.de</a></p>
-    </section>
-
-    <footer>
-      <a href="/">Karte</a> &middot; <a href="/impressum.html">Impressum</a> &middot; <a href="/datenschutz.html">Datenschutz</a>
-      <p style="margin-top:10px">&copy; 2026 Martin Tech &middot; Daten: Auswärtiges Amt</p>
-    </footer>
+<header>
+  <div class="logo-mark">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <circle cx="11" cy="11" r="7" stroke="#EEF2FF" stroke-width="1.5" fill="none"/>
+      <path d="M11 4 C11 4, 8 7, 8 11 C8 15, 11 18, 11 18 C11 18, 14 15, 14 11 C14 7, 11 4, 11 4Z" stroke="#EEF2FF" stroke-width="1.2" fill="none"/>
+      <line x1="4" y1="11" x2="18" y2="11" stroke="#EEF2FF" stroke-width="1.2"/>
+    </svg>
   </div>
+  <div class="logo-text-wrap">
+    <h1>Travel RiskMap<span class="sub">Reisehinweise · Auswärtiges Amt</span></h1>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="page-title">Datenschutzerklärung</div>
+  <div class="page-subtitle">Informationen gemäß Art. 13 &amp; 14 DSGVO</div>
+
+  <div class="card">
+    <div class="card-title">Verantwortlicher</div>
+    <address>
+      Martin Tech<br>
+      Tremsbütteler Weg 57b<br>
+      22941 Bargteheide<br>
+      Deutschland
+    </address>
+    <div class="divider"></div>
+    <p><strong>E-Mail:</strong> <a href="mailto:martintech@web.de">martintech@web.de</a></p>
+    <div class="note-box">
+      Diese Website wird privat und nicht-kommerziell betrieben. Es werden keine Cookies gesetzt, kein Tracking durchgeführt und keine Analyse-Dienste eingesetzt.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Server-Logfiles</div>
+    <p>Beim Aufruf dieser Website werden durch den Hosting-Anbieter <strong>Railway.app</strong> (Railway Corp., San Francisco, USA) automatisch Informationen in sogenannten Server-Logfiles gespeichert. Diese umfassen:</p>
+    <ul>
+      <li>IP-Adresse des anfragenden Geräts (anonymisiert oder vollständig, je nach Konfiguration)</li>
+      <li>Datum und Uhrzeit des Zugriffs</li>
+      <li>Aufgerufene URL und HTTP-Methode</li>
+      <li>Übertragene Datenmenge</li>
+      <li>HTTP-Statuscode</li>
+      <li>Browser-Typ und Betriebssystem (User-Agent)</li>
+    </ul>
+    <p style="margin-top:12px;"><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an dem Betrieb und der Sicherheit des Dienstes).</p>
+    <p>Die Logs werden von Railway.app für einen begrenzten Zeitraum gespeichert und danach automatisch gelöscht. Eine Weitergabe an Dritte findet nicht statt, sofern keine gesetzliche Verpflichtung besteht. Weitere Informationen zur Datenverarbeitung durch Railway: <a href="https://railway.app/legal/privacy" target="_blank" rel="noopener">railway.app/legal/privacy</a>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Anthropic Claude API — KI-Textgenerierung</div>
+    <p>Diese Website nutzt die <strong>Claude API</strong> von Anthropic, Inc. (548 Market St, PMB 90375, San Francisco, CA 94104, USA) zur automatisierten Generierung von Länderzusammenfassungen.</p>
+    <p>Bei der Generierung eines Länderberichts wird der <strong>Ländername</strong> als Teil eines Prompts an die API-Endpunkte von Anthropic (<code>api.anthropic.com</code>) übermittelt. Es werden keine personenbezogenen Daten der Nutzer an Anthropic übertragen.</p>
+    <p><strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bereitstellung informativer, KI-gestützter Reiseinformationen).</p>
+    <p><strong>Drittlandtransfer:</strong> Anthropic ist ein US-amerikanisches Unternehmen. Die Übermittlung erfolgt auf Grundlage geeigneter Garantien gemäß Art. 46 DSGVO bzw. im Rahmen des berechtigten Interesses. Informationen zum Datenschutz bei Anthropic: <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">anthropic.com/privacy</a>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Externe Datenquelle — Auswärtiges Amt</div>
+    <p>Die Reisehinweise und Sicherheitseinstufungen werden <strong>serverseitig</strong> vom Auswärtigen Amt der Bundesrepublik Deutschland abgerufen. Dabei werden <strong>keine Nutzerdaten</strong> an das Auswärtige Amt übermittelt. Der Abruf erfolgt durch den Server dieser Anwendung, nicht durch den Browser des Nutzers.</p>
+    <p>Die Daten stehen unter der Datenlizenz Deutschland — Namensnennung — Version 2.0 (dl-de/by-2-0). Quelle: <a href="https://www.auswaertiges-amt.de" target="_blank" rel="noopener">auswaertiges-amt.de</a>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Keine Cookies, kein Tracking</div>
+    <div class="badge">Datenschutzfreundlich</div>
+    <p>Diese Website verwendet <strong>keine Cookies</strong>, kein Web-Tracking, kein Analytics (z. B. Google Analytics, Matomo) und keine sozialen Plugins. Es werden keine Nutzerprofile erstellt und keine Daten zu Werbezwecken verarbeitet.</p>
+    <p>Die eingebundenen Google Fonts werden beim ersten Seitenaufruf direkt von den Google-Servern geladen, was zur Übermittlung der IP-Adresse an Google führen kann. Falls dies unerwünscht ist, kann dies über Browser-Einstellungen oder Erweiterungen verhindert werden.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Betroffenenrechte</div>
+    <p>Nach der DSGVO stehen Ihnen folgende Rechte zu:</p>
+    <ul>
+      <li><strong>Auskunft</strong> (Art. 15 DSGVO): Recht auf Auskunft über gespeicherte personenbezogene Daten</li>
+      <li><strong>Berichtigung</strong> (Art. 16 DSGVO): Recht auf Berichtigung unrichtiger Daten</li>
+      <li><strong>Löschung</strong> (Art. 17 DSGVO): Recht auf Löschung personenbezogener Daten</li>
+      <li><strong>Einschränkung</strong> (Art. 18 DSGVO): Recht auf Einschränkung der Verarbeitung</li>
+      <li><strong>Widerspruch</strong> (Art. 21 DSGVO): Recht auf Widerspruch gegen die Verarbeitung</li>
+      <li><strong>Beschwerde</strong> (Art. 77 DSGVO): Recht auf Beschwerde bei einer Aufsichtsbehörde</li>
+    </ul>
+    <div class="divider"></div>
+    <p>Zur Ausübung Ihrer Rechte wenden Sie sich bitte per E-Mail an: <a href="mailto:martintech@web.de">martintech@web.de</a></p>
+    <p style="margin-top:10px;">Zuständige Aufsichtsbehörde: <strong>Unabhängiges Landeszentrum für Datenschutz Schleswig-Holstein (ULD)</strong>, <a href="https://www.datenschutzzentrum.de" target="_blank" rel="noopener">datenschutzzentrum.de</a></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Aktualität dieser Erklärung</div>
+    <p>Diese Datenschutzerklärung ist aktuell gültig und hat den Stand März 2026. Durch die Weiterentwicklung dieser Website oder aufgrund geänderter gesetzlicher bzw. behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern.</p>
+  </div>
+
+  <footer>
+    <span class="footer-text">
+      &copy; 2026 Martin Tech &nbsp;·&nbsp;
+      <a href="impressum.html">Impressum</a>
+    </span>
+    <a href="index.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Zurück zur Karte
+    </a>
+  </footer>
+</div>
+
 </body>
 </html>
