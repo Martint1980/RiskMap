@@ -568,6 +568,24 @@
       -webkit-box-orient: vertical;
     }
 
+    #popup-grund-box {
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid;
+      font-size: 12px;
+      line-height: 1.55;
+      font-weight: 500;
+    }
+    #popup-grund-box .grund-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      opacity: 0.75;
+    }
+
     #popup-divider {
       height: 1px;
       background: var(--border);
@@ -739,7 +757,8 @@
       <button id="popup-close" aria-label="Info schließen" onclick="closePopup()">✕</button>
     </div>
     <div id="popup-badge"></div>
-    <div class="prow"><div class="plabel">Sicherheitslage</div><div class="pval" id="pp-sec"></div></div>
+    <div id="popup-grund-box" style="display:none"></div>
+    <div class="prow" id="popup-sec-row"><div class="plabel" id="popup-sec-label">Sicherheitslage</div><div class="pval" id="pp-sec"></div></div>
     <div class="prow"><div class="plabel">Geschäftsreise</div><div class="pval" id="pp-biz"></div></div>
     <div class="prow"><div class="plabel">Einreise &amp; Dokumente</div><div class="pval" id="pp-entry"></div></div>
     <div id="popup-divider"></div>
@@ -1302,6 +1321,22 @@ function showPopup(evt, iso2) {
   document.getElementById('pp-biz').textContent   = lvl >= 0 ? BIZ[lvl] : 'Bitte Auswärtiges Amt direkt prüfen.';
   document.getElementById('pp-entry').textContent = info.entry;
   document.getElementById('popup-link').href      = buildLink(iso2);
+
+  // Grund-Box für Level 2/3 — nutzt das security-Feld, 0 extra Tokens
+  const grundBox  = document.getElementById('popup-grund-box');
+  const secRow    = document.getElementById('popup-sec-row');
+  if (lvl >= 2) {
+    const lbl = lvl === 3 ? 'Grund der Reisewarnung' : 'Grund der Teilwarnung';
+    grundBox.innerHTML = `<div class="grund-label">${lbl}</div>${info.sec}`;
+    grundBox.style.display    = 'block';
+    grundBox.style.color      = col;
+    grundBox.style.background = isDark ? `${col}14` : `${col}10`;
+    grundBox.style.borderColor = col;
+    secRow.style.display = 'none'; // sec-Text schon im Grund-Box enthalten
+  } else {
+    grundBox.style.display = 'none';
+    secRow.style.display   = '';
+  }
 
   openPopupEl(document.getElementById('popup'), evt);
   announce(`${name}: ${lvl >= 0 ? LBL[lvl] : 'Keine Daten'}`);

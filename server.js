@@ -188,6 +188,7 @@ async function classifyBatch(countries) {
     'USA: ESTA erforderlich, kein Visum. ' +
     'Großbritannien: Reisepass erforderlich, kein Visum (6 Monate). ' +
     'Sei bei Visa-Angaben immer sehr präzise – nenne Dauer und ob Visum, eVisa oder visumfrei. ' +
+    'Wichtig für den security-Text: Wenn ein Land nur wegen indirekter Auswirkungen eine AA-Warnung hat (z.B. Japan: Teilwarnung wegen Nahost-Flugrouten, aber Japan selbst ist sicher), dann erkläre das explizit – z.B. "Japan selbst ist sicher; Teilwarnung betrifft nur eingeschränkte Flugrouten über den Nahen Osten." ' +
     'Antworte AUSSCHLIESSLICH mit einem JSON-Array, kein Markdown, kein Text davor oder danach.';
 
   const user =
