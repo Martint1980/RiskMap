@@ -448,22 +448,51 @@
     }
 
     /* ── Popup ────────────────────────────────────────────────────── */
+    #popup-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(2px);
+    }
+    #popup-backdrop.visible { display: block; }
+
     #popup {
       display: none;
-      position: absolute;
-      z-index: 10;
+      position: fixed;
+      z-index: 1000;
       width: 300px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
       background: var(--surface);
       border: 1px solid var(--border2);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-pop);
-      overflow: hidden;
       transform-origin: top left;
-      animation: popup-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: popup-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
     @keyframes popup-in {
-      from { opacity: 0; transform: scale(0.92) translateY(8px); }
+      from { opacity: 0; transform: scale(0.93) translateY(6px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @media (max-width: 640px) {
+      #popup {
+        width: 100% !important;
+        max-width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        bottom: 0 !important;
+        max-height: 72vh;
+        border-radius: 18px 18px 0 0;
+        border-left: none; border-right: none; border-bottom: none;
+        animation: popup-in-mobile 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      @keyframes popup-in-mobile {
+        from { opacity: 0; transform: translateY(100%); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
     }
 
     #popup-risk-bar,
@@ -617,7 +646,6 @@
       header { margin: 0 -12px 8px; padding: 14px 16px 12px; }
       #stats-bar { margin: 0 -12px 8px; padding: 8px 16px; }
       #search-input { width: 160px; }
-      #popup { width: calc(100vw - 28px); max-width: 310px; }
       .stat-label { display: none; }
       h1 { font-size: 17px; }
     }
@@ -700,25 +728,27 @@
     <button class="zoom-btn" id="zoom-in"  aria-label="Hineinzoomen">+</button>
     <button class="zoom-btn" id="zoom-out" aria-label="Herauszoomen">−</button>
   </div>
-  <div id="popup" role="dialog" aria-modal="false" aria-labelledby="popup-title">
-    <div id="popup-risk-bar"></div>
-    <div id="popup-body">
-      <div id="popup-header">
-        <div id="popup-title"></div>
-        <button id="popup-close" aria-label="Info schließen" onclick="closePopup()">✕</button>
-      </div>
-      <div id="popup-badge"></div>
-      <div class="prow"><div class="plabel">Sicherheitslage</div><div class="pval" id="pp-sec"></div></div>
-      <div class="prow"><div class="plabel">Geschäftsreise</div><div class="pval" id="pp-biz"></div></div>
-      <div class="prow"><div class="plabel">Einreise &amp; Dokumente</div><div class="pval" id="pp-entry"></div></div>
-      <div id="popup-divider"></div>
-      <p id="popup-aa-note">Bitte vor jeder Reise die aktuellen Hinweise direkt beim Auswärtigen Amt prüfen — diese Karte ersetzt keine offizielle Beratung.</p>
-      <a id="popup-link" href="#" target="_blank" rel="noopener noreferrer">
-        Auswärtiges Amt →
-      </a>
+  </div><!-- end map-wrap -->
+
+<div id="popup-backdrop"></div>
+<div id="popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+  <div id="popup-risk-bar"></div>
+  <div id="popup-body">
+    <div id="popup-header">
+      <div id="popup-title"></div>
+      <button id="popup-close" aria-label="Info schließen" onclick="closePopup()">✕</button>
     </div>
-  <div id="popup-risk-bar-bottom"></div>
+    <div id="popup-badge"></div>
+    <div class="prow"><div class="plabel">Sicherheitslage</div><div class="pval" id="pp-sec"></div></div>
+    <div class="prow"><div class="plabel">Geschäftsreise</div><div class="pval" id="pp-biz"></div></div>
+    <div class="prow"><div class="plabel">Einreise &amp; Dokumente</div><div class="pval" id="pp-entry"></div></div>
+    <div id="popup-divider"></div>
+    <p id="popup-aa-note">Bitte vor jeder Reise die aktuellen Hinweise direkt beim Auswärtigen Amt prüfen — diese Karte ersetzt keine offizielle Beratung.</p>
+    <a id="popup-link" href="#" target="_blank" rel="noopener noreferrer">
+      Auswärtiges Amt →
+    </a>
   </div>
+  <div id="popup-risk-bar-bottom"></div>
 </div>
 
 <footer>
@@ -1216,6 +1246,26 @@ const AA_SLUGS = {
 function buildLink(iso2) { return AA_SLUGS[iso2] ? AA_NODE + AA_SLUGS[iso2] : AA_FALLBACK; }
 
 // ── Popup ─────────────────────────────────────────────────────────────────────
+function positionPopup(pop, evt) {
+  if (window.innerWidth <= 640) return; // mobile: CSS bottom-sheet handles it
+  const pw = 312, ph = Math.min(pop.scrollHeight || 420, window.innerHeight - 48);
+  let x = evt.clientX + 16;
+  let y = evt.clientY + 16;
+  if (x + pw > window.innerWidth  - 8) x = Math.max(8, evt.clientX - pw - 16);
+  if (y + ph > window.innerHeight - 8) y = Math.max(8, evt.clientY - ph - 16);
+  pop.style.left = x + 'px';
+  pop.style.top  = y + 'px';
+}
+
+function openPopupEl(pop, evt) {
+  pop.style.display = 'block';
+  pop.style.animation = 'none';
+  void pop.offsetWidth;
+  pop.style.animation = '';
+  positionPopup(pop, evt);
+  document.getElementById('popup-backdrop').classList.add('visible');
+}
+
 function showNoDataPopup(evt) {
   document.getElementById('popup-title').textContent = 'Gebiet / Territorium';
   document.getElementById('popup-risk-bar').style.background = isDark ? '#2A3040' : '#C2CCDA';
@@ -1229,20 +1279,7 @@ function showNoDataPopup(evt) {
   document.getElementById('pp-biz').textContent   = 'Bitte direkt beim Auswärtigen Amt prüfen.';
   document.getElementById('pp-entry').textContent = 'Einreisebestimmungen beim Auswärtigen Amt prüfen.';
   document.getElementById('popup-link').href      = AA_FALLBACK;
-  const pop = document.getElementById('popup');
-  pop.style.display = 'block';
-  pop.style.animation = 'none';
-  void pop.offsetWidth;
-  pop.style.animation = '';
-  const wrap = document.getElementById('map-wrap');
-  const wr = wrap.getBoundingClientRect();
-  const pw = 300, ph = 370;
-  let x = evt.clientX - wr.left + 16;
-  let y = evt.clientY - wr.top  + 16;
-  if (x + pw > wrap.offsetWidth  - 8) x = Math.max(8, evt.clientX - wr.left - pw - 16);
-  if (y + ph > wrap.offsetHeight - 8) y = Math.max(8, evt.clientY - wr.top  - ph - 16);
-  pop.style.left = x + 'px';
-  pop.style.top  = y + 'px';
+  openPopupEl(document.getElementById('popup'), evt);
 }
 
 function showPopup(evt, iso2) {
@@ -1257,8 +1294,8 @@ function showPopup(evt, iso2) {
 
   const badge = document.getElementById('popup-badge');
   badge.textContent = lvl >= 0 ? LBL[lvl] : 'KEINE DATEN';
-  badge.style.color      = col;
-  badge.style.background = isDark ? `${col}18` : `${col}15`;
+  badge.style.color       = col;
+  badge.style.background  = isDark ? `${col}18` : `${col}15`;
   badge.style.borderColor = `${col}40`;
 
   document.getElementById('pp-sec').textContent   = info.sec;
@@ -1266,22 +1303,7 @@ function showPopup(evt, iso2) {
   document.getElementById('pp-entry').textContent = info.entry;
   document.getElementById('popup-link').href      = buildLink(iso2);
 
-  const pop  = document.getElementById('popup');
-  pop.style.display = 'block';
-  pop.style.animation = 'none';
-  void pop.offsetWidth; // force reflow → restarts animation
-  pop.style.animation = '';
-
-  const wrap = document.getElementById('map-wrap');
-  const wr   = wrap.getBoundingClientRect();
-  const pw   = 300, ph = 370;
-  let x = evt.clientX - wr.left + 16;
-  let y = evt.clientY - wr.top  + 16;
-  if (x + pw > wrap.offsetWidth  - 8) x = Math.max(8, evt.clientX - wr.left - pw - 16);
-  if (y + ph > wrap.offsetHeight - 8) y = Math.max(8, evt.clientY - wr.top  - ph - 16);
-  pop.style.left = x + 'px';
-  pop.style.top  = y + 'px';
-
+  openPopupEl(document.getElementById('popup'), evt);
   announce(`${name}: ${lvl >= 0 ? LBL[lvl] : 'Keine Daten'}`);
 }
 
@@ -1289,6 +1311,7 @@ function closePopup() {
   const pop = document.getElementById('popup');
   if (pop.style.display === 'none') return;
   pop.style.display = 'none';
+  document.getElementById('popup-backdrop').classList.remove('visible');
   if (svgPaths && activeD) {
     const k = zoom ? d3.zoomTransform(svg.node()).k : 1;
     svgPaths.filter(d => d === activeD).attr('stroke', stroke0).attr('stroke-width', 0.5 / k);
@@ -1296,6 +1319,7 @@ function closePopup() {
   }
 }
 
+document.getElementById('popup-backdrop').addEventListener('click', closePopup);
 document.getElementById('map-wrap').addEventListener('click', e => {
   const pop = document.getElementById('popup');
   if (pop.style.display !== 'none' && !pop.contains(e.target) && !e.target.closest('svg')) closePopup();
